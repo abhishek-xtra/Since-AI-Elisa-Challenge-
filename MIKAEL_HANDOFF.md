@@ -1,8 +1,8 @@
-# MIKAEL_HANDOFF: Elisa "hidden knowledge" challenge, plan v4 (v3 + cuts in section 14, Claude build framework in section 15)
+# MIKAEL_HANDOFF: Elisa "hidden knowledge" challenge, plan v5
 
-Status as of Friday 6 November 2026. Deadline: Sunday 8 November 2026, 10:00, via the Since AI app. Elisa reviews Sunday 10:00 to 13:00.
+Status as of Friday 6 November 2026, 23:00. Deadline: Sunday 8 November 2026, 10:00 EET, via sinceai.app. Elisa reviews Sunday 10:00 to 13:00. Finals at 14:00.
 
-This file is the current plan from one team member (Mikael), written to be reviewed by a teammate and by that teammate's Claude, who will compare it against a different idea. It has been through two rounds of review by another AI. Section 11 records what changed and why.
+This file is the current plan from one team member (Mikael), written to be reviewed by a teammate and by that teammate's Claude, who will compare it against a different idea (`ABHISHEK_HANDOFF.md`). The comparison so far is in `REVIEW_MIKAEL.md`. Sections 4 to 10 are the current plan. Sections 11, 14 and 16 record what changed and why. Section 15 is how we build it with Claude agents.
 
 ---
 
@@ -39,26 +39,36 @@ Claims in this file fall into three groups: taken from Elisa's deck (reliable), 
 
 Other guidance came from a kickoff talk and mentor conversations. Treat it as softer than the deck: Slack alone may be fine for a demo; synthetic site connections are fine; mentors suggested short clarifying questions inside the conversation and said talking may be easier than forms; GDPR is reportedly out of scope for this challenge. The existing network model is a graph of devices, sites and components, physical and logical.
 
+### 2b. Submission facts (from the organiser's builder guide, checked Friday night)
+
+- One entry per team in sinceai.app by Sunday 10:00 EET. Devpost does not count. Every member must personally accept Elisa's IP terms in the app before the entry goes through. Do this Saturday.
+- Required fields: project name, submission URL, "About the project" (up to 5,000 characters), repository or demo link, "Built with", technology feedback, GenAI tools used, how generative AI is used in the project. Collect these while building.
+- Optional: demo video (YouTube link or MP4, about two minutes, "strongly recommended"), pitch deck (PDF or PPTX), supporting documents (Markdown is accepted, so the handoffs and data card can go in). No ZIP files.
+- The organiser's definition of a strong entry: working prototype with steps to run it, a repo with a real README, a two-minute video, a deck "only if it helps; it never replaces a working prototype".
+- Elisa picks its top three from its own review 10:00 to 13:00. The top project from each of five challenges presents live at 14:00 to a cross-company jury. Nothing says Elisa's review includes a live pitch, so the video, README and repo must carry everything. Confirm with Joni.
+- AI-built code is explicitly fine, with the condition "understand and verify what you ship, be ready to explain it". The test gates in section 15 are the answer to that. Say so in the README.
+- Check every link logged out before submitting.
+
 ## 3. The plan in one paragraph
 
-A pipeline that reads the conversations people already have (Teams chat and email), notices when someone states a reusable rule, and stores it as a **context assertion** with a trigger (the situation), an `applies_to` predicate over topology attributes, an action, an `avoid` list, and provenance, trust and validity. It requires no extra step from the expert. It binds to the right entity at the right level or abstains. At the next similar failure, a stand-in agent that would normally follow its default runbook (replace SFP, check optics, reboot, RMA) instead receives the assertion through one `get_context` tool and proposes "check counters, bounce the interface, don't reboot", citing the source. If the new unit is outside the predicate, or the assertion has expired, the system declines deterministically and says why. If two assertions conflict, it escalates to a human with both attached and never falls back to the default silently.
+A pipeline that reads the conversations people already have (Teams chat and email), notices when someone states a reusable rule, and stores it as a **context assertion** with a trigger (telemetry checks the agent can run itself), a set of candidate scopes over topology attributes (install year, model, firmware, site, one-hop neighbours, and the device ID last), an action, an `avoid` list, and provenance, trust and validity. It requires no extra step from the expert. One case cannot say which scope is the real one, so the system keeps every candidate, proposes only where all of them hold, and lets later cases eliminate the wrong ones. When candidates disagree on real devices, one short question lands in the expert's own thread. At the next similar failure anywhere in the graph, a thin stand-in agent receives the assertion through one `get_context` tool and proposes "check counters, bounce the interface, don't reboot", citing the source. If the new unit fails a candidate, or the assertion's validity condition no longer holds for that device, the system declines deterministically and says why. If two assertions conflict, it escalates to a human with both attached and never falls back to the default silently. Output to Elisa: one context layer their agents query with one call, filled from chats and email with zero required steps.
 
 ## 4. Design
 
 ### 4.1 Inputs
 
 - `teams_chat.json` and `email.txt` are the primary inputs. Adapters convert them to one message format: author, timestamp, channel or thread, text. Slack or any other source can be added later without changing the rest.
-- An optional live Slack bot is a demo veneer only, not on the critical path.
+- The capture surface in the demo is a mock Teams thread page (Abhishek's), where the one-tap scope question and the "your tip was used" notification appear. A live Slack bot is next-steps unless Elisa confirms a live presentation.
 
 ### 4.2 Pipeline
 
 1. **Detect.** Decide whether a conversation contains a reusable rule. Most messages produce nothing. Extract the rule in structured form: trigger, applies_to, action, avoid. The trigger is written as checks the agent can evaluate against telemetry (`counters_zero`, `link_up`, `optics_normal`), not as prose, so the agent verifies the precondition itself before proposing. Triggers are of two kinds: an incident pattern (event plus symptoms) or a workflow step (`dispatch_created` for the barrier key), because access knowledge is needed at dispatch time, not at diagnosis time.
 2. **Evidence check.** Every extracted field must be supported by an excerpt that actually appears in the source. Otherwise drop the assertion.
 2b. **Corroborate (first stretch task).** Search the existing corpus (other threads, emails) for the same trigger and symptoms. Attach matches as supporting sources. Source count raises trust, the earliest match sets `valid_from`, and if all matches share an attribute (install year, model) that becomes evidence for the `applies_to` predicate. Erkki says "several cases I've seen"; the system should find them.
-3. **Bind.** Resolve the entities and attributes mentioned (explicit IDs, nicknames, typos, phrases like "older units") against the topology. Choose the smallest level the evidence supports: device, model, install-year cohort, or site. If the text refers to attributes the topology does not have, or two levels fit equally well, abstain and mark the assertion `needs_confirmation`. An abstained assertion is stored but never proposed.
-4. **Time.** Set `valid_from` from the conversation date and `recorded_at` from ingestion. `valid_to` defaults to null ("still believed true"), and is set when the text states an end condition (for example until a firmware fix).
-5. **Trust.** Record the speaker's role, and a trust level: `hunch`, `stated`, or `verified_by_outcome`.
-6. **Store.** Save the assertion attached to the topology entities or predicate. SQLite or an in-memory structure is enough. A graph database is not needed for the demo.
+3. **Bind.** Resolve the entities mentioned (explicit IDs, nicknames, typos) against the topology. Build the candidate scope set (4.4): the condition stated in the text plus the attributes of the device in the case, its one-hop neighbours, and the ID itself last. Do not choose between them. If the candidates disagree on devices that exist in the topology, generate the one-tap question. If the text refers to attributes the topology does not have, record the candidate as unresolvable; it never matches.
+4. **Time.** Set `valid_from` from the conversation date and `recorded_at` from ingestion. `valid_to` defaults to null ("still believed true"). If the text states a condition under which the rule stops applying (for example a firmware fix), store it as `valid_while` (4.5).
+5. **Trust.** Record the speaker's role, and a trust level: `hunch`, `stated`, or `verified_by_outcome`. Outcome verification comes from the thread or from telemetry, never from a tap (4.6).
+6. **Store.** Save the assertion as a node with one edge per candidate scope into the topology, plus edges to its sources. Neo4j in Docker; if it is not running within 45 minutes, JSON plus a pyvis HTML export. We write only to this layer and never modify Elisa's nodes.
 7. **Serve** through `get_context` (4.7).
 
 ### 4.3 Assertion shape (illustrative, synthetic)
@@ -76,10 +86,11 @@ A pipeline that reads the conversations people already have (Teams chat and emai
       {"predicate": "install_year <= 2019", "support": 1, "against": 0, "basis": "expert: 'older units, around 2019'"},
       {"predicate": "model == 'TX-200'", "support": 1, "against": 0, "basis": "attribute of TRN-042"},
       {"predicate": "firmware == '4.1'", "support": 1, "against": 0, "basis": "attribute of TRN-042"},
-      {"predicate": "site == 'OULU-07'", "support": 1, "against": 0, "basis": "attribute of TRN-042"}
+      {"predicate": "site == 'OULU-07'", "support": 1, "against": 0, "basis": "attribute of TRN-042"},
+      {"predicate": "peer.sfp_vendor == 'OptiCo'", "support": 1, "against": 0, "basis": "far end of the affected link"},
+      {"predicate": "id == 'TRN-042'", "support": 1, "against": 0, "basis": "the device in the case; ranked last"}
     ],
-    "decided": null,
-    "status": "open"
+    "decided": null
   },
   "action": "disable the interface, wait, enable it",
   "avoid": ["reboot", "replace the SFP again"],
@@ -89,25 +100,31 @@ A pipeline that reads the conversations people already have (Teams chat and emai
     "said_by_role": "expert"
   },
   "trust": "stated",
+  "status": "open",
   "recorded_at": "2026-11-06T00:00:00Z",
   "valid_from": "2026-11-01T00:00:00Z",
   "valid_to": null,
-  "end_condition": null
+  "valid_while": null
 }
 ```
 
-Note on scope: one case cannot say whether the rule is about the install year, the model, the firmware or the site, and Erkki does not know either. So the assertion binds to every plausible attribute at once as a candidate edge with a support count, and evidence narrows the set (4.4). Model, firmware and site values above are placeholders for whatever the synthetic topology gives TRN-042.
+Vocabulary, used the same way everywhere in this file and in the code:
+
+- `assertion.status`: `open` (candidates undecided), `decided` (expert answered or evidence left one), `disputed` (conflicts with another assertion), `review` (an outcome contradicted it).
+- Query outcome from `get_context` for one entity: `proposed`, `declined` (with the failing candidate or condition), `ambiguous` (some candidates hold, some do not).
+- `trust`: `hunch`, `stated`, `verified_by_outcome`.
+
+Note on scope: one case cannot say whether the rule is about the install year, the model, the firmware, the site or the far end of the link, and Erkki does not know either. So the assertion binds to every plausible attribute at once as a candidate edge with a support count, and evidence narrows the set (4.4). Attribute values above are placeholders for whatever the synthetic topology gives TRN-042.
 
 ### 4.4 Linking and abstention
 
-- A wrong link is worse than none, so prefer abstaining. Report both accuracy when it answers and the abstention rate.
+- A wrong link is worse than none, so when in doubt the outcome is `ambiguous`, never `proposed`. Report both accuracy when it proposes and how often it stays silent.
 - **Multi-candidate binding.** The scope is a set of candidate predicates over topology attributes (install year, model, firmware, site) and over one-hop neighbour attributes (far-end device model, far-end SFP vendor, upstream aggregation node), not one edge. The device ID itself is the lowest-ranked candidate: hardware gets replaced under the same ID, so an ID binding is right for a barrier key and wrong for Erkki's rule. Each candidate carries `support` and `against` counts. The stated condition from the text ("older units") is one candidate among the attributes of the device in the case.
 - **Propose only on the intersection.** On a new incident that matches the trigger, check which surviving candidates the entity satisfies. All: propose. None: decline with the failing candidates as the reason. Some: ambiguous, so ask the one-tap question or escalate. Abstention is computed, not judged.
 - **Evidence narrows the set.** A corroborating case (4.2 step 2b) or a verified outcome adds `support` to the candidates its entity satisfies and `against` to the ones it does not. A candidate with `against` > 0 is eliminated. Three cases usually leave one. This replaces the contrast-based inference that v3 moved to next steps; it is counting, not inference.
 - **Humans override counts.** The expert's one-tap answer sets `decided`. Other candidates stay recorded as hypotheses but are not used.
-- Outcomes are discrete: `bound`, `narrowed`, `abstained`. Do not use model-reported numeric confidence, which is poorly calibrated.
-- Ask a short question only if two interpretations would produce different agent behaviour on the demo topology (for example "TRN-042 only" versus "all units installed 2019 or earlier"). Offer two or three options plus free text. At most one question per conversation. The question appears inside the thread as a one-tap reply (Abhishek's mock Teams page).
-- Contrast-based scope inference (comparing cases where the fix worked and where it was not needed) is a next-steps item, not part of the core.
+- No model-reported numeric confidence anywhere. It is poorly calibrated. Show the counts and the candidates instead.
+- Ask a short question only if the candidates disagree on devices that exist in the topology (for example "TRN-042 only" versus "all units installed 2019 or earlier"). Offer two or three options plus free text. At most one question per conversation. The question appears inside the thread as a one-tap reply (Abhishek's mock Teams page).
 
 ### 4.5 Time
 
@@ -130,7 +147,7 @@ Note on scope: one case cannot say whether the rule is about the install year, t
 - It has one tool: `get_context(entity_id, event, symptoms, at_time)`. It returns a list of assertions with provenance, trust and status, after a **deterministic filter**: trigger match on event and symptoms first (the same fault can appear anywhere in the graph, so retrieval is by symptom pattern, not by device), then the candidate-set intersection against the entity's attributes, then validity at `at_time`, then trust threshold.
 - The decline ("this unit is not in scope", "this assertion expired") comes from the filter, not from the model's judgment.
 - The demo shows the exact input the agent receives.
-- Disputed or abstained items are returned flagged, and the agent's rule is to escalate to a human in that case.
+- Disputed assertions and ambiguous outcomes are returned flagged, and the agent's rule is to escalate to a human in that case.
 
 ### 4.8 Effort accounting (the usability criterion)
 
@@ -139,9 +156,9 @@ Report honestly: extra human actions per captured assertion (target zero by defa
 ## 5. Demo (about three minutes, four beats plus a closer)
 
 1. **The failure without context.** The agent, on an old node, proposes a reboot or another SFP swap.
-2. **Capture and link.** Feed in the Teams chat and the email. Twelve messages become one assertion, bound to the 2019 cohort, with source, speaker role, trust and validity. The scope question lands in the thread, Erkki taps "All". Nobody fills in anything.
+2. **Capture and link.** Feed in the Teams chat and the email. Twelve messages become one assertion with source, speaker role, trust and validity, and several candidate scope edges into the graph. Say the line: "We don't know if it's the year or the model. Neither does Erkki. We keep both and only speak where both hold." The scope question lands in the thread, Erkki taps "All units 2019 or older", that candidate is decided. Nobody fills in anything.
 3. **Reuse.** On another old node (TRN-087, 2018), the agent receives the assertion through `get_context` and proposes check counters, bounce, don't reboot, citing Erkki.
-4. **Decline.** On a newer unit (TRN-101, 2023), the system declines and says why.
+4. **Decline.** On a newer unit (TRN-101, 2023), the system declines and names the failing candidate.
 5. **Closer (15 seconds).** The locked-barrier email handled by the same pipeline, bound to a site entity, and the expert's "your tip was used today" notification.
 
 Expiry (firmware fix) and conflict (two experts) go on slides with screenshots if built, not into demo time. Decide now what Erkki taps in beat 2, since the core case is itself ambiguous.
@@ -153,7 +170,7 @@ The replay runs offline from stored results, so the demo never depends on live m
 ### 6.1 Data
 
 - Start from Elisa's provided case. Add a small synthetic topology (about 3 sites and 20 elements with model, install year, firmware version and site). `teams_chat.json` has times but no date, so assign a synthetic date for `valid_from` and document it.
-- 8 to 10 scenarios, listed in Appendix A. Each has a hidden rule and is written as a Teams-style thread or an email.
+- About ten spine scenarios plus one per stretch item, listed in Appendix A with a lane column. Each has a hidden rule and is written as a Teams-style thread or an email. The topology needs links with far-end attributes, and per-node firmware, for the candidate and validity scenarios.
 - **Generate the threads with a different model from the extractor**, from scenario scripts. Abhishek writes the scripts and reads every generated thread, which also makes them the held-out test of the extractor.
 - No dev/test split. At this sample size it means nothing.
 - Document in the repo what was generated, how, with which prompts and models (`docs/DATA_CARD.md`).
@@ -179,13 +196,13 @@ The headline is Elisa's own three steps (capture, link, reuse) plus the decline.
 
 ## 7. Scope
 
-**In scope (the spine):** Teams and email adapters, structured rule extraction with an evidence check, binding with abstention and the in-thread scope question, validity and trust fields, storage in Neo4j keyed to the topology, `get_context` with a deterministic filter, thin stand-in agent, decline on a newer unit, the generated case table, the data card, the mock Teams page (Abhishek), Neo4j Browser as the graph view.
+**In scope (the spine):** Teams and email adapters, structured rule extraction with an evidence check and telemetry-check triggers, multi-candidate binding with the in-thread scope question, validity (dates and `valid_while`) and trust fields, a predicate evaluator over the topology, storage in Neo4j with one edge per candidate, `get_context` with a deterministic filter, thin stand-in agent, decline on a newer unit and ambiguous on a different model, the generated case table, the data card, the mock Teams page (Abhishek), Neo4j Browser as the graph view.
 
 **Stretch, after the spine passes, in this order:** corroboration search (4.2 step 2b, it strengthens the core demo), searchable graph page with search box and time slider (Abhishek's lane, reads the store's JSON export, Neo4j Browser stays the fallback), barrier closer on a dispatch trigger, firmware-conditional expiry (4.5), marker-phrase pre-filter (16.8), split diagnostic from remedy (16.3), blast radius on the avoid list (16.6), event-stream corroboration (16.7), conflict escalation, baseline B. Each is one agent task that does not touch the spine.
 
-**Next-steps slides only:** live Slack and other connectors, voice narration for field technicians, runbook-versus-actual-action deviation detection, contrast-based scope inference, question-value scoring and calibration, tree-descent retrieval over channel maps, a general conflict-ranking rule, a custom graph UI with time slider and edits.
+**Next-steps slides only:** live Slack and other connectors, voice narration for field technicians, runbook-versus-actual-action deviation detection, question-value scoring and calibration, tree-descent retrieval over channel maps, a general conflict-ranking rule, editing assertions in the graph UI.
 
-**Cut order if behind:** conflict escalation, expiry, barrier closer, Neo4j (fall back to JSON + pyvis HTML), mock Teams page (fall back to a text log).
+**Cut order if behind, inside the spine:** one-hop neighbour candidates (keep node attributes and ID), `valid_while` (keep dates), Neo4j (fall back to JSON + pyvis HTML), mock Teams page (fall back to a text log). Stretch items are already optional.
 
 ## 8. Build order and timeline
 
@@ -198,9 +215,10 @@ Code is written by Claude agents (section 15). Owners below are the humans who v
 
 | When | Focus |
 |---|---|
-| Fri night | Contracts frozen (15.1). Adapters and extractor on Elisa's chat and email, gate: one assertion, `avoid` has reboot, excerpt is verbatim. Abhishek: topology sheet, scenario scripts, Discord questions |
+| Fri night (now 23:00) | Plan agreed between the two handoffs. Post the section 9 questions on Discord. Contracts drafted (15.1) if awake, otherwise first thing Saturday |
 | Fri night | Sleep |
-| Sat morning | Binder with abstention, Neo4j store, `get_context`, stand-in agent. Gate: TRN-087 gets the bounce, TRN-101 declined. Abhishek: generated threads reviewed, mock Teams page |
+| Sat 08:00 to 10:00 | Contracts frozen. Adapters and extractor on Elisa's chat and email, gate: one assertion, `avoid` has reboot, excerpt is verbatim. Abhishek: topology sheet with links and firmware, scenario scripts |
+| Sat 10:00 to 14:00 | Predicate evaluator (tested alone first), binder with candidates, Neo4j store, `get_context`, stand-in agent. Gate: TRN-087 gets the bounce, TRN-101 declined naming the candidate, a 2018 unit of another model is ambiguous. Abhishek: generated threads reviewed, mock Teams page |
 | Sat afternoon | Eval harness over all scenarios, case table, fix what it reveals. Stretch tasks only if the spine is green |
 | Sat 20:00 | Feature freeze |
 | Sat evening | Slides, README, data card, backup demo video, one rehearsal from `demo.py` |
@@ -234,9 +252,11 @@ Code is written by Claude agents (section 15). Owners below are the humans who v
 - **Entity linking with abstention** (the NIL idea) is standard in research. Applying it at cohort granularity over a network topology is a sensible application, not a new technique.
 - **AIOps and incident-management tools:** I believe they offer similar-incident search and AI summaries, but I have **not checked any product**. Please say what you know.
 
-What may still differ: capture with no required step, binding to a fixed topology with explicit abstention, trigger and `avoid` in the assertion, a deterministic decline, outcome-based trust upgrades, and an honest per-trap case table. The pitch should say plainly that the general problem is known and focus on linking, time and trust.
+What may still differ: capture with no required step, multi-candidate scope that evidence narrows instead of one guessed link, validity as a per-device condition, triggers as telemetry checks the agent runs itself, trigger and `avoid` in the assertion, a deterministic decline, outcome-based trust upgrades, and an honest per-trap case table. The pitch should say plainly that the general problem is known and focus on linking, time and trust.
 
-## 11. Decision log: what changed from earlier versions
+## 11. Decision log: v2 to v3 (historical)
+
+Rows marked † were reversed or replaced later: see section 14 (v3 to v4) and section 16 (v4 to v5). The current plan is sections 4 to 10.
 
 | Change | Why | Source |
 |---|---|---|
@@ -244,15 +264,15 @@ What may still differ: capture with no required step, binding to a fixed topolog
 | Teams and email are the main inputs, Slack optional | Provided data and stated preference | Elisa's deck |
 | Elisa's assertion model with `valid_from` and `valid_to` | Matches their reference architecture | Elisa's deck |
 | Trigger, `applies_to` predicate, action and `avoid` in the schema | A bound entity alone would match any failure on that device, and `avoid: reboot` is the strongest demo line | AI review of v2 |
-| Headline is C versus B, not C versus no context | Beating "no context" is nearly tautological | AI review of v2 |
+| † Headline is C versus B, not C versus no context | Beating "no context" is nearly tautological | AI review of v2 |
 | Test the extractor on messy threads first | Biggest unknown, cheapest to test | AI review of v2 |
 | Discrete outcomes instead of numeric confidence | Model self-reported confidence is poorly calibrated | AI review of v2 |
-| Use-time outcome tap and expert notification | Upgrades trust with no extra work for the expert, and addresses "people" | AI review of v2 |
+| † Use-time outcome tap and expert notification | Upgrades trust with no extra work for the expert, and addresses "people" | AI review of v2 |
 | Escalate on conflict instead of "propose neither" | Avoids silently reverting to the default the experts warned against | AI review of v2 |
 | One `get_context` tool and a deterministic filter | Makes "agent-ready" concrete and the decline credible | AI review of v2 |
-| 12 to 16 scenarios, case table, frozen test split, hand-written threads | Smaller, less circular evaluation | AI review of v2 |
-| Contrast-based scope inference moved to next steps | The stated condition already gives the predicate, and inference from few cases looks contrived | AI review of v2 |
-| Dropped: value-of-information scoring, tree-descent retrieval, source maps, anchoring audits, voice, deviation detector, graph database | Not rewarded by the criteria, and too much for 38 hours | Both reviews |
+| † 12 to 16 scenarios, case table, frozen test split, hand-written threads | Smaller, less circular evaluation | AI review of v2 |
+| † Contrast-based scope inference moved to next steps | The stated condition already gives the predicate, and inference from few cases looks contrived | AI review of v2 |
+| † Dropped: value-of-information scoring, tree-descent retrieval, source maps, anchoring audits, voice, deviation detector, graph database | Not rewarded by the criteria, and too much for 38 hours | Both reviews |
 
 ## 12. Comparing this plan with another idea
 
@@ -279,35 +299,35 @@ Then answer:
 
 ## 13. Repository hygiene
 
-- Do not commit Elisa's provided files (`teams_chat.json`, `email.txt`, `use_case.md`, the image) to a public repository without checking their terms. This file only summarises them.
-- Suggested layout: `data/` (synthetic scenarios and the topology, with a data card), `extractor/`, `store/`, `agent/` (stand-in agent and `get_context`), `eval/` (case table and harness), `docs/` (this file, the pitch, the README).
+- Elisa's provided files (`teams_chat.json`, `email.txt`, `use_case.md`, the image) are the extractor's fixtures. Their README says names and IDs are illustrative with no personal data, and the deck calls them "your material", so the risk of committing them is low. Ask on Discord anyway; until answered, keep them in `data/elisa_examples/` and commit them.
+- Layout: `contracts/`, `data/` (Elisa's examples, synthetic scenarios, topology, data card), `adapters/`, `extractor/`, `binder/`, `store/`, `agent/` (stand-in agent and `get_context`), `eval/` (case table and harness), `ui/` (mock Teams page, graph page), `docs/` (handoffs, review, README).
 - Document every generated dataset: what, how, with which model and prompts.
 - No secrets or API keys in the repo.
 
 ---
 
-## Appendix A: scenario catalogue (target 8 to 10; rows 12 and 13 cut, see section 14)
+## Appendix A: scenario catalogue
 
-| # | Trap | Expected behaviour |
-|---|---|---|
-| 1 | Core case: Erkki's SFP rule, older node | Assertion captured and bound; proposed on another old node |
-| 2 | Same rule, newer unit | Declined with a reason |
-| 3 | "These older units", scope ambiguous | Abstain and mark `needs_confirmation`; never proposed |
-| 4 | Chat with no reusable rule | Nothing extracted |
-| 5 | A device mentioned in passing, not the subject | Not bound to that device |
-| 6 | Hunch rather than verified fix | Trust marked `hunch`; not proposed as a fix |
-| 7 | Rule that expires (a firmware fix) | Stops being proposed after the change |
-| 8 | Two experts disagree on the same case | Both marked `disputed`; escalate to a human with both |
-| 9 | Site access in an email (locked barrier) | Bound to a site entity; proposed on the next dispatch to that site |
-| 10 | Typos or nicknames in a device ID | Resolved to the right entity, or abstain |
-| 11 | The same case arriving as chat and as email | One assertion, not two |
-| 12 | Abhishek's scenario scripts, generated by a different model | Held-out test of the extractor (replaces the old row 14) |
-| 13 | Same fix worked on a 2018 unit of a different model | Model candidate eliminated, install-year candidate supported; the rule now proposes on any 2019-or-older unit |
-| 14 | Same symptoms on a 2016 unit, fix did not work | Install-year candidate gets `against`; assertion marked for review, not silently kept |
-| 15 | Firmware upgraded on one old node | Assertion no longer proposed on that node, still proposed on its unpatched siblings (validity as a condition, 4.5) |
-| 16 | Barrier key email, then a dispatch to that site | Surfaced on the dispatch workflow step, not on an alarm (4.2 trigger types) |
-| 17 | Config-change event followed by recovery, no chat | Remedy recovered from the event stream alone; chat later supplies the reasoning and merges into the same assertion (stretch, 16.7) |
-| 18 | Scope that is one hop away (all affected links share a far-end SFP vendor) | Peer attribute appears as a candidate; node-only candidates are eliminated by case 13-style evidence (16.2) |
+Spine rows must pass before the feature freeze. Stretch rows belong to the stretch item named and are built only if that item is. All generated threads are written as scripts by Abhishek and generated by a different model from the extractor, which makes every row a held-out test.
+
+| # | Trap | Expected behaviour | Lane |
+|---|---|---|---|
+| 1 | Core case: Erkki's SFP rule on TRN-042, chat and email | One assertion, not two; candidate set contains the stated condition, the device's attributes, and the ID last; the scope question is generated because candidates disagree on the topology; after Erkki's answer it is proposed on TRN-087 (2018, same model) | spine |
+| 2 | Same rule, newer unit (TRN-101, 2023) | Declined, naming the failing candidate | spine |
+| 3 | Question not yet answered, same symptoms on a 2018 unit of a different model | Ambiguous, not proposed, escalated | spine |
+| 4 | Chat with no reusable rule | Nothing extracted | spine |
+| 5 | A device mentioned in passing, not the subject | Not bound to that device | spine |
+| 6 | Hunch rather than verified fix | Trust `hunch`; returned flagged, never as a proposal | spine |
+| 7 | Same fix worked on a 2018 unit of a different model | Model candidate eliminated, install-year candidate supported; now proposes on any 2019-or-older unit without a question | spine |
+| 8 | Same symptoms on a 2016 unit, fix did not work | Install-year candidate gets `against`; assertion status `review`, not silently kept | spine |
+| 9 | Typos or nicknames in a device ID | Resolved to the right entity, or no binding | spine |
+| 10 | Symptoms match but counters are rising | Trigger check fails; assertion not proposed, nobody asked (16.4) | spine |
+| 11 | Barrier key email, then a dispatch to that site | Bound to the site; surfaced on the dispatch workflow step, not on an alarm | stretch: barrier closer |
+| 12 | Firmware upgraded on one old node | No longer proposed on that node, still proposed on its unpatched siblings (`valid_while`) | stretch: expiry |
+| 13 | Two experts disagree on the same case | Both `disputed`; escalated to a human with both attached | stretch: conflict |
+| 14 | Earlier threads about TRN-019 and TRN-033 with the same symptoms | Attached as sources; source count 3; earliest sets `valid_from` | stretch: corroboration |
+| 15 | Config-change event followed by recovery, no chat | Remedy recovered from the event stream alone; a later chat merges into the same assertion | stretch: event stream |
+| 16 | All affected links share a far-end SFP vendor | Peer attribute is a candidate; node-only candidates eliminated by row 7-style evidence | stretch: one-hop (needs link data) |
 
 Include a mix of Teams-style and email-style, and at least two scenarios outside the optical-module family to show generality.
 
@@ -321,7 +341,7 @@ Applied inline in sections 4 to 10 and Appendix A. This table is the record of w
 |---|---|---|
 | Baseline B (raw-chat RAG) | 6.3, 5 | Keep the no-context opener as demo beat 1. B is a stretch task after the core passes, one slide at most. |
 | Frozen dev/test split | 6.1 | None. Meaningless at 8 to 10 scenarios. |
-| Scenarios 12 and 13 (near-duplicate merge, later narrowing) | Appendix A | Dropped. Scenario 11 (chat + email become one assertion) stays, it is the provided material. |
+| v3 scenarios "near-duplicate merge" and "later narrowing" | Appendix A | Dropped. Chat + email becoming one assertion stays, it is the provided material (now part of row 1). Appendix A was renumbered in v5. |
 | Use-time "worked / did not work" tap | 4.6 | Auto-verify from outcome: a confirmation message in the thread ("Traffic is back") or counters rising after the action upgrades trust to `verified_by_outcome`. Zero taps. |
 | Full default runbook in the stand-in agent | 4.7 | One prompt, one tool call. Without context it says reboot; with context it says bounce and cites the source. Pitch it as "stands in for your agent; the deliverable is the tool". |
 | "Applies to N of M devices" indicator, question-count logging | 4.4 | Dropped. |
@@ -341,8 +361,9 @@ We build with Claude (Fable orchestrating, Opus 5.5 building). The bottleneck is
 Agents build against these and never edit them.
 
 - `contracts/assertion.schema.json`: the shape in section 4.3.
-- `contracts/topology.schema.json`: node with `id`, `type`, `model`, `install_year`, `firmware`, `site`; site with `id`, `name`, `access_notes`.
-- `contracts/get_context.md`: `get_context(entity_id, event, symptoms, at_time) -> list[Assertion]` plus the filter rules (trigger match, predicate against topology, validity at `at_time`, trust threshold, flags for `disputed` and `needs_confirmation`).
+- `contracts/topology.schema.json`: node with `id`, `type`, `model`, `install_year`, `firmware`, `site`; link with `from`, `to`, `far_end_sfp_vendor`; site with `id`, `name`, `access`. Firmware is per node, so `valid_while` has something to evaluate.
+- `contracts/predicates.md`: the small predicate language used by candidates and `valid_while` (`attr op value`, `peer.attr op value`, `id == value`), and the evaluator's signature. Tested alone before anything uses it.
+- `contracts/get_context.md`: `get_context(entity_id, event, symptoms, at_time) -> list[Assertion]` plus the filter order (trigger match on event and symptoms, candidate intersection against the entity, `valid_while` and dates at `at_time`, trust threshold) and the per-entity outcome vocabulary from 4.3 (`proposed`, `declined`, `ambiguous`).
 - `contracts/message.schema.json`: the one message format adapters produce (author, role, timestamp, channel, thread, text).
 
 ### 15.2 One module per agent task, one test per module
@@ -353,10 +374,12 @@ Build order is sequential on the spine because each module consumes the previous
 |---|---|---|---|---|
 | 1 | `adapters/` | Elisa's `teams_chat.json`, `email.txt` | 12 messages and 1 message in contract shape | Skim the output |
 | 2 | `extractor/` | the two above | exactly one assertion; `avoid` contains "reboot"; `evidence.excerpt` is a verbatim substring of the source; chit-chat fixture yields nothing | Read the assertion |
-| 3 | `binder/` | assertion + topology | explicit ID resolves to the node; candidate set contains the stated condition plus the device's model, firmware and site; a question string exists when candidates diverge on the demo topology | Read the candidates and the question text |
-| 4 | `store/` | bound assertions | round trip; query by entity returns them; Neo4j Browser shows the graph | Look at the graph |
-| 5 | `agent/` | store + an incident on TRN-087 (2018, same model) and TRN-101 (2023) | 087 proposal contains "counters" and "disable" and not "reboot"; 101 is declined naming the failing candidate; a 2018 unit of a different model is flagged ambiguous, not proposed | Read all three outputs |
-| 6 | `eval/` | all scenarios | parametrized test per scenario; writes `docs/CASE_TABLE.md` | Read the table |
+| 3 | `predicates/` | fixture topology + a table of (predicate, entity, expected) | every row evaluates as expected, including `peer.` and `id ==` | Read the table |
+| 4 | `binder/` | assertion + topology | explicit ID resolves to the node; candidate set contains the stated condition plus the device's model, firmware, site, peer attribute and ID last; a question string exists when candidates diverge on the demo topology | Read the candidates and the question text |
+| 5 | `store/` | bound assertions | round trip; query by entity returns them; one edge per candidate; Neo4j Browser shows the graph | Look at the graph |
+| 6 | `agent/` | store + an incident on TRN-087 (2018, same model) and TRN-101 (2023) | 087 proposal contains "counters" and "disable" and not "reboot"; 101 is declined naming the failing candidate; a 2018 unit of a different model is flagged ambiguous, not proposed | Read all three outputs |
+| 7 | `eval/` | all scenarios | parametrized test per scenario; writes `docs/CASE_TABLE.md` | Read the table |
+| 8+ | stretch modules | per Appendix A row | the row's expected behaviour; for corroboration also that a chit-chat thread about TRN-042 is not attached | Read the output |
 
 Definition of done for every task: the test passes, the agent reports the exact command to run, the human runs it and looks at the output. An agent's claim that it works does not count.
 
@@ -386,13 +409,13 @@ Added Friday night from Mikael's notes and discussion. Each item names where it 
 | # | Assumption or missed relation | What we do instead | Lands |
 |---|---|---|---|
 | 16.1 | Bind to the device ID because it is in the text | The ID is the weakest binding. Hardware is replaced under the same ID. Rank ID last among candidates; it is right for a barrier key, wrong for Erkki's rule. | model (4.4) |
-| 16.2 | Scope is an attribute of the node | Scope can be one hop away: far-end SFP vendor, upstream aggregation node. Candidates include one-hop neighbour attributes. This is why it is a graph problem. | model (4.4), scenario 18 |
+| 16.2 | Scope is an attribute of the node | Scope can be one hop away: far-end SFP vendor, upstream aggregation node. Candidates include one-hop neighbour attributes. This is why it is a graph problem. | model (4.4) for the mechanism; the link data and scenario 16 are stretch |
 | 16.3 | Erkki's rule is one piece of knowledge | It is two: a diagnostic (UP + optics OK + counters zero means forwarding state, not SFP) with wide scope, and a remedy (bounce, do not reboot) with narrow scope. Stored together, the narrow scope hides the wide one. Split them. | stretch |
-| 16.4 | The trigger is a sentence to match | The trigger is a set of telemetry checks the agent runs itself. If counters are rising, the assertion does not apply and nobody is asked. | model (4.2) |
-| 16.5 | Validity is a date | Validity is a condition per entity (`valid_while: firmware < 5.0`), evaluated at t=x against the topology. The barrier key expires when the lock attribute changes. | model (4.5), scenario 15 |
+| 16.4 | The trigger is a sentence to match | The trigger is a set of telemetry checks the agent runs itself. If counters are rising, the assertion does not apply and nobody is asked. | model (4.2), scenario 10 |
+| 16.5 | Validity is a date | Validity is a condition per entity (`valid_while: firmware < 5.0`), evaluated at t=x against the topology. The barrier key expires when the lock attribute changes. | model (4.5), scenario 12 |
 | 16.6 | `avoid` is a list of words | Each avoided action has a blast radius computable from the graph: rebooting a transmission node affects every downstream site. The decline shows the number. | stretch |
-| 16.7 | Knowledge comes only from chat | The event stream holds the fix already (config change at 09:24, recovery at 09:25). Join by entity and time; telemetry gives the remedy, chat gives the reasoning, each confirms the other. | stretch, scenario 17 |
+| 16.7 | Knowledge comes only from chat | The event stream holds the fix already (config change at 09:24, recovery at 09:25). Join by entity and time; telemetry gives the remedy, chat gives the reasoning, each confirms the other. | stretch, scenario 15 |
 | 16.8 | Every message needs a model call to detect knowledge | Tacit knowledge announces itself: "not documented", "learned over the years", "those older ones", "usually", "seen this before". A marker pre-filter is cheaper, explainable, and the brief's own chat ends with the strongest marker. | stretch |
-| 16.9 | Reuse is triggered by alarms | The barrier key is needed when a dispatch is created. Triggers are incident patterns or workflow steps. | model (4.2), scenario 16 |
+| 16.9 | Reuse is triggered by alarms | The barrier key is needed when a dispatch is created. Triggers are incident patterns or workflow steps. | model (4.2), scenario 11 |
 | 16.10 | A verified fix is knowledge | One verified case is still a hunch; the interface might have recovered on its own. Corroboration count makes it knowledge. Never propose on a single case without saying so. | pitch |
 | 16.11 | We build a knowledge base | We build one layer with edges into Elisa's graph and never modify their nodes. | pitch |
