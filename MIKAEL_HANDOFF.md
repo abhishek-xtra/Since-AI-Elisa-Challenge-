@@ -45,7 +45,7 @@ Other guidance came from a kickoff talk and mentor conversations. Treat it as so
 - Required fields: project name, submission URL, "About the project" (up to 5,000 characters), repository or demo link, "Built with", technology feedback, GenAI tools used, how generative AI is used in the project. Collect these while building.
 - Optional: demo video (YouTube link or MP4, about two minutes, "strongly recommended"), pitch deck (PDF or PPTX), supporting documents (Markdown is accepted, so the handoffs and data card can go in). No ZIP files.
 - The organiser's definition of a strong entry: working prototype with steps to run it, a repo with a real README, a two-minute video, a deck "only if it helps; it never replaces a working prototype".
-- Elisa picks its top three from its own review 10:00 to 13:00. The top project from each of five challenges presents live at 14:00 to a cross-company jury. Nothing says Elisa's review includes a live pitch, so the video, README and repo must carry everything. Confirm with Joni.
+- Elisa picks its top three from its own review 10:00 to 13:00. The top project from each of five challenges presents live at 14:00 to a cross-company jury. **The Elisa review is video only, confirmed Friday 22:20 (see `REVIEW_ABHISHEK.md`).** The video, README and repo carry everything. The organiser guide recommends about two minutes; no hard limit found.
 - AI-built code is explicitly fine, with the condition "understand and verify what you ship, be ready to explain it". The test gates in section 15 are the answer to that. Say so in the README.
 - Check every link logged out before submitting.
 
@@ -202,13 +202,13 @@ The headline is Elisa's own three steps (capture, link, reuse) plus the decline.
 
 ## 7. Scope
 
-**In scope (the spine):** Teams and email adapters, structured rule extraction with an evidence check and telemetry-check triggers, multi-candidate binding with the in-thread scope question, validity dates and trust fields, a predicate evaluator over the topology, storage in Neo4j with one edge per candidate, `get_context` with a deterministic filter, thin stand-in agent, decline on a newer unit and ambiguous on a different model, the generated case table, the data card, the mock Teams page (Abhishek), Neo4j Browser as the graph view.
+**In scope (the spine):** Teams and email adapters, structured rule extraction with an evidence check and telemetry-check triggers, multi-candidate binding with the in-thread scope question, validity dates and trust fields, a predicate evaluator over the topology, storage in Neo4j with one edge per candidate, `get_context` with a deterministic filter, thin stand-in agent, decline on a newer unit and ambiguous on a different model, **the barrier case on a dispatch trigger** (one of Elisa's two named examples; one email, one site record, the workflow-step trigger type already in 4.2), the generated case table, the data card, the mock Teams page (Abhishek), and a read-only graph page that draws the real store for the video (Abhishek; Neo4j Browser is the fallback).
 
-**Stretch, after the spine passes, in this order:** corroboration search (4.2 step 2b, it strengthens the core demo), searchable graph page with search box and time slider (Abhishek's lane, reads the store's JSON export, Neo4j Browser stays the fallback), barrier closer on a dispatch trigger, marker-phrase pre-filter (16.8), split diagnostic from remedy (16.3), blast radius on the avoid list (16.6), conflict escalation, baseline B. Each is one agent task that does not touch the spine.
+**Stretch, after the spine passes, in this order:** corroboration search (4.2 step 2b, it strengthens the core demo), search box on the graph page (time slider is next-steps), marker-phrase pre-filter (16.8), split diagnostic from remedy (16.3), regional and seasonal scope (scenario 13), capture from the agent's escalation thread (scenario 14), blast radius on the avoid list (16.6), conflict escalation (scenario 16), baseline B. Each is one agent task that does not touch the spine.
 
 **Next-steps slides only:** live Slack and other connectors, voice narration for field technicians, runbook-versus-actual-action deviation detection, question-value scoring and calibration, tree-descent retrieval over channel maps, a general conflict-ranking rule, editing assertions in the graph UI.
 
-**Cut order if behind, inside the spine:** Neo4j (fall back to JSON + pyvis HTML), mock Teams page (fall back to a text log). Stretch and pending items are already optional.
+**Cut order if behind, inside the spine:** the graph page (fall back to Neo4j Browser), Neo4j (fall back to JSON + pyvis HTML), mock Teams page (fall back to a text log), the barrier case last. Stretch and pending items are already optional.
 
 **Pending Elisa's answers (section 9), not built until confirmed:** per-device `valid_while` validity (16.5), one-hop neighbour candidates and link data (16.2), event-stream corroboration (16.7). The ID question (16.1) changes no code, only how we describe the ID candidate.
 
@@ -219,7 +219,8 @@ Code is written by Claude agents (section 15). Owners below are the humans who v
 | Workstream | Owner |
 |---|---|
 | Contracts, extraction, binding, store, `get_context`, stand-in agent, eval harness | Mikael |
-| Topology data, scenario scripts, mock Teams page, slides, README, data card, demo video, Discord questions | Abhishek |
+| Topology sheet, scenario scripts, video script and storyboard, mock Teams page, read-only graph page, video recording and edit, Discord questions | Abhishek |
+| README, data card, five slides built from the video script | Claude agents, from the repo; Abhishek reviews |
 
 | When | Focus |
 |---|---|
@@ -227,9 +228,9 @@ Code is written by Claude agents (section 15). Owners below are the humans who v
 | Fri night | Sleep |
 | Sat 08:00 to 10:00 | Contracts frozen. Adapters and extractor on Elisa's chat and email, gate: one assertion, `avoid` has reboot, excerpt is verbatim. Abhishek: topology sheet with links and firmware, scenario scripts |
 | Sat 10:00 to 14:00 | Predicate evaluator (tested alone first), binder with candidates, Neo4j store, `get_context`, stand-in agent. Gate: TRN-087 gets the bounce, TRN-101 declined naming the candidate, a 2018 unit of another model is ambiguous. Abhishek: generated threads reviewed, mock Teams page |
-| Sat afternoon | Eval harness over all scenarios, case table, fix what it reveals. Stretch tasks only if the spine is green |
+| Sat afternoon | Eval harness over all scenarios, case table, fix what it reveals. Stretch tasks only if the spine is green. Abhishek: video script and storyboard locked by 12:00, graph page. **Check at 14:00: a storyboard exists. If not, stop building features and write it.** |
 | Sat 20:00 | Feature freeze |
-| Sat evening | Slides, README, data card, backup demo video, one rehearsal from `demo.py` |
+| Sat 20:00 to 23:00 | **Check at 20:00: the mock Teams page renders.** Record every beat from `demo.py` with the cached `llm.py`; nothing in the video comes from anywhere else. Abhishek edits the video. Agents draft README, data card and five slides from the video script |
 | Sat night | Sleep |
 | Sun morning | Bug fixes only, final case table run, submit well before 10:00 |
 
@@ -249,9 +250,8 @@ Code is written by Claude agents (section 15). Owners below are the humans who v
 
 - Is Teams plus email the expected input, or is a Slack demo also acceptable?
 - Should historical conversations be ingested, or only new ones?
-- Can we see the real shape of the graph (entity types and IDs), so our topology matches?
-- During the review window, do teams present live?
-- Is one in-thread scope question acceptable under "no additional work"?
+- What do entity IDs look like in the graph (format), and does the graph hold link data between devices? (The transcript answered the entity types: devices, sites, physical components, logical configuration data.)
+- Is one in-thread scope question acceptable under "no additional work"? (The transcript at 17:08 says the agent already interrupts humans to ask; so probably yes. Confirm in one line.)
 - Do node IDs survive a hardware replacement, or does a new chassis get a new ID? (decides how low to rank the ID candidate, 16.1)
 - Does firmware roll out per device over time, so the same rule can be valid on one node and expired on its sibling? (16.5)
 - Are configuration changes on a node logged with timestamps in the event stream? (16.7)
@@ -311,6 +311,8 @@ Then answer:
 ## 13. Repository hygiene
 
 - Elisa's provided files (`teams_chat.json`, `email.txt`, `use_case.md`, the image) are the extractor's fixtures. Their README says names and IDs are illustrative with no personal data, and the deck calls them "your material", so the risk of committing them is low. Ask on Discord anyway; until answered, keep them in `data/elisa_examples/` and commit them.
+- The repo is private. The organiser guide requires judges to open the repository link logged out, so make it public or share it with the organisers before submitting on Sunday morning. Put it on the Saturday night checklist.
+- Joni's briefing deck with his speaker notes is in the repo as `elisa_challenge_deck_joni.html`. Open it in a browser; N shows the notes.
 - Layout: `contracts/`, `data/` (Elisa's examples, synthetic scenarios, topology, data card), `adapters/`, `extractor/`, `binder/`, `store/`, `agent/` (stand-in agent and `get_context`), `eval/` (case table and harness), `ui/` (mock Teams page, graph page), `docs/` (handoffs, review, README).
 - Document every generated dataset: what, how, with which model and prompts.
 - No secrets or API keys in the repo.
@@ -330,18 +332,18 @@ Spine rows must pass before the feature freeze. Stretch rows belong to the stret
 | 5 | A device mentioned in passing, not the subject | Not bound to that device | spine |
 | 6 | Hunch rather than verified fix | Trust `hunch`; returned flagged, never as a proposal | spine |
 | 7 | Same fix worked on a 2018 unit of a different model, described in different words ("shut / no shut on the port, came back") | Merged into the existing assertion by key, no second assertion; model candidate eliminated, install-year candidate supported; now proposes on any 2019-or-older unit without a question | spine |
-| 7b | Same symptoms, a different remedy stated by another expert ("swap the SFP again, it is always the optic") | Not merged; both assertions `disputed`; escalated with both attached | spine (the mechanism; the two-expert thread itself is row 13) |
-| 8 | Same symptoms on a 2016 unit, fix did not work | Install-year candidate gets `against`; assertion status `review`, not silently kept | spine |
-| 9 | Typos or nicknames in a device ID | Resolved to the right entity, or no binding | spine |
-| 10 | Symptoms match but counters are rising | Trigger check fails; assertion not proposed, nobody asked (16.4) | spine |
-| 10b | Regional, seasonal knowledge ("every winter the Lapland sites lose power for a few hours, don't dispatch before checking the grid") | Bound to a region, trigger carries the season condition; surfaced on any incident in that region in winter, nowhere else | stretch (recording 32:59) |
-| 10c | Knowledge arrives as a reply to the agent's own escalation, entities already attached | Same assertion as from a chat, no entity resolution step, no question needed | stretch (recording 19:35) |
-| 11 | Barrier key email, then a dispatch to that site | Bound to the site; surfaced on the dispatch workflow step, not on an alarm | stretch: barrier closer |
-| 12 | Firmware upgraded on one old node | No longer proposed on that node, still proposed on its unpatched siblings (`valid_while`) | pending Elisa (16.5), then stretch |
-| 13 | Two experts disagree on the same case | Both `disputed`; escalated to a human with both attached | stretch: conflict |
-| 14 | Earlier threads about TRN-019 and TRN-033 with the same symptoms | Attached as sources; source count 3; earliest sets `valid_from` | stretch: corroboration |
-| 15 | Config-change event followed by recovery, no chat | Remedy recovered from the event stream alone; a later chat merges into the same assertion | pending Elisa (16.7), then stretch |
-| 16 | All affected links share a far-end SFP vendor | Peer attribute is a candidate; node-only candidates eliminated by row 7-style evidence | pending Elisa (16.2), then stretch |
+| 8 | Same symptoms, a different remedy stated by another expert ("swap the SFP again, it is always the optic") | Not merged; both assertions `disputed`; escalated with both attached | spine (the mechanism; the two-expert thread itself is row 16) |
+| 9 | Same symptoms on a 2016 unit, fix did not work | Install-year candidate gets `against`; assertion status `review`, not silently kept | spine |
+| 13 | Regional, seasonal knowledge ("every winter the Lapland sites lose power for a few hours, don't dispatch before checking the grid") | Bound to a region, trigger carries the season condition; surfaced on any incident in that region in winter, nowhere else | stretch: regional scope (recording 32:59) |
+| 10 | Typos or nicknames in a device ID | Resolved to the right entity, or no binding | spine |
+| 11 | Symptoms match but counters are rising | Trigger check fails; assertion not proposed, nobody asked (16.4) | spine |
+| 14 | Knowledge arrives as a reply to the agent's own escalation, entities already attached | Same assertion as from a chat, no entity resolution step, no question needed | stretch: escalation capture (recording 19:35) |
+| 12 | Barrier key email, then a dispatch to that site | Bound to the site; surfaced on the dispatch workflow step, not on an alarm | spine |
+| 15 | Firmware upgraded on one old node | No longer proposed on that node, still proposed on its unpatched siblings (`valid_while`) | pending Elisa (16.5), then stretch |
+| 16 | Two experts disagree on the same case | Both `disputed`; escalated to a human with both attached | stretch: conflict |
+| 17 | Earlier threads about TRN-019 and TRN-033 with the same symptoms | Attached as sources; source count 3; earliest sets `valid_from` | stretch: corroboration |
+| 18 | Config-change event followed by recovery, no chat | Remedy recovered from the event stream alone; a later chat merges into the same assertion | pending Elisa (16.7), then stretch |
+| 19 | All affected links share a far-end SFP vendor | Peer attribute is a candidate; node-only candidates eliminated by row 7-style evidence | pending Elisa (16.2), then stretch |
 
 Include a mix of Teams-style and email-style, and at least two scenarios outside the optical-module family to show generality.
 
@@ -403,7 +405,7 @@ Definition of done for every task: the test passes, the agent reports the exact 
 - **All LLM calls go through one `llm.py` with a disk cache keyed by a hash of the prompt.** Tests are then repeatable, reruns cost nothing, and the demo runs offline from the cache. This is the single most important rule.
 - Generate the synthetic threads with a different model from the extractor. It is one model string, so it is free. Abhishek reads every thread anyway.
 - Scenarios live in `data/scenarios/<nn>_<trap>/` with `thread.json` or `email.txt`, `expected.json` (which fields the assertion must contain, what the agent must and must not say, expected bind outcome). The eval test is one parametrized function over that folder. The case table is generated, never hand-written.
-- `make demo` (or `python demo.py`) runs the five beats in order and prints or renders each. Rehearse from that, nothing else.
+- `make demo` (or `python demo.py`) runs the five beats in order and prints or renders each. Rehearse from that, and **record the video only from that**, with the cached `llm.py`. If a shot cannot be produced by `demo.py`, it is not in the video. A judge who opens the repo must find exactly what the video shows.
 - Agents do not edit `contracts/`. If a contract is wrong, the human changes it and reruns the affected tests.
 - One agent per module. Parallel agents on the same module produce drift the human then has to reconcile, which is slower than sequential.
 - Every generated dataset gets a line in `docs/DATA_CARD.md`: what, how, which model, which prompt. The brief requires this.
@@ -424,14 +426,14 @@ Added Friday night from Mikael's notes and discussion. Each item names where it 
 | # | Assumption or missed relation | What we do instead | Lands | Source |
 |---|---|---|---|---|
 | 16.1 | Bind to the device ID because it is in the text | Treat the ID as one candidate among several, not the default binding. Whether an ID survives a hardware replacement at Elisa is unknown. If it does not, the ID candidate is unreliable for rules like Erkki's and fine for a barrier key. No code depends on the answer. | model (4.4); the claim is pending Elisa | Deck asks whether the scope is TRN-042, the model or the install year. Everything about hardware swaps is my reasoning, unverified. |
-| 16.2 | Scope is an attribute of the node | Scope might be one hop away (far-end SFP vendor, upstream node). If Elisa's graph has link data, neighbour attributes become candidates like any other. | pending Elisa, then stretch (scenario 16) | Mentor notes: the model is a graph of devices, sites and components. That a far-end attribute could be the real scope is a hypothesis; nothing in the data shows it. |
+| 16.2 | Scope is an attribute of the node | Scope might be one hop away (far-end SFP vendor, upstream node). If Elisa's graph has link data, neighbour attributes become candidates like any other. | pending Elisa, then stretch (scenario 19) | Mentor notes: the model is a graph of devices, sites and components. That a far-end attribute could be the real scope is a hypothesis; nothing in the data shows it. |
 | 16.3 | Erkki's rule is one piece of knowledge | It is two: a diagnostic (UP + optics OK + counters zero means forwarding state, not SFP) with wide scope, and a remedy (bounce, do not reboot) with narrow scope. Stored together, the narrow scope hides the wide one. Split them. | stretch | use_case.md states the diagnostic and the remedy as separate sentences. That their scopes differ is my reasoning. |
-| 16.4 | The trigger is a sentence to match | The trigger is a set of telemetry checks the agent runs itself. If counters are rising, the assertion does not apply and nobody is asked. | model (4.2), scenario 10 | Chat gives observable states; deck says agents read topology and telemetry. |
-| 16.5 | Validity is a date | Joni's deck says a firmware fix ends the rule. If firmware is upgraded per device over time, validity is better expressed as a condition evaluated per entity at t=x (`valid_while`). Until confirmed, the spine uses dates. | pending Elisa, then stretch (scenario 12) | Deck: "Firmware fixes the bug, when does it stop being true?" Recording 35:37: the agent knows each device's exact model and firmware number, and 33:15 names "a certain software release" as a hidden-knowledge example. Half confirmed. Whether rollout is staggered per device is still unverified. |
+| 16.4 | The trigger is a sentence to match | The trigger is a set of telemetry checks the agent runs itself. If counters are rising, the assertion does not apply and nobody is asked. | model (4.2), scenario 11 | Chat gives observable states; deck says agents read topology and telemetry. |
+| 16.5 | Validity is a date | Joni's deck says a firmware fix ends the rule. If firmware is upgraded per device over time, validity is better expressed as a condition evaluated per entity at t=x (`valid_while`). Until confirmed, the spine uses dates. | pending Elisa, then stretch (scenario 15) | Deck: "Firmware fixes the bug, when does it stop being true?" Recording 35:37: the agent knows each device's exact model and firmware number, and 33:15 names "a certain software release" as a hidden-knowledge example. Half confirmed. Whether rollout is staggered per device is still unverified. |
 | 16.6 | `avoid` is a list of words | Each avoided action has a blast radius computable from the graph: rebooting a transmission node affects every downstream site. The decline shows the number. | stretch | Erkki: "Don't reboot the whole unit unless that fails." Downstream computation is my reasoning. |
-| 16.7 | Knowledge comes only from chat | If config changes are timestamped in the event stream, the fix itself (shutdown at 09:24, recovery at 09:25) is recoverable from telemetry, and the chat supplies the reasoning. | pending Elisa, then stretch (scenario 15) | Diagram: as-observed layer, record time = event time, runtime layer holds CM data. That config changes are logged with timestamps is my assumption, unverified. |
+| 16.7 | Knowledge comes only from chat | If config changes are timestamped in the event stream, the fix itself (shutdown at 09:24, recovery at 09:25) is recoverable from telemetry, and the chat supplies the reasoning. | pending Elisa, then stretch (scenario 18) | Diagram: as-observed layer, record time = event time, runtime layer holds CM data. That config changes are logged with timestamps is my assumption, unverified. |
 | 16.8 | Every message needs a model call to detect knowledge | Tacit knowledge announces itself: "not documented", "learned over the years", "those older ones", "usually", "seen this before". A marker pre-filter is cheaper, explainable, and the brief's own chat ends with the strongest marker. | stretch | The phrases are in the chat and email. That they are high precision in general is untested. |
-| 16.9 | Reuse is triggered by alarms | The barrier key is needed when a dispatch is created. Triggers are incident patterns or workflow steps. | model (4.2), scenario 11 | use_case.md: engineer dispatched, then blocked at the barrier. |
+| 16.9 | Reuse is triggered by alarms | The barrier key is needed when a dispatch is created. Triggers are incident patterns or workflow steps. | model (4.2), scenario 12 | use_case.md: engineer dispatched, then blocked at the barrier. |
 | 16.10 | A verified fix is knowledge | One verified case is still a hunch; the interface might have recovered on its own. Corroboration count makes it knowledge. Never propose on a single case without saying so. | pitch | Erkki relies on count himself: "several cases I've seen". The coincidence argument is mine. |
 | 16.11 | We build a knowledge base | We build one layer with edges into Elisa's graph and never modify their nodes. | pitch | Abhishek's notes, and recording 30:57 to 32:38: a graph database modelling the whole network (devices, sites, physical components, logical configuration data) is the thing to bind to; they want to get rid of ticketing systems; workflows rely on that model. |
 
@@ -439,6 +441,6 @@ Added Friday night from Mikael's notes and discussion. Each item names where it 
 
 Confirmed: no duplicates, check whether a fact already exists (14:48, now 4.2 step 2a). Advisory only, no actions on the network (34:58). Human interruption by the agent is acceptable and is current practice (17:08). The agent knows each device's model and firmware (35:37). The graph holds devices, sites, physical components and logical configuration data (31:11). Platform does not matter (11:37, 13:28). Synthetic topology is expected (26:19). GDPR out of scope for the weekend (33:59). Joni is at the stand Saturday (36:08).
 
-Changed the plan: capture inside the agent's escalation thread as a channel (4.1). Deterministic precedence for competing facts before escalation (4.6). Region and season as scope and trigger (4.4, scenario 10b). "Good or bad knowledge" named as Elisa's open problem and answered in the pitch (4.6). Ticket IDs in synthetic threads (4.1).
+Changed the plan: capture inside the agent's escalation thread as a channel (4.1). Deterministic precedence for competing facts before escalation (4.6). Region and season as scope and trigger (4.4, scenario 13). "Good or bad knowledge" named as Elisa's open problem and answered in the pitch (4.6). Ticket IDs in synthetic threads (4.1).
 
 Still pending, not in the recording: ID across hardware replacement (16.1), link data (16.2), timestamps on configuration changes (16.7).
