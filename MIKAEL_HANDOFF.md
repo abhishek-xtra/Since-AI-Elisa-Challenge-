@@ -246,14 +246,46 @@ Code is written by Claude agents (section 15). Owners below are the humans who v
 - Whether one in-thread question counts as "additional work" is uncertain. Capture never asks; at most one question per assertion, at first ambiguous use, in the expert's own thread. The recording at 17:08 suggests this is acceptable.
 - With agents building, the human verifying is the bottleneck. Untested agent output that "looks done" is the main way the weekend is lost.
 
-### Questions for Elisa (stand or Discord)
+### Questions for Elisa (Discord, drafted Saturday 00:45; the sent text is below so answers can be recorded next to it)
 
-- Should historical conversations be ingested, or only new ones?
-- What do entity IDs look like in the graph (format), and does the graph hold link data between devices? (The transcript answered the entity types: devices, sites, physical components, logical configuration data.)
-- Is one in-thread scope question acceptable under "no additional work"? (The transcript at 17:08 says the agent already interrupts humans to ask; so probably yes. Confirm in one line.)
-- Do node IDs survive a hardware replacement, or does a new chassis get a new ID? (16.1; changes how we talk about origin devices, no code depends on it)
-- Does firmware roll out per device over time, so the same rule can be valid on one node and expired on its sibling? (16.5)
-- Are configuration changes on a node logged with timestamps in the event stream? (16.7)
+Ordered by what the answer changes in the spine. 1 to 4 decide demo beats; 5 to 8 decide pending items only.
+
+```
+Hi Joni, thanks for the briefing. We're building a context layer that binds assertions from Teams/email into a synthetic copy of your network graph. A few short questions so our topology and demo match how things actually work at Elisa. One-line answers are plenty.
+
+1. Does a device in your graph carry its installation date (or year)? And do sites carry a region or location? Erkki's "older units, around 2019" only works for an agent if that attribute exists somewhere it can read.
+
+2. When a field engineer is dispatched, is that visible to the agent as an event (something it can react to), or does dispatch happen in a system outside the graph? We'd like access knowledge like the barrier key to surface at dispatch time.
+
+3. Our capture needs zero steps by default. The first time a rule is about to be reused on a device where its scope is unclear ("these older units": the model, the install year, or just that site?), we'd post one tap-to-answer question into the expert's own Teams thread, once per rule. Does that count as "no additional work" for you?
+
+4. Entity IDs: what does a node ID look like in your graph (TRN-042 style, or longer), and are links between devices modelled with their own attributes (far-end device, SFP vendor)?
+
+5. When a chassis is physically replaced, does the node keep its ID in the graph, or does the new hardware get a new ID?
+
+6. Do firmware upgrades roll out gradually, so two "older units" can be on different firmware for a while?
+
+7. Are configuration changes on a device (e.g. an interface shut / no shut) visible in the event stream with a timestamp?
+
+8. Can we include your example files (teams_chat.json, email.txt, use_case.md) in our submission repo?
+
+We'll be at the stand today with a running version. Thanks!
+```
+
+Answers (fill in as they arrive):
+
+| # | Answer | Changes |
+|---|---|---|
+| 1 | | If no install date: the "older units" candidate becomes firmware or model; demo text in beat 2 and the TRN-101 decline change |
+| 2 | | If no dispatch event: barrier beat fires on a mocked workflow step and the video says so |
+| 3 | | If no: capture stays silent and ambiguous cases escalate without a question |
+| 4 | | ID format in the synthetic topology; link data unlocks 16.2 |
+| 5 | | Wording about origin devices only (16.1) |
+| 6 | | Unlocks `valid_while` (16.5) |
+| 7 | | Unlocks event-stream corroboration (16.7) |
+| 8 | | Where the fixtures live |
+
+Earlier questions now answered by the recording: platform does not matter (13:28); entity types in the graph (31:11); advisory only (34:58); GDPR out of scope (33:59). "Should historical conversations be ingested" is dropped: the recording at 14:06 says capture once we see it, and corroboration search (4.2 step 2b) covers history anyway.
 
 ## 10. Prior art
 
