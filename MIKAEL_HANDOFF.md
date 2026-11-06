@@ -334,11 +334,11 @@ Spine rows must pass before the feature freeze. Stretch rows belong to the stret
 | 7 | Same fix worked on a 2018 unit of a different model, described in different words ("shut / no shut on the port, came back") | Merged into the existing assertion by key, no second assertion; model candidate eliminated, install-year candidate supported; now proposes on any 2019-or-older unit without a question | spine |
 | 8 | Same symptoms, a different remedy stated by another expert ("swap the SFP again, it is always the optic") | Not merged; both assertions `disputed`; escalated with both attached | spine (the mechanism; the two-expert thread itself is row 16) |
 | 9 | Same symptoms on a 2016 unit, fix did not work | Install-year candidate gets `against`; assertion status `review`, not silently kept | spine |
-| 13 | Regional, seasonal knowledge ("every winter the Lapland sites lose power for a few hours, don't dispatch before checking the grid") | Bound to a region, trigger carries the season condition; surfaced on any incident in that region in winter, nowhere else | stretch: regional scope (recording 32:59) |
 | 10 | Typos or nicknames in a device ID | Resolved to the right entity, or no binding | spine |
 | 11 | Symptoms match but counters are rising | Trigger check fails; assertion not proposed, nobody asked (16.4) | spine |
-| 14 | Knowledge arrives as a reply to the agent's own escalation, entities already attached | Same assertion as from a chat, no entity resolution step, no question needed | stretch: escalation capture (recording 19:35) |
 | 12 | Barrier key email, then a dispatch to that site | Bound to the site; surfaced on the dispatch workflow step, not on an alarm | spine |
+| 13 | Regional, seasonal knowledge ("every winter the Lapland sites lose power for a few hours, don't dispatch before checking the grid") | Bound to a region, trigger carries the season condition; surfaced on any incident in that region in winter, nowhere else | stretch: regional scope (recording 32:59) |
+| 14 | Knowledge arrives as a reply to the agent's own escalation, entities already attached | Same assertion as from a chat, no entity resolution step, no question needed | stretch: escalation capture (recording 19:35) |
 | 15 | Firmware upgraded on one old node | No longer proposed on that node, still proposed on its unpatched siblings (`valid_while`) | pending Elisa (16.5), then stretch |
 | 16 | Two experts disagree on the same case | Both `disputed`; escalated to a human with both attached | stretch: conflict |
 | 17 | Earlier threads about TRN-019 and TRN-033 with the same symptoms | Attached as sources; source count 3; earliest sets `valid_from` | stretch: corroboration |
