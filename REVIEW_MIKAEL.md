@@ -1,6 +1,16 @@
 # Review of both handoffs against Elisa's brief
 
-Written Friday 6 November 2026, ~22:30. Sources read: challenge brief (docx), Joni's pitch deck with speaker notes, use_case.md, teams_chat.json, email.txt, reference_architecture.png, ABHISHEK_HANDOFF.md, MIKAEL_HANDOFF.md. Not read: the audio recording (no transcription tool available).
+Written Friday 6 November 2026, ~22:30, against ABHISHEK_HANDOFF.md and MIKAEL_HANDOFF.md v3. Sources read: challenge brief (docx), Joni's pitch deck with speaker notes (now in the repo as `elisa_challenge_deck_joni.html`), use_case.md, teams_chat.json, email.txt, reference_architecture.png. The audio recording was transcribed later; see `TRANSCRIPT_RECORDING.md`.
+
+**Status, updated Friday 23:55.** The merged direction below still holds and `REVIEW_ABHISHEK.md` independently agreed with it. Since this review was written, `MIKAEL_HANDOFF.md` moved to v5 and is the current plan. The comparison table and the critiques are kept as the record of why; the "Recommended final idea" section has been rewritten to match v5. What changed after 22:30:
+
+- Scope binding became a candidate set that evidence narrows (candidate elimination, no scores), instead of one predicate plus abstention. Handoff 4.3, 4.4.
+- Duplicates are prevented by an exact merge key over a controlled vocabulary; cases and sources are counted separately. Handoff 4.2 step 2a, `contracts/vocabulary.md`.
+- Triggers are telemetry checks, of two kinds: incident pattern or workflow step. Handoff 4.2.
+- Competing facts get a deterministic precedence before escalation, because Joni asked for one in the briefing. Handoff 4.6.
+- Claims about Elisa's network that the material does not support are in a "pending Elisa" lane, out of the spine. Handoff section 16.
+- From the recording: no duplicates confirmed, advisory only, agent interruption acceptable, agent knows model and firmware per device, region and season as scope, capture inside the agent's escalation thread. Handoff section 17.
+- From Abhishek's review: the Elisa review is video only (confirmed), the barrier case is in the spine, a read-only graph page replaces the searchable one for now, video-first timeline with two hard checks. Handoff 2b, 7, 8.
 
 ## Verdict
 
@@ -54,40 +64,42 @@ Both plans:
 - teams_chat.json has times but no date. `valid_from` needs one. Assign a synthetic date and document it.
 - Neither plan states the output to Elisa in one sentence. Suggest: "a context layer your agents query with one call, filled from chats and email with zero required steps".
 
-## Recommended final idea
+## Recommended final idea (rewritten to match MIKAEL_HANDOFF.md v5)
 
-Spine (Mikael): Teams JSON and email adapters, one LLM extraction into the assertion schema (trigger, applies_to, action, avoid, evidence excerpt, speaker role, trust, valid_from, valid_to), evidence check, bind to topology or abstain, store, `get_context(entity, event, symptoms, at_time)` with a deterministic filter, thin stand-in agent.
+Spine (Mikael, built by Claude agents against frozen contracts): Teams JSON and email adapters, one LLM extraction into the assertion schema with symptoms and actions mapped to a controlled vocabulary, evidence check, merge by exact key so the same knowledge in other words never becomes a second assertion, binding as a candidate set over the device's attributes and ID that later cases narrow, trust levels with outcome verification from the thread or telemetry, Neo4j store with one edge per candidate, `get_context(entity, event, symptoms, at_time)` with a deterministic filter that returns proposed, declined or ambiguous, deterministic precedence for competing facts before escalation, a thin stand-in agent, and the barrier case on a dispatch trigger.
 
-Surface (Abhishek): a mock Teams thread page showing the conversation, the one-tap scope question appearing in-thread, and later the notification "Erkki, your tip from 3 Nov was used on TRN-087 today". Neo4j Browser as the graph view. Abhishek designs both.
+Surface (Abhishek): a mock Teams thread page where the one-tap scope question lands and where the expert later sees "your tip from 3 Nov was used on TRN-087 today", and a read-only graph page drawing the real store for the video. Neo4j Browser is the fallback for the graph.
 
-Demo (3 minutes):
+Demo, a video of about two minutes, every shot recorded from `demo.py`:
 
 1. Agent with no context proposes a reboot.
-2. Feed the chat and email. One assertion appears on the graph, bound to the 2019 cohort. The question lands in the thread, Erkki taps "All".
-3. New fault on TRN-087 (2018): agent proposes check counters, bounce, don't reboot, and cites Erkki.
-4. Same fault on TRN-101 (2023): declined, with the reason.
-5. Closer: the barrier email bound to a site. The next dispatch to that site gets the key location.
+2. Feed the chat and email. One assertion appears on the graph with several candidate scope edges. The line: "We don't know if it's the year or the model. Neither does Erkki. We keep both and only speak where both hold." The question lands in the thread, Erkki taps "All units 2019 or older".
+3. New fault on TRN-087 (2018): agent proposes check counters, bounce, don't reboot, and cites Erkki. On screen: 12 messages, 1 assertion, 0 forms, 1 tap.
+4. Same fault on TRN-101 (2023): declined, naming the failing candidate.
+5. The barrier email bound to a site. The next dispatch to that site gets the key location.
 
-Expiry (firmware fix) and conflict (two experts) go on two slides with screenshots if built, not live.
+Expiry, conflict, regional knowledge and capture inside the agent's own thread go on slides if built, not into the video.
 
-Evidence: a case table of 8 scenarios, pass or fail with one line why. Abhishek writes the synthetic threads, which also gives you the held-out "written by someone who hasn't seen the extractor" test for free.
+Evidence: a generated case table over Appendix A of the handoff, 19 rows with a lane column, about 12 of them spine. Abhishek writes short scenario scripts, a different model expands them, Abhishek reads every thread. That is the held-out test.
 
-Cut, in order, if behind: conflict escalation, expiry, barrier closer, Neo4j (fall back to JSON + pyvis HTML), mock Teams page (fall back to a text log).
+Cut, in order, if behind: the graph page (Neo4j Browser), Neo4j (JSON + pyvis), the mock Teams page (text log), the barrier case last. Stretch and pending items are already optional.
 
-Split: Mikael builds everything in the spine. Abhishek does topology data entry, synthetic threads, the mock Teams page, slides, README, data card, demo video, and runs the Discord questions. Feature freeze Saturday 20:00.
+Split: Mikael verifies everything in the spine. Abhishek does the topology sheet, scenario scripts, video script and storyboard by Saturday 12:00, mock Teams page, graph page, recording and edit, Discord questions. Agents draft README, data card and five slides from the video script. Feature freeze Saturday 20:00. Two hard checks: a storyboard exists by 14:00, the mock Teams page renders by 20:00.
 
-First 12 hours:
+Build order (Saturday, from the handoff section 8 and 15.2):
 
-| Hour | Who | Task | Gate |
+| When | Who | Task | Gate |
 |---|---|---|---|
-| 0-1 | M | Repo skeleton. Synthetic topology JSON: about 20 nodes with model, install_year, firmware, site; 3 sites. Copy Elisa examples into `data/`. | File exists |
-| 1-3 | M | Extractor: Teams JSON or email in, one assertion JSON out. Run on the provided chat and email. | One assertion, `avoid` contains reboot, excerpt is a real quote. If this fails, stop and fix it before anything else. |
-| 3-4 | M | Binder: explicit ID resolves to a node; "older units" resolves to a predicate or `needs_confirmation` plus question text. | Core case abstains with a sensible question |
-| 4-5.5 | M | Neo4j in Docker, write assertions and bindings with validity. Screenshot the graph. | Graph visible in the browser. If not running by hour 5, switch to JSON + pyvis. |
-| 5.5-7 | M | `get_context` filter + stand-in agent. TRN-087 proposes bounce, TRN-101 declined. | The climax works end to end |
-| 0-7 | A | Topology spreadsheet, 8 scenario scripts (barrier email, conflicting experts, firmware expiry, chit-chat, passing mention, typo ID, chat+email duplicate, hunch), mock Teams page design, post questions to Elisa on Discord. | Threads reviewed by M |
-| 7-12 | M | Run the 8 scenarios, fill the case table, fix. | Table filled |
-| 7-12 | A | Mock Teams page with question + notification, slide skeleton. | Page renders |
+| 08:00-09:00 | M | Contracts frozen: assertion, topology, message, vocabulary, predicates, `get_context`. Elisa examples into `data/`. | Human-approved, then no agent edits them |
+| 09:00-10:00 | M | Adapters and extractor on Elisa's chat and email plus a reworded thread. | One assertion with one case and two sources; both wordings map to `interface.bounce`; `avoid` has `node.reboot`; excerpt verbatim. Fails here: stop and fix. |
+| 10:00-11:00 | M | Predicate evaluator, tested alone on a fixture table. | Every row evaluates as expected |
+| 11:00-12:00 | M | Binder: candidate set, question text when candidates diverge. | Candidates include stated condition, model, firmware, site, ID; question exists for the core case |
+| 12:00-13:00 | M | Neo4j in Docker, one edge per candidate. 45-minute bailout to JSON + pyvis. | Graph visible |
+| 13:00-14:00 | M | `get_context` and stand-in agent. | TRN-087 proposed, TRN-101 declined naming the candidate, 2018 other-model ambiguous |
+| 08:00-12:00 | A | Topology sheet with a barrier site, scenario scripts, video script and storyboard. | Storyboard exists by 14:00 |
+| 14:00-20:00 | M | Barrier case, eval harness, case table, fixes. Stretch only if spine is green. | Table filled |
+| 14:00-20:00 | A | Generated threads reviewed, mock Teams page, graph page. | Page renders by 20:00 |
+| 20:00-23:00 | both | Record from `demo.py`. Edit. Agents draft README, data card, slides. | Video exists |
 
 ## Building with Claude
 
@@ -98,13 +110,13 @@ The team builds with Claude (Fable orchestrating, Opus 5.5 building). That shift
 3. Every task ends in a test plus a one-minute human gate. An agent saying "it works" does not count.
 4. All LLM calls go through one cached function keyed by prompt hash, so tests repeat, reruns are free, and the demo runs offline.
 5. Scenarios are folders with an input and an `expected.json`. One parametrized test writes the case table. Never hand-write it.
-6. One `demo.py` runs the five beats. Rehearse from that only.
+6. One `demo.py` runs the five beats. Rehearse from that only, and record the video only from that. A judge who opens the repo must find exactly what the video shows.
 
 Does Claude as builder change the cuts above? Mostly no. They were made for scope and judgment reasons (three hours of judging per team, a design flaw in the use-time tap, an unverified citation), not for typing time. Two things change: the evaluation harness comes back as the test suite, because with agents it is cheap and it is how the human keeps up; and baseline B, expiry and conflict become stretch tasks one agent can take after the spine passes, still with a slide and no demo time. What does not get cheaper: deciding what Erkki taps, reading synthetic threads for realism, the pitch, Discord questions to Elisa, and verifying each agent's output. Those are the human hours. Budget them first.
 
 ## For Abhishek's reviewer
 
-Read `ABHISHEK_HANDOFF.md`, `MIKAEL_HANDOFF.md` (v4) and this file. Fill section 12 of the handoff independently before reading my table above, then compare. Challenge in particular: whether the mock Teams page is enough for the usability criterion or a live Slack bot is worth the risk; whether Neo4j is worth 45 minutes; and whether the cut list in section 14 of the handoff cut anything a judge would miss.
+`REVIEW_ABHISHEK.md` has landed and was written against v4. Its four main changes are applied in the handoff. Before Saturday morning, re-read `MIKAEL_HANDOFF.md` v5 in full, in particular 4.2 (vocabulary and merge), 4.3 and 4.4 (candidate set), section 16 (what is pending), section 17 (from the recording) and Appendix A (19 renumbered scenarios). Scenario scripts and the mock Teams page must be written against those, not against v4's single predicate. The one remaining disagreement to settle between the humans: a read-only graph page now with search as stretch (Abhishek's review), or search from the start (Mikael's preference).
 
 ## Flags
 
@@ -112,4 +124,4 @@ Read `ABHISHEK_HANDOFF.md`, `MIKAEL_HANDOFF.md` (v4) and this file. Fill section
 - Interloom / Fortune March 2026: I could not verify this. Drop it from the pitch unless someone checks.
 - "Do not commit Elisa's files": the README says names and IDs are illustrative and no personal data is included, and the deck says "in your material". Low risk. A one-line Discord question settles it.
 - Is one scope question "additional work"? The deck's word is "form". Mentors reportedly said in-thread questions are fine. Default to zero questions. The question only fires on ambiguity, and the demo should say the number out loud ("one tap, once").
-- Questions for Elisa, in priority order: live presentation or video on Sunday? Shape of their graph entities (types, ID format)? Is one in-thread scope question acceptable? Is Slack acceptable for the demo?
+- Questions for Elisa, updated: live versus video is settled (video). Platform does not matter (recording 13:28). Entity types are known (recording 31:11). Still open: ID format and link data; whether IDs survive hardware replacement; whether firmware rolls out per device; whether configuration changes are timestamped in the event stream; whether one in-thread question is acceptable (recording 17:08 suggests yes). The full list is section 9 of the handoff.
