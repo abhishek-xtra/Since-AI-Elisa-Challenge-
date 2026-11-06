@@ -11,6 +11,7 @@ Written Friday 6 November 2026, ~22:30, against ABHISHEK_HANDOFF.md and MIKAEL_H
 - Claims about Elisa's network that the material does not support are in a "pending Elisa" lane, out of the spine. Handoff section 16.
 - From the recording: no duplicates confirmed, advisory only, agent interruption acceptable, agent knows model and firmware per device, region and season as scope, capture inside the agent's escalation thread. Handoff section 17.
 - From Abhishek's review: the Elisa review is video only (confirmed), the barrier case is in the spine, a read-only graph page replaces the searchable one for now, video-first timeline with two hard checks. Handoff 2b, 7, 8.
+- From Abhishek's second review (Saturday 00:30): the device ID is the origin of a case, not a scope candidate, so capture never asks; the one question is asked at first ambiguous use in the expert's thread; trust and support are separate axes and Erkki's case is verified; precedence decides conflicts and only a tie escalates; region is in the topology contract. Handoff section 18.
 
 ## Verdict
 
@@ -73,8 +74,8 @@ Surface (Abhishek): a mock Teams thread page where the one-tap scope question la
 Demo, a video of about two minutes, every shot recorded from `demo.py`:
 
 1. Agent with no context proposes a reboot.
-2. Feed the chat and email. One assertion appears on the graph with several candidate scope edges. The line: "We don't know if it's the year or the model. Neither does Erkki. We keep both and only speak where both hold." The question lands in the thread, Erkki taps "All units 2019 or older".
-3. New fault on TRN-087 (2018): agent proposes check counters, bounce, don't reboot, and cites Erkki. On screen: 12 messages, 1 assertion, 0 forms, 1 tap.
+2. Feed the chat and email. One assertion appears on the graph with several candidate scope edges, trust verified from "Traffic is back". The line: "We don't know if it's the year or the model. Neither does Erkki. We keep both and only speak where both hold." Nobody is asked anything.
+3. New fault on TRN-087 (2018, same model, different site): the site candidate disagrees, so one question lands in Erkki's thread, he taps "All older units", and the agent proposes check counters, bounce, don't reboot, citing Erkki, one case. On screen: 12 messages, 1 assertion, 0 forms, 1 tap.
 4. Same fault on TRN-101 (2023): declined, naming the failing candidate.
 5. The barrier email bound to a site. The next dispatch to that site gets the key location.
 
