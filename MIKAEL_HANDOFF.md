@@ -96,8 +96,7 @@ Note on the predicate: the deck says "older units, around 2019", which does not 
 
 - A wrong link is worse than none, so prefer abstaining. Report both accuracy when it answers and the abstention rate.
 - Outcomes are discrete: `bound`, `narrowed`, `abstained`. Do not use model-reported numeric confidence, which is poorly calibrated.
-- Ask a short question only if two interpretations would produce different agent behaviour on the demo topology (for example "TRN-042 only" versus "all units installed 2019 or earlier"). Offer two or three options plus free text. At most one question per conversation, and log how many are asked.
-- Optional cheap indicator: "this assertion applies to N of M devices" computed from the predicate.
+- Ask a short question only if two interpretations would produce different agent behaviour on the demo topology (for example "TRN-042 only" versus "all units installed 2019 or earlier"). Offer two or three options plus free text. At most one question per conversation. The question appears inside the thread as a one-tap reply (Abhishek's mock Teams page).
 - Contrast-based scope inference (comparing cases where the fix worked and where it was not needed) is a next-steps item, not part of the core.
 
 ### 4.5 Time
@@ -108,7 +107,7 @@ Note on the predicate: the deck says "older units, around 2019", which does not 
 ### 4.6 Trust, conflict and people
 
 - Show who said it (by role by default), where, and whether it was a hunch, an expert statement, or verified.
-- **Use-time confirmation.** When an engineer receives a proposal and acts on it, one tap records "worked" or "did not work". A success upgrades trust to `verified_by_outcome`. A failure flags the assertion for review. The original expert does nothing extra.
+- **Outcome verification, zero taps.** A confirmation in the thread ("Traffic is back") or counters rising after the action upgrades trust to `verified_by_outcome`. Nobody taps anything. (v3 had a use-time "worked / did not work" tap; cut, see section 14.)
 - Notify the expert when their knowledge is used. This is the positive answer to Elisa's "how does it feel on the other side" point.
 - **Conflict:** when two assertions apply to the same situation and disagree, mark both `disputed` and **escalate to a human with both attached**. Never let the agent silently fall back to the default action, because the default is often what the experts warned against.
 - **Ingestion policy:** use opted-in channels or resolved threads, store the excerpt and the assertion rather than the whole thread, and show only the cited excerpt. The system is advisory and never acts on the network.
@@ -116,25 +115,25 @@ Note on the predicate: the deck says "older units, around 2019", which does not 
 
 ### 4.7 The stand-in agent and the tool it uses
 
-- The agent follows a realistic default runbook: replace SFP, check optics, reboot, RMA.
-- It has one tool: `get_context(entity_id, event, symptoms)`. It returns a list of assertions with provenance, trust and status, after a **deterministic filter** over the trigger match, the predicate against the topology, validity dates, and trust threshold.
+- The agent is one prompt with one tool call. Without context it proposes a reboot or another SFP swap; with context it proposes the bounce and cites the source. Pitch it as "this stands in for your agent; the deliverable is the tool it calls".
+- It has one tool: `get_context(entity_id, event, symptoms, at_time)`. It returns a list of assertions with provenance, trust and status, after a **deterministic filter** over the trigger match, the predicate against the topology, validity dates, and trust threshold.
 - The decline ("this unit is not in scope", "this assertion expired") comes from the filter, not from the model's judgment.
 - The demo shows the exact input the agent receives.
 - Disputed or abstained items are returned flagged, and the agent's rule is to escalate to a human in that case.
 
 ### 4.8 Effort accounting (the usability criterion)
 
-Report honestly: extra human actions per captured assertion (target zero by default), questions per conversation, the share of assertions captured with no human input, and the optional use-time taps.
+Report honestly: extra human actions per captured assertion (target zero by default), questions per conversation, and the share of assertions captured with no human input. Say the number out loud in the demo ("one tap, once").
 
 ## 5. Demo (about three minutes, four beats plus a closer)
 
-1. **The failure without context.** The agent follows its default runbook on an old node and proposes a reboot or another SFP swap.
-2. **Capture and link.** Feed in the Teams chat and the email. Twelve messages become one assertion, bound at the right level, with source, speaker role, trust and validity. Nobody fills in anything.
-3. **Reuse.** On another old node, the agent receives the assertion through `get_context` and proposes the bounce, citing the source, and avoiding the reboot.
-4. **Decline.** On a newer unit, the system declines and says why. Show one expiry example in a few seconds (a firmware change makes the assertion stop applying).
-5. **Closer (15 seconds).** The locked-barrier story handled by the same pipeline, bound to a site entity.
+1. **The failure without context.** The agent, on an old node, proposes a reboot or another SFP swap.
+2. **Capture and link.** Feed in the Teams chat and the email. Twelve messages become one assertion, bound to the 2019 cohort, with source, speaker role, trust and validity. The scope question lands in the thread, Erkki taps "All". Nobody fills in anything.
+3. **Reuse.** On another old node (TRN-087, 2018), the agent receives the assertion through `get_context` and proposes check counters, bounce, don't reboot, citing Erkki.
+4. **Decline.** On a newer unit (TRN-101, 2023), the system declines and says why.
+5. **Closer (15 seconds).** The locked-barrier email handled by the same pipeline, bound to a site entity, and the expert's "your tip was used today" notification.
 
-Also show the comparison table (section 6.3): the same failures through raw-chat RAG versus this system. Present it as a slide, not as a competing opener, because Elisa expects capture, link, reuse.
+Expiry (firmware fix) and conflict (two experts) go on slides with screenshots if built, not into demo time. Decide now what Erkki taps in beat 2, since the core case is itself ambiguous.
 
 The replay runs offline from stored results, so the demo never depends on live model calls.
 
@@ -142,11 +141,11 @@ The replay runs offline from stored results, so the demo never depends on live m
 
 ### 6.1 Data
 
-- Start from Elisa's provided case. Add a small synthetic topology (about 10 sites and 40 elements with model, install year, firmware version and site).
-- 12 to 16 scenarios, listed in Appendix A. Each has a hidden rule and is written as a Teams-style thread or an email.
-- **Generate the threads with a different model from the extractor**, from scenario scripts. Read every generated thread by hand. Add at least two threads written by a teammate who has not seen the extractor.
-- Split into dev and test before tuning. Freeze the test split.
-- Document in the repo what was generated, how, with which prompts and models.
+- Start from Elisa's provided case. Add a small synthetic topology (about 3 sites and 20 elements with model, install year, firmware version and site). `teams_chat.json` has times but no date, so assign a synthetic date for `valid_from` and document it.
+- 8 to 10 scenarios, listed in Appendix A. Each has a hidden rule and is written as a Teams-style thread or an email.
+- **Generate the threads with a different model from the extractor**, from scenario scripts. Abhishek writes the scripts and reads every generated thread, which also makes them the held-out test of the extractor.
+- No dev/test split. At this sample size it means nothing.
+- Document in the repo what was generated, how, with which prompts and models (`docs/DATA_CARD.md`).
 - State plainly: this tests whether the mechanisms hold up under messy synthetic conversations, not real-world accuracy.
 
 ### 6.2 Metrics (ordered by Elisa's criteria)
@@ -161,42 +160,41 @@ Report results as a case table (pass or fail, and why), not as percentages. At t
 
 ### 6.3 Baselines
 
-- **A: no context.** Shown as one line, and as the demo opener. It proves little by itself.
-- **B: raw chats and emails in RAG.** This is the informative comparison. Expected failures of B: applies advice to a newer unit, uses expired advice, treats a hunch as a verified fix, binds to a device mentioned in passing.
+- **A: no context.** The demo opener (beat 1).
+- **B: raw chats and emails in RAG.** Stretch task only, after the core passes. If built, one slide: expected failures of B are applying advice to a newer unit, using expired advice, treating a hunch as verified, binding to a device mentioned in passing.
 - **C: this system.**
 
-The headline result is C versus B on the traps.
+The headline is Elisa's own three steps (capture, link, reuse) plus the decline. Not C versus B.
 
 ## 7. Scope
 
-**In scope:** Teams and email adapters, structured rule extraction with an evidence check, binding with abstention, validity and trust fields, storage keyed to the topology, `get_context` with a deterministic filter, stand-in agent, decline and expiry and conflict-escalation cases, the case table, documentation of the synthetic data, a minimal linked view of assertions on the topology.
+**In scope (the spine):** Teams and email adapters, structured rule extraction with an evidence check, binding with abstention and the in-thread scope question, validity and trust fields, storage in Neo4j keyed to the topology, `get_context` with a deterministic filter, thin stand-in agent, decline on a newer unit, the generated case table, the data card, the mock Teams page (Abhishek), Neo4j Browser as the graph view.
 
-**Next-steps slides only:** live Slack and other connectors, voice narration for field technicians, runbook-versus-actual-action deviation detection, contrast-based scope inference, question-value scoring and calibration, tree-descent retrieval over channel maps, a general conflict-ranking rule, a full graph UI.
+**Stretch, after the spine passes:** expiry example, conflict escalation, barrier closer, baseline B. Each is one agent task that does not touch the spine.
 
-**Cut order if behind:** the graph or linked view, then the expiry example, then the locked-barrier closer.
+**Next-steps slides only:** live Slack and other connectors, voice narration for field technicians, runbook-versus-actual-action deviation detection, contrast-based scope inference, question-value scoring and calibration, tree-descent retrieval over channel maps, a general conflict-ranking rule, a custom graph UI with time slider and edits.
+
+**Cut order if behind:** conflict escalation, expiry, barrier closer, Neo4j (fall back to JSON + pyvis HTML), mock Teams page (fall back to a text log).
 
 ## 8. Build order and timeline
 
-Fill in owners once the team agrees.
+Code is written by Claude agents (section 15). Owners below are the humans who verify.
 
 | Workstream | Owner |
 |---|---|
-| Extraction and binding | |
-| Topology, store, `get_context` and the stand-in agent | |
-| Scenarios, data generation and evaluation | |
-| Demo, slides, documentation and repo | |
+| Contracts, extraction, binding, store, `get_context`, stand-in agent, eval harness | Mikael |
+| Topology data, scenario scripts, mock Teams page, slides, README, data card, demo video, Discord questions | Abhishek |
 
 | When | Focus |
 |---|---|
-| Fri evening | Read the material, agree scope, assign owners, set up the repo and a minimal topology, ask Elisa the questions in section 9 |
-| Fri night | **First, test the extractor on 8 to 10 deliberately messy threads** (a thread with no rule, a passing mention, a hunch, a typo). If it fails here, nothing downstream matters. Then build the thin slice on Erkki's case: chat and email in, assertion out, stand-in agent proposes |
+| Fri night | Contracts frozen (15.1). Adapters and extractor on Elisa's chat and email, gate: one assertion, `avoid` has reboot, excerpt is verbatim. Abhishek: topology sheet, scenario scripts, Discord questions |
 | Fri night | Sleep |
-| Sat morning | Write the scenario scripts, generate threads with a separate model, build the evaluation harness, add abstention |
-| Sat afternoon | Decline, expiry, trust fields, conflict escalation, linked view |
-| Sat evening | Fix what the case table reveals. Feature freeze around 22:00 |
-| Sat night | Slides, documentation and data card, backup demo video, one rehearsal |
+| Sat morning | Binder with abstention, Neo4j store, `get_context`, stand-in agent. Gate: TRN-087 gets the bounce, TRN-101 declined. Abhishek: generated threads reviewed, mock Teams page |
+| Sat afternoon | Eval harness over all scenarios, case table, fix what it reveals. Stretch tasks only if the spine is green |
+| Sat 20:00 | Feature freeze |
+| Sat evening | Slides, README, data card, backup demo video, one rehearsal from `demo.py` |
 | Sat night | Sleep |
-| Sun morning | Bug fixes only, final evaluation run, submit well before 10:00 |
+| Sun morning | Bug fixes only, final case table run, submit well before 10:00 |
 
 ## 9. Risks and questions
 
@@ -204,11 +202,11 @@ Fill in owners once the team agrees.
 
 - The extractor may fail on messy threads. This is the biggest technical unknown, and it is untested.
 - Evaluation on self-generated synthetic data may flatter the results, even with a separate generator.
-- The pitch may look like "RAG with extra steps" unless the demo opens on the failure and shows C versus B.
-- The stand-in agent is a simplification. A judge may question its realism.
+- The pitch may look like "RAG with extra steps" unless the demo opens on the failure and the decline is shown.
+- The stand-in agent is a simplification. A judge may question its realism. Say so in the pitch.
 - The real graph schema is unknown, so the topology may not match it.
-- Whether an optional use-time tap counts as "additional work" is uncertain.
-- Scope may still be too large for the team's size and skills.
+- Whether one in-thread scope question counts as "additional work" is uncertain. Default is zero questions.
+- With agents building, the human verifying is the bottleneck. Untested agent output that "looks done" is the main way the weekend is lost.
 
 ### Questions for Elisa (stand or Discord)
 
@@ -216,17 +214,16 @@ Fill in owners once the team agrees.
 - Should historical conversations be ingested, or only new ones?
 - Can we see the real shape of the graph (entity types and IDs), so our topology matches?
 - During the review window, do teams present live?
-- Is one optional confirmation tap acceptable under "no additional work"?
+- Is one in-thread scope question acceptable under "no additional work"?
 
 ## 10. Prior art
 
 - **Graphiti and Zep (verified by search).** An open-source temporal knowledge graph engine for agent memory. Facts are graph edges with validity windows (`valid_at`, `invalid_at`) and provenance, and when a new fact contradicts an old one the old one is marked invalid rather than deleted. Time validity is therefore **not novel**. Our alignment with Elisa's own model is a scoring point, not a novelty claim.
-- **Interloom (reported by Fortune, March 2026).** Builds a "context graph" from support emails, tickets, call transcripts and work orders, reportedly at several large European companies. Its headline figures are company claims and are not used in our pitch.
 - **Task-mining and demonstration-based tools** record screen actions and turn them into automations. They capture what people do, not why.
 - **Entity linking with abstention** (the NIL idea) is standard in research. Applying it at cohort granularity over a network topology is a sensible application, not a new technique.
 - **AIOps and incident-management tools:** I believe they offer similar-incident search and AI summaries, but I have **not checked any product**. Please say what you know.
 
-What may still differ: capture with no required step, binding to a fixed topology with explicit abstention, trigger and `avoid` in the assertion, a deterministic decline, use-time trust upgrades, and honest per-trap evaluation against raw-chat RAG. The pitch should say plainly that the general problem is known and focus on linking, time and trust.
+What may still differ: capture with no required step, binding to a fixed topology with explicit abstention, trigger and `avoid` in the assertion, a deterministic decline, outcome-based trust upgrades, and an honest per-trap case table. The pitch should say plainly that the general problem is known and focus on linking, time and trust.
 
 ## 11. Decision log: what changed from earlier versions
 
@@ -248,7 +245,7 @@ What may still differ: capture with no required step, binding to a fixed topolog
 
 ## 12. Comparing this plan with another idea
 
-Fill in one row per criterion for each idea. Use short justifications and be critical.
+Filled in: see `REVIEW_MIKAEL.md`. Abhishek's reviewer should fill it again independently, then compare. Template:
 
 | Criterion (priority order) | This plan | The other idea |
 |---|---|---|
@@ -278,7 +275,7 @@ Then answer:
 
 ---
 
-## Appendix A: scenario catalogue (target 12 to 16, about two per trap)
+## Appendix A: scenario catalogue (target 8 to 10; rows 12 and 13 cut, see section 14)
 
 | # | Trap | Expected behaviour |
 |---|---|---|
@@ -293,9 +290,7 @@ Then answer:
 | 9 | Site access in an email (locked barrier) | Bound to a site entity; proposed on the next dispatch to that site |
 | 10 | Typos or nicknames in a device ID | Resolved to the right entity, or abstain |
 | 11 | The same case arriving as chat and as email | One assertion, not two |
-| 12 | Near-duplicate of an existing assertion | Merged, with a stronger source count |
-| 13 | A rule restated in a later thread with a new condition | Narrowed, with the earlier version preserved |
-| 14 | Hand-written messy thread from a teammate | Held-out test of the extractor |
+| 12 | Abhishek's scenario scripts, generated by a different model | Held-out test of the extractor (replaces the old row 14) |
 
 Include a mix of Teams-style and email-style, and at least two scenarios outside the optical-module family to show generality.
 
@@ -303,7 +298,7 @@ Include a mix of Teams-style and email-style, and at least two scenarios outside
 
 ## 14. Cuts after review (Friday 6 November, 22:30)
 
-These supersede sections 4.6, 6, 7 and Appendix A where they conflict. Reasoning is in `REVIEW_MIKAEL.md`.
+Applied inline in sections 4 to 10 and Appendix A. This table is the record of what changed from v3. Reasoning is in `REVIEW_MIKAEL.md`.
 
 | Cut | Was in | Replacement |
 |---|---|---|

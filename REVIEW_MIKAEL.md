@@ -89,6 +89,23 @@ First 12 hours:
 | 7-12 | M | Run the 8 scenarios, fill the case table, fix. | Table filled |
 | 7-12 | A | Mock Teams page with question + notification, slide skeleton. | Page renders |
 
+## Building with Claude
+
+The team builds with Claude (Fable orchestrating, Opus 5.5 building). That shifts the bottleneck from typing to one human verifying agent output. The full framework is section 15 of `MIKAEL_HANDOFF.md`. The short form:
+
+1. Contracts first, frozen by hour one: assertion schema, topology schema, message schema, the `get_context` signature and filter rules. Agents build against them and never edit them.
+2. One module per agent task, built sequentially on the spine (adapters, extractor, binder, store, agent, eval), because each consumes the previous output. Parallel only for data writing, the mock Teams page and slides.
+3. Every task ends in a test plus a one-minute human gate. An agent saying "it works" does not count.
+4. All LLM calls go through one cached function keyed by prompt hash, so tests repeat, reruns are free, and the demo runs offline.
+5. Scenarios are folders with an input and an `expected.json`. One parametrized test writes the case table. Never hand-write it.
+6. One `demo.py` runs the five beats. Rehearse from that only.
+
+Does Claude as builder change the cuts above? Mostly no. They were made for scope and judgment reasons (three hours of judging per team, a design flaw in the use-time tap, an unverified citation), not for typing time. Two things change: the evaluation harness comes back as the test suite, because with agents it is cheap and it is how the human keeps up; and baseline B, expiry and conflict become stretch tasks one agent can take after the spine passes, still with a slide and no demo time. What does not get cheaper: deciding what Erkki taps, reading synthetic threads for realism, the pitch, Discord questions to Elisa, and verifying each agent's output. Those are the human hours. Budget them first.
+
+## For Abhishek's reviewer
+
+Read `ABHISHEK_HANDOFF.md`, `MIKAEL_HANDOFF.md` (v4) and this file. Fill section 12 of the handoff independently before reading my table above, then compare. Challenge in particular: whether the mock Teams page is enough for the usability criterion or a live Slack bot is worth the risk; whether Neo4j is worth 45 minutes; and whether the cut list in section 14 of the handoff cut anything a judge would miss.
+
 ## Flags
 
 - Graphiti/Zep: real, and the valid_at/invalid_at model is as described. Keep as prior art.
