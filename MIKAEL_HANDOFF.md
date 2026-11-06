@@ -52,7 +52,7 @@ A pipeline that reads the conversations people already have (Teams chat and emai
 
 ### 4.2 Pipeline
 
-1. **Detect.** Decide whether a conversation contains a reusable rule. Most messages produce nothing. Extract the rule in structured form: trigger, applies_to, action, avoid.
+1. **Detect.** Decide whether a conversation contains a reusable rule. Most messages produce nothing. Extract the rule in structured form: trigger, applies_to, action, avoid. The trigger is written as checks the agent can evaluate against telemetry (`counters_zero`, `link_up`, `optics_normal`), not as prose, so the agent verifies the precondition itself before proposing. Triggers are of two kinds: an incident pattern (event plus symptoms) or a workflow step (`dispatch_created` for the barrier key), because access knowledge is needed at dispatch time, not at diagnosis time.
 2. **Evidence check.** Every extracted field must be supported by an excerpt that actually appears in the source. Otherwise drop the assertion.
 2b. **Corroborate (first stretch task).** Search the existing corpus (other threads, emails) for the same trigger and symptoms. Attach matches as supporting sources. Source count raises trust, the earliest match sets `valid_from`, and if all matches share an attribute (install year, model) that becomes evidence for the `applies_to` predicate. Erkki says "several cases I've seen"; the system should find them.
 3. **Bind.** Resolve the entities and attributes mentioned (explicit IDs, nicknames, typos, phrases like "older units") against the topology. Choose the smallest level the evidence supports: device, model, install-year cohort, or site. If the text refers to attributes the topology does not have, or two levels fit equally well, abstain and mark the assertion `needs_confirmation`. An abstained assertion is stored but never proposed.
@@ -101,7 +101,7 @@ Note on scope: one case cannot say whether the rule is about the install year, t
 ### 4.4 Linking and abstention
 
 - A wrong link is worse than none, so prefer abstaining. Report both accuracy when it answers and the abstention rate.
-- **Multi-candidate binding.** The scope is a set of candidate predicates over topology attributes (install year, model, firmware, site), not one edge. Each candidate carries `support` and `against` counts. The stated condition from the text ("older units") is one candidate among the attributes of the device in the case.
+- **Multi-candidate binding.** The scope is a set of candidate predicates over topology attributes (install year, model, firmware, site) and over one-hop neighbour attributes (far-end device model, far-end SFP vendor, upstream aggregation node), not one edge. The device ID itself is the lowest-ranked candidate: hardware gets replaced under the same ID, so an ID binding is right for a barrier key and wrong for Erkki's rule. Each candidate carries `support` and `against` counts. The stated condition from the text ("older units") is one candidate among the attributes of the device in the case.
 - **Propose only on the intersection.** On a new incident that matches the trigger, check which surviving candidates the entity satisfies. All: propose. None: decline with the failing candidates as the reason. Some: ambiguous, so ask the one-tap question or escalate. Abstention is computed, not judged.
 - **Evidence narrows the set.** A corroborating case (4.2 step 2b) or a verified outcome adds `support` to the candidates its entity satisfies and `against` to the ones it does not. A candidate with `against` > 0 is eliminated. Three cases usually leave one. This replaces the contrast-based inference that v3 moved to next steps; it is counting, not inference.
 - **Humans override counts.** The expert's one-tap answer sets `decided`. Other candidates stay recorded as hypotheses but are not used.
@@ -112,6 +112,7 @@ Note on scope: one case cannot say whether the rule is about the install year, t
 ### 4.5 Time
 
 - Expiry triggers: a stated end condition, a firmware or software change recorded in the topology, or a newer contradicting assertion.
+- **Validity is a condition, not only a date.** Erkki's rule expires per device when that device's firmware is upgraded, which happens on different days. So an assertion may carry `valid_while` (a predicate over topology attributes, for example `firmware < 5.0`) in addition to `valid_from` / `valid_to`. `get_context` evaluates it per entity at `at_time` against the topology snapshot. This is what Elisa's t=x cross-referencing means in practice. The barrier key expires when the site's lock attribute changes, same mechanism.
 - Keep `recorded_at` (when we learned it) separate from `valid_from` (when it became true).
 
 ### 4.6 Trust, conflict and people
@@ -180,7 +181,7 @@ The headline is Elisa's own three steps (capture, link, reuse) plus the decline.
 
 **In scope (the spine):** Teams and email adapters, structured rule extraction with an evidence check, binding with abstention and the in-thread scope question, validity and trust fields, storage in Neo4j keyed to the topology, `get_context` with a deterministic filter, thin stand-in agent, decline on a newer unit, the generated case table, the data card, the mock Teams page (Abhishek), Neo4j Browser as the graph view.
 
-**Stretch, after the spine passes, in this order:** corroboration search (4.2 step 2b, it strengthens the core demo), searchable graph page with search box and time slider (Abhishek's lane, reads the store's JSON export, Neo4j Browser stays the fallback), barrier closer, expiry example, conflict escalation, baseline B. Each is one agent task that does not touch the spine.
+**Stretch, after the spine passes, in this order:** corroboration search (4.2 step 2b, it strengthens the core demo), searchable graph page with search box and time slider (Abhishek's lane, reads the store's JSON export, Neo4j Browser stays the fallback), barrier closer on a dispatch trigger, firmware-conditional expiry (4.5), marker-phrase pre-filter (16.8), split diagnostic from remedy (16.3), blast radius on the avoid list (16.6), event-stream corroboration (16.7), conflict escalation, baseline B. Each is one agent task that does not touch the spine.
 
 **Next-steps slides only:** live Slack and other connectors, voice narration for field technicians, runbook-versus-actual-action deviation detection, contrast-based scope inference, question-value scoring and calibration, tree-descent retrieval over channel maps, a general conflict-ranking rule, a custom graph UI with time slider and edits.
 
@@ -301,6 +302,12 @@ Then answer:
 | 10 | Typos or nicknames in a device ID | Resolved to the right entity, or abstain |
 | 11 | The same case arriving as chat and as email | One assertion, not two |
 | 12 | Abhishek's scenario scripts, generated by a different model | Held-out test of the extractor (replaces the old row 14) |
+| 13 | Same fix worked on a 2018 unit of a different model | Model candidate eliminated, install-year candidate supported; the rule now proposes on any 2019-or-older unit |
+| 14 | Same symptoms on a 2016 unit, fix did not work | Install-year candidate gets `against`; assertion marked for review, not silently kept |
+| 15 | Firmware upgraded on one old node | Assertion no longer proposed on that node, still proposed on its unpatched siblings (validity as a condition, 4.5) |
+| 16 | Barrier key email, then a dispatch to that site | Surfaced on the dispatch workflow step, not on an alarm (4.2 trigger types) |
+| 17 | Config-change event followed by recovery, no chat | Remedy recovered from the event stream alone; chat later supplies the reasoning and merges into the same assertion (stretch, 16.7) |
+| 18 | Scope that is one hop away (all affected links share a far-end SFP vendor) | Peer attribute appears as a candidate; node-only candidates are eliminated by case 13-style evidence (16.2) |
 
 Include a mix of Teams-style and email-style, and at least two scenarios outside the optical-module family to show generality.
 
@@ -371,3 +378,21 @@ Mostly no. The cuts in section 14 were made for scope and judgment reasons, not 
 - Baseline B and the expiry and conflict scenarios become stretch tasks that one agent can take after the core passes, because they do not touch the spine. They still do not get demo time beyond a slide.
 
 What does not get cheaper: deciding what Erkki taps in the demo, reading synthetic threads for realism, the pitch narrative, Discord questions to Elisa, and verifying every agent's output. Those are the human's hours. Budget them first.
+
+## 16. Relations and assumptions most teams will miss
+
+Added Friday night from Mikael's notes and discussion. Each item names where it lands: model (in the spine now), stretch (one agent task after the spine passes), or pitch (a sentence, no code).
+
+| # | Assumption or missed relation | What we do instead | Lands |
+|---|---|---|---|
+| 16.1 | Bind to the device ID because it is in the text | The ID is the weakest binding. Hardware is replaced under the same ID. Rank ID last among candidates; it is right for a barrier key, wrong for Erkki's rule. | model (4.4) |
+| 16.2 | Scope is an attribute of the node | Scope can be one hop away: far-end SFP vendor, upstream aggregation node. Candidates include one-hop neighbour attributes. This is why it is a graph problem. | model (4.4), scenario 18 |
+| 16.3 | Erkki's rule is one piece of knowledge | It is two: a diagnostic (UP + optics OK + counters zero means forwarding state, not SFP) with wide scope, and a remedy (bounce, do not reboot) with narrow scope. Stored together, the narrow scope hides the wide one. Split them. | stretch |
+| 16.4 | The trigger is a sentence to match | The trigger is a set of telemetry checks the agent runs itself. If counters are rising, the assertion does not apply and nobody is asked. | model (4.2) |
+| 16.5 | Validity is a date | Validity is a condition per entity (`valid_while: firmware < 5.0`), evaluated at t=x against the topology. The barrier key expires when the lock attribute changes. | model (4.5), scenario 15 |
+| 16.6 | `avoid` is a list of words | Each avoided action has a blast radius computable from the graph: rebooting a transmission node affects every downstream site. The decline shows the number. | stretch |
+| 16.7 | Knowledge comes only from chat | The event stream holds the fix already (config change at 09:24, recovery at 09:25). Join by entity and time; telemetry gives the remedy, chat gives the reasoning, each confirms the other. | stretch, scenario 17 |
+| 16.8 | Every message needs a model call to detect knowledge | Tacit knowledge announces itself: "not documented", "learned over the years", "those older ones", "usually", "seen this before". A marker pre-filter is cheaper, explainable, and the brief's own chat ends with the strongest marker. | stretch |
+| 16.9 | Reuse is triggered by alarms | The barrier key is needed when a dispatch is created. Triggers are incident patterns or workflow steps. | model (4.2), scenario 16 |
+| 16.10 | A verified fix is knowledge | One verified case is still a hunch; the interface might have recovered on its own. Corroboration count makes it knowledge. Never propose on a single case without saying so. | pitch |
+| 16.11 | We build a knowledge base | We build one layer with edges into Elisa's graph and never modify their nodes. | pitch |
