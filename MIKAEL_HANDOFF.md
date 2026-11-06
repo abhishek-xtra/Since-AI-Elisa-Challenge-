@@ -1,4 +1,4 @@
-# MIKAEL_HANDOFF: Elisa "hidden knowledge" challenge, plan v3
+# MIKAEL_HANDOFF: Elisa "hidden knowledge" challenge, plan v4 (v3 + cuts in section 14, Claude build framework in section 15)
 
 Status as of Friday 6 November 2026. Deadline: Sunday 8 November 2026, 10:00, via the Since AI app. Elisa reviews Sunday 10:00 to 13:00.
 
@@ -298,3 +298,71 @@ Then answer:
 | 14 | Hand-written messy thread from a teammate | Held-out test of the extractor |
 
 Include a mix of Teams-style and email-style, and at least two scenarios outside the optical-module family to show generality.
+
+---
+
+## 14. Cuts after review (Friday 6 November, 22:30)
+
+These supersede sections 4.6, 6, 7 and Appendix A where they conflict. Reasoning is in `REVIEW_MIKAEL.md`.
+
+| Cut | Was in | Replacement |
+|---|---|---|
+| Baseline B (raw-chat RAG) | 6.3, 5 | Keep the no-context opener as demo beat 1. B is a stretch task after the core passes, one slide at most. |
+| Frozen dev/test split | 6.1 | None. Meaningless at 8 to 10 scenarios. |
+| Scenarios 12 and 13 (near-duplicate merge, later narrowing) | Appendix A | Dropped. Scenario 11 (chat + email become one assertion) stays, it is the provided material. |
+| Use-time "worked / did not work" tap | 4.6 | Auto-verify from outcome: a confirmation message in the thread ("Traffic is back") or counters rising after the action upgrades trust to `verified_by_outcome`. Zero taps. |
+| Full default runbook in the stand-in agent | 4.7 | One prompt, one tool call. Without context it says reboot; with context it says bounce and cites the source. Pitch it as "stands in for your agent; the deliverable is the tool". |
+| "Applies to N of M devices" indicator, question-count logging | 4.4 | Dropped. |
+| Interloom prior art | 10 | Dropped, unverified. One line on Graphiti/Zep stays. |
+| Custom linked view | 7 | Neo4j Browser, or a pyvis HTML export if Neo4j is not running within 45 minutes. |
+
+Kept because each is a scoring line in Elisa's rubric: assertion schema with `trigger` and `avoid`, evidence check, binding with abstention, `valid_from` / `valid_to`, trust levels, deterministic `get_context`, decline on a newer unit, conflict escalation (slide if time runs out), barrier closer.
+
+Added from Abhishek's plan: the one-tap scope question appears inside a mock Teams thread page, and the expert gets a "your tip was used today" notification. That page is Abhishek's.
+
+## 15. Building with Claude: contracts, gates and tests
+
+We build with Claude (Fable orchestrating, Opus 5.5 building). The bottleneck is no longer typing. It is one human verifying what agents produce. So every task must end in a check the human can run in under a minute.
+
+### 15.1 Contracts first (hour 0 to 1, human-approved, then frozen)
+
+Agents build against these and never edit them.
+
+- `contracts/assertion.schema.json`: the shape in section 4.3.
+- `contracts/topology.schema.json`: node with `id`, `type`, `model`, `install_year`, `firmware`, `site`; site with `id`, `name`, `access_notes`.
+- `contracts/get_context.md`: `get_context(entity_id, event, symptoms, at_time) -> list[Assertion]` plus the filter rules (trigger match, predicate against topology, validity at `at_time`, trust threshold, flags for `disputed` and `needs_confirmation`).
+- `contracts/message.schema.json`: the one message format adapters produce (author, role, timestamp, channel, thread, text).
+
+### 15.2 One module per agent task, one test per module
+
+Build order is sequential on the spine because each module consumes the previous one's output. Only data writing, the mock Teams page and slides run in parallel.
+
+| Order | Module | Input fixture | Test asserts | Human gate (1 minute) |
+|---|---|---|---|---|
+| 1 | `adapters/` | Elisa's `teams_chat.json`, `email.txt` | 12 messages and 1 message in contract shape | Skim the output |
+| 2 | `extractor/` | the two above | exactly one assertion; `avoid` contains "reboot"; `evidence.excerpt` is a verbatim substring of the source; chit-chat fixture yields nothing | Read the assertion |
+| 3 | `binder/` | assertion + topology | explicit ID resolves to the node; "older units" yields a predicate or `needs_confirmation` with a question string | Read the question text |
+| 4 | `store/` | bound assertions | round trip; query by entity returns them; Neo4j Browser shows the graph | Look at the graph |
+| 5 | `agent/` | store + an incident on TRN-087 (2018) and TRN-101 (2023) | 087 proposal contains "counters" and "disable" and not "reboot"; 101 is declined with a reason | Read both outputs |
+| 6 | `eval/` | all scenarios | parametrized test per scenario; writes `docs/CASE_TABLE.md` | Read the table |
+
+Definition of done for every task: the test passes, the agent reports the exact command to run, the human runs it and looks at the output. An agent's claim that it works does not count.
+
+### 15.3 Rules that keep this cheap
+
+- **All LLM calls go through one `llm.py` with a disk cache keyed by a hash of the prompt.** Tests are then repeatable, reruns cost nothing, and the demo runs offline from the cache. This is the single most important rule.
+- Generate the synthetic threads with a different model from the extractor. It is one model string, so it is free. Abhishek reads every thread anyway.
+- Scenarios live in `data/scenarios/<nn>_<trap>/` with `thread.json` or `email.txt`, `expected.json` (which fields the assertion must contain, what the agent must and must not say, expected bind outcome). The eval test is one parametrized function over that folder. The case table is generated, never hand-written.
+- `make demo` (or `python demo.py`) runs the five beats in order and prints or renders each. Rehearse from that, nothing else.
+- Agents do not edit `contracts/`. If a contract is wrong, the human changes it and reruns the affected tests.
+- One agent per module. Parallel agents on the same module produce drift the human then has to reconcile, which is slower than sequential.
+- Every generated dataset gets a line in `docs/DATA_CARD.md`: what, how, which model, which prompt. The brief requires this.
+
+### 15.4 Does Claude as builder change the cuts?
+
+Mostly no. The cuts in section 14 were made for scope and judgment reasons, not typing time: a judge has three hours for every team, the use-time tap is a design choice, Interloom is unverified. Two things change:
+
+- The evaluation harness comes back, but as the test suite in 15.2, not as a research artefact. With agents it is cheap and it is the only way the human keeps up.
+- Baseline B and the expiry and conflict scenarios become stretch tasks that one agent can take after the core passes, because they do not touch the spine. They still do not get demo time beyond a slide.
+
+What does not get cheaper: deciding what Erkki taps in the demo, reading synthetic threads for realism, the pitch narrative, Discord questions to Elisa, and verifying every agent's output. Those are the human's hours. Budget them first.
