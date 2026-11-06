@@ -196,6 +196,12 @@ Mikael's §17 already covers no duplicates, advisory only, escalation-thread cap
 - **"Lapland":** this was a transcription guess (33:37). Don't present it as Elisa's words.
 - **Confidence:** Joni mentioned a future "confidence model" before agents may act on their own (35:30). So don't pitch "no scores" as being against confidence. Say our trust levels and case counts are the foundation such a model would need.
 
+**5.7 Drop ticket IDs from the synthetic threads.**
+- Mikael v5 §4.1 says synthetic threads should reference a ticket ID, citing 28:03.
+- At 28:03 Joni only explains where discussions come from today. He says to focus on the platforms where humans discuss.
+- At 30:57 he is explicit: "in this era of autonomy we want to get rid of these ticketing systems … we don't want any tickets anymore". They bind everything to the network model in the graph database instead.
+- **Proposed:** remove the ticket-ID line from §4.1 and §17. The entity hint comes from the device or site named in the conversation. In the escalation-thread channel (scenario 14), it comes from the incident context the agent already holds. Neither depends on a ticket.
+
 ---
 
 ## 6. Abhishek's lane
@@ -203,7 +209,7 @@ Mikael's §17 already covers no duplicates, advisory only, escalation-thread cap
 | Priority | Task | Notes |
 |---|---|---|
 | 1 | **Topology sheet** | ~20 nodes and 3 sites. Each node has `id`, `type`, `model`, `install_year`, per-node `firmware`, `site`, **`region`**. Each site has `access` notes, including the barrier site. It must include TRN-042, TRN-087 (2018, same model), TRN-101 (2023), and a 2018 unit of a *different* model for the ambiguous case. |
-| 2 | **Scenario scripts** | Short scripts (who, what rule, what trap) for Mikael v5 Appendix A. Spine rows come first. **Every thread references a ticket/incident ID** (discussions at Elisa start from tickets, 28:03). Add one **phone-call transcript** script, and the **seasonal** script if 13 is built. A different model expands them; Abhishek reads every generated thread. |
+| 2 | **Scenario scripts** | Short scripts (who, what rule, what trap) for Mikael v5 Appendix A. Spine rows come first. **No ticket numbers.** Threads name the device (e.g. TRN-042) and, where natural, the site, the way engineers actually talk. Elisa wants to get rid of ticketing systems (recording 30:57). Add one **phone-call transcript** script, and the **seasonal** script if 13 is built. A different model expands them; Abhishek reads every generated thread. |
 | 3 | **Video brief → script and storyboard**, locked by Saturday 12:00 | See section 7. Mikael's check: if no storyboard exists by 14:00, stop building features and write it. |
 | 4 | **Mock Teams thread page** | Shows the conversation, the one-tap question and Erkki's tap, then "Erkki, your tip from 3 Nov was used on TRN-087 today". Must render by Saturday 20:00. |
 | 5 | **Read-only graph page** | Reads the real store. Brand-styled. Cut first if late; Neo4j Browser is the fallback. |
