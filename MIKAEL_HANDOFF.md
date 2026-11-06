@@ -72,9 +72,14 @@ A pipeline that reads the conversations people already have (Teams chat and emai
   },
   "applies_to": {
     "entity_type": "transmission_node",
-    "predicate": "install_year <= 2019",
-    "basis": "stated by expert: 'older units, around 2019'",
-    "status": "needs_confirmation"
+    "candidates": [
+      {"predicate": "install_year <= 2019", "support": 1, "against": 0, "basis": "expert: 'older units, around 2019'"},
+      {"predicate": "model == 'TX-200'", "support": 1, "against": 0, "basis": "attribute of TRN-042"},
+      {"predicate": "firmware == '4.1'", "support": 1, "against": 0, "basis": "attribute of TRN-042"},
+      {"predicate": "site == 'OULU-07'", "support": 1, "against": 0, "basis": "attribute of TRN-042"}
+    ],
+    "decided": null,
+    "status": "open"
   },
   "action": "disable the interface, wait, enable it",
   "avoid": ["reboot", "replace the SFP again"],
@@ -91,11 +96,15 @@ A pipeline that reads the conversations people already have (Teams chat and emai
 }
 ```
 
-Note on the predicate: the deck says "older units, around 2019", which does not define an exact range. Do not invent one. That ambiguity is exactly what the abstain and confirm logic is for.
+Note on scope: one case cannot say whether the rule is about the install year, the model, the firmware or the site, and Erkki does not know either. So the assertion binds to every plausible attribute at once as a candidate edge with a support count, and evidence narrows the set (4.4). Model, firmware and site values above are placeholders for whatever the synthetic topology gives TRN-042.
 
 ### 4.4 Linking and abstention
 
 - A wrong link is worse than none, so prefer abstaining. Report both accuracy when it answers and the abstention rate.
+- **Multi-candidate binding.** The scope is a set of candidate predicates over topology attributes (install year, model, firmware, site), not one edge. Each candidate carries `support` and `against` counts. The stated condition from the text ("older units") is one candidate among the attributes of the device in the case.
+- **Propose only on the intersection.** On a new incident that matches the trigger, check which surviving candidates the entity satisfies. All: propose. None: decline with the failing candidates as the reason. Some: ambiguous, so ask the one-tap question or escalate. Abstention is computed, not judged.
+- **Evidence narrows the set.** A corroborating case (4.2 step 2b) or a verified outcome adds `support` to the candidates its entity satisfies and `against` to the ones it does not. A candidate with `against` > 0 is eliminated. Three cases usually leave one. This replaces the contrast-based inference that v3 moved to next steps; it is counting, not inference.
+- **Humans override counts.** The expert's one-tap answer sets `decided`. Other candidates stay recorded as hypotheses but are not used.
 - Outcomes are discrete: `bound`, `narrowed`, `abstained`. Do not use model-reported numeric confidence, which is poorly calibrated.
 - Ask a short question only if two interpretations would produce different agent behaviour on the demo topology (for example "TRN-042 only" versus "all units installed 2019 or earlier"). Offer two or three options plus free text. At most one question per conversation. The question appears inside the thread as a one-tap reply (Abhishek's mock Teams page).
 - Contrast-based scope inference (comparing cases where the fix worked and where it was not needed) is a next-steps item, not part of the core.
@@ -117,7 +126,7 @@ Note on the predicate: the deck says "older units, around 2019", which does not 
 ### 4.7 The stand-in agent and the tool it uses
 
 - The agent is one prompt with one tool call. Without context it proposes a reboot or another SFP swap; with context it proposes the bounce and cites the source. Pitch it as "this stands in for your agent; the deliverable is the tool it calls".
-- It has one tool: `get_context(entity_id, event, symptoms, at_time)`. It returns a list of assertions with provenance, trust and status, after a **deterministic filter** over the trigger match, the predicate against the topology, validity dates, and trust threshold.
+- It has one tool: `get_context(entity_id, event, symptoms, at_time)`. It returns a list of assertions with provenance, trust and status, after a **deterministic filter**: trigger match on event and symptoms first (the same fault can appear anywhere in the graph, so retrieval is by symptom pattern, not by device), then the candidate-set intersection against the entity's attributes, then validity at `at_time`, then trust threshold.
 - The decline ("this unit is not in scope", "this assertion expired") comes from the filter, not from the model's judgment.
 - The demo shows the exact input the agent receives.
 - Disputed or abstained items are returned flagged, and the agent's rule is to escalate to a human in that case.
@@ -337,9 +346,9 @@ Build order is sequential on the spine because each module consumes the previous
 |---|---|---|---|---|
 | 1 | `adapters/` | Elisa's `teams_chat.json`, `email.txt` | 12 messages and 1 message in contract shape | Skim the output |
 | 2 | `extractor/` | the two above | exactly one assertion; `avoid` contains "reboot"; `evidence.excerpt` is a verbatim substring of the source; chit-chat fixture yields nothing | Read the assertion |
-| 3 | `binder/` | assertion + topology | explicit ID resolves to the node; "older units" yields a predicate or `needs_confirmation` with a question string | Read the question text |
+| 3 | `binder/` | assertion + topology | explicit ID resolves to the node; candidate set contains the stated condition plus the device's model, firmware and site; a question string exists when candidates diverge on the demo topology | Read the candidates and the question text |
 | 4 | `store/` | bound assertions | round trip; query by entity returns them; Neo4j Browser shows the graph | Look at the graph |
-| 5 | `agent/` | store + an incident on TRN-087 (2018) and TRN-101 (2023) | 087 proposal contains "counters" and "disable" and not "reboot"; 101 is declined with a reason | Read both outputs |
+| 5 | `agent/` | store + an incident on TRN-087 (2018, same model) and TRN-101 (2023) | 087 proposal contains "counters" and "disable" and not "reboot"; 101 is declined naming the failing candidate; a 2018 unit of a different model is flagged ambiguous, not proposed | Read all three outputs |
 | 6 | `eval/` | all scenarios | parametrized test per scenario; writes `docs/CASE_TABLE.md` | Read the table |
 
 Definition of done for every task: the test passes, the agent reports the exact command to run, the human runs it and looks at the output. An agent's claim that it works does not count.
