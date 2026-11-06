@@ -134,7 +134,7 @@ New or changed:
 - **Competing facts need an ordering (09:58).** Joni asked "how can we score or detect which one to use" for two competing facts. The plan's current answer, mark both disputed and escalate, is the floor. Added a deterministic precedence rule in 4.6: verified outcome over stated over hunch, more cases over fewer, newer over older, and only if still tied, escalate. Visible components, no learned score.
 - **Knowledge that is regional or seasonal, not device-specific (32:59, 33:37).** "During the summer this happens", "during the snow, something happens in the region". Scope candidates therefore include region or site group, and triggers can include a season or weather condition. Added to 4.4 as a candidate type and to Appendix A as a scenario.
 - **"How do we tell good knowledge from bad" is an open problem for Elisa (21:33).** They have no answer and asked for ideas. Our answer is trust levels plus outcome verification plus case counts. Say so explicitly in the pitch.
-- **Discussions start from tickets (28:03).** The ticket is the incident anchor. In the synthetic data, each thread should reference a ticket or incident ID, which gives the extractor a free entity hint.
+- **The ticketing system is legacy and going away (28:03, 30:57, 32:22).** Today discussions start from a ticket, but Joni said they want to get rid of ticketing systems, want no tickets anymore, and do not want to fetch from legacy systems. Nothing in the design should key on a ticket. Incidents are anchored to events in the as-observed stream bound to graph entities. A ticket number in a thread is free text, not an entity.
 - **GDPR is out of scope for the weekend (33:59).** Matches the plan.
 - **Joni is at the stand Saturday (36:08).**
 
