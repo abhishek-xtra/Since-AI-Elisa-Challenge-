@@ -244,6 +244,9 @@ Code is written by Claude agents (section 15). Owners below are the humans who v
 - Can we see the real shape of the graph (entity types and IDs), so our topology matches?
 - During the review window, do teams present live?
 - Is one in-thread scope question acceptable under "no additional work"?
+- Do node IDs survive a hardware replacement, or does a new chassis get a new ID? (decides how low to rank the ID candidate, 16.1)
+- Does firmware roll out per device over time, so the same rule can be valid on one node and expired on its sibling? (16.5)
+- Are configuration changes on a node logged with timestamps in the event stream? (16.7)
 
 ## 10. Prior art
 
@@ -404,18 +407,18 @@ What does not get cheaper: deciding what Erkki taps in the demo, reading synthet
 
 ## 16. Relations and assumptions most teams will miss
 
-Added Friday night from Mikael's notes and discussion. Each item names where it lands: model (in the spine now), stretch (one agent task after the spine passes), or pitch (a sentence, no code).
+Added Friday night from Mikael's notes and discussion. Each item names where it lands: model (in the spine now), stretch (one agent task after the spine passes), or pitch (a sentence, no code). The source column follows the rule in section 1: what the material supports, and what is my own reasoning. Items 16.1 and 16.5 rest on practices I believe are standard but have not verified for Elisa; they are on the question list in section 9.
 
-| # | Assumption or missed relation | What we do instead | Lands |
-|---|---|---|---|
-| 16.1 | Bind to the device ID because it is in the text | The ID is the weakest binding. Hardware is replaced under the same ID. Rank ID last among candidates; it is right for a barrier key, wrong for Erkki's rule. | model (4.4) |
-| 16.2 | Scope is an attribute of the node | Scope can be one hop away: far-end SFP vendor, upstream aggregation node. Candidates include one-hop neighbour attributes. This is why it is a graph problem. | model (4.4) for the mechanism; the link data and scenario 16 are stretch |
-| 16.3 | Erkki's rule is one piece of knowledge | It is two: a diagnostic (UP + optics OK + counters zero means forwarding state, not SFP) with wide scope, and a remedy (bounce, do not reboot) with narrow scope. Stored together, the narrow scope hides the wide one. Split them. | stretch |
-| 16.4 | The trigger is a sentence to match | The trigger is a set of telemetry checks the agent runs itself. If counters are rising, the assertion does not apply and nobody is asked. | model (4.2), scenario 10 |
-| 16.5 | Validity is a date | Validity is a condition per entity (`valid_while: firmware < 5.0`), evaluated at t=x against the topology. The barrier key expires when the lock attribute changes. | model (4.5), scenario 12 |
-| 16.6 | `avoid` is a list of words | Each avoided action has a blast radius computable from the graph: rebooting a transmission node affects every downstream site. The decline shows the number. | stretch |
-| 16.7 | Knowledge comes only from chat | The event stream holds the fix already (config change at 09:24, recovery at 09:25). Join by entity and time; telemetry gives the remedy, chat gives the reasoning, each confirms the other. | stretch, scenario 15 |
-| 16.8 | Every message needs a model call to detect knowledge | Tacit knowledge announces itself: "not documented", "learned over the years", "those older ones", "usually", "seen this before". A marker pre-filter is cheaper, explainable, and the brief's own chat ends with the strongest marker. | stretch |
-| 16.9 | Reuse is triggered by alarms | The barrier key is needed when a dispatch is created. Triggers are incident patterns or workflow steps. | model (4.2), scenario 11 |
-| 16.10 | A verified fix is knowledge | One verified case is still a hunch; the interface might have recovered on its own. Corroboration count makes it knowledge. Never propose on a single case without saying so. | pitch |
-| 16.11 | We build a knowledge base | We build one layer with edges into Elisa's graph and never modify their nodes. | pitch |
+| # | Assumption or missed relation | What we do instead | Lands | Source |
+|---|---|---|---|---|
+| 16.1 | Bind to the device ID because it is in the text | The ID is the weakest binding. Hardware is replaced under the same ID. Rank ID last among candidates; it is right for a barrier key, wrong for Erkki's rule. | model (4.4) | Deck asks whether the scope is TRN-042, the model or the install year. That hardware swaps keep the ID is my reasoning, unverified for Elisa. |
+| 16.2 | Scope is an attribute of the node | Scope can be one hop away: far-end SFP vendor, upstream aggregation node. Candidates include one-hop neighbour attributes. This is why it is a graph problem. | model (4.4) for the mechanism; the link data and scenario 16 are stretch | Mentor notes: the model is a graph of devices, sites and components. That a far-end attribute could be the real scope is a hypothesis; nothing in the data shows it. |
+| 16.3 | Erkki's rule is one piece of knowledge | It is two: a diagnostic (UP + optics OK + counters zero means forwarding state, not SFP) with wide scope, and a remedy (bounce, do not reboot) with narrow scope. Stored together, the narrow scope hides the wide one. Split them. | stretch | use_case.md states the diagnostic and the remedy as separate sentences. That their scopes differ is my reasoning. |
+| 16.4 | The trigger is a sentence to match | The trigger is a set of telemetry checks the agent runs itself. If counters are rising, the assertion does not apply and nobody is asked. | model (4.2), scenario 10 | Chat gives observable states; deck says agents read topology and telemetry. |
+| 16.5 | Validity is a date | Validity is a condition per entity (`valid_while: firmware < 5.0`), evaluated at t=x against the topology. The barrier key expires when the lock attribute changes. | model (4.5), scenario 12 | Deck: "Firmware fixes the bug, when does it stop being true?" Per-device rollout is my reasoning, unverified for Elisa. |
+| 16.6 | `avoid` is a list of words | Each avoided action has a blast radius computable from the graph: rebooting a transmission node affects every downstream site. The decline shows the number. | stretch | Erkki: "Don't reboot the whole unit unless that fails." Downstream computation is my reasoning. |
+| 16.7 | Knowledge comes only from chat | The event stream holds the fix already (config change at 09:24, recovery at 09:25). Join by entity and time; telemetry gives the remedy, chat gives the reasoning, each confirms the other. | stretch, scenario 15 | Diagram: as-observed layer, record time = event time, runtime layer holds CM data. That config changes are logged with timestamps is standard practice, unverified for Elisa. |
+| 16.8 | Every message needs a model call to detect knowledge | Tacit knowledge announces itself: "not documented", "learned over the years", "those older ones", "usually", "seen this before". A marker pre-filter is cheaper, explainable, and the brief's own chat ends with the strongest marker. | stretch | The phrases are in the chat and email. That they are high precision in general is untested. |
+| 16.9 | Reuse is triggered by alarms | The barrier key is needed when a dispatch is created. Triggers are incident patterns or workflow steps. | model (4.2), scenario 11 | use_case.md: engineer dispatched, then blocked at the barrier. |
+| 16.10 | A verified fix is knowledge | One verified case is still a hunch; the interface might have recovered on its own. Corroboration count makes it knowledge. Never propose on a single case without saying so. | pitch | Erkki relies on count himself: "several cases I've seen". The coincidence argument is mine. |
+| 16.11 | We build a knowledge base | We build one layer with edges into Elisa's graph and never modify their nodes. | pitch | Abhishek's notes: their graph exists, context should connect to it, no processing. |
