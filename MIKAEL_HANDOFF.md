@@ -54,6 +54,7 @@ A pipeline that reads the conversations people already have (Teams chat and emai
 
 1. **Detect.** Decide whether a conversation contains a reusable rule. Most messages produce nothing. Extract the rule in structured form: trigger, applies_to, action, avoid.
 2. **Evidence check.** Every extracted field must be supported by an excerpt that actually appears in the source. Otherwise drop the assertion.
+2b. **Corroborate (first stretch task).** Search the existing corpus (other threads, emails) for the same trigger and symptoms. Attach matches as supporting sources. Source count raises trust, the earliest match sets `valid_from`, and if all matches share an attribute (install year, model) that becomes evidence for the `applies_to` predicate. Erkki says "several cases I've seen"; the system should find them.
 3. **Bind.** Resolve the entities and attributes mentioned (explicit IDs, nicknames, typos, phrases like "older units") against the topology. Choose the smallest level the evidence supports: device, model, install-year cohort, or site. If the text refers to attributes the topology does not have, or two levels fit equally well, abstain and mark the assertion `needs_confirmation`. An abstained assertion is stored but never proposed.
 4. **Time.** Set `valid_from` from the conversation date and `recorded_at` from ingestion. `valid_to` defaults to null ("still believed true"), and is set when the text states an end condition (for example until a firmware fix).
 5. **Trust.** Record the speaker's role, and a trust level: `hunch`, `stated`, or `verified_by_outcome`.
@@ -170,7 +171,7 @@ The headline is Elisa's own three steps (capture, link, reuse) plus the decline.
 
 **In scope (the spine):** Teams and email adapters, structured rule extraction with an evidence check, binding with abstention and the in-thread scope question, validity and trust fields, storage in Neo4j keyed to the topology, `get_context` with a deterministic filter, thin stand-in agent, decline on a newer unit, the generated case table, the data card, the mock Teams page (Abhishek), Neo4j Browser as the graph view.
 
-**Stretch, after the spine passes:** expiry example, conflict escalation, barrier closer, baseline B. Each is one agent task that does not touch the spine.
+**Stretch, after the spine passes, in this order:** corroboration search (4.2 step 2b, it strengthens the core demo), searchable graph page with search box and time slider (Abhishek's lane, reads the store's JSON export, Neo4j Browser stays the fallback), barrier closer, expiry example, conflict escalation, baseline B. Each is one agent task that does not touch the spine.
 
 **Next-steps slides only:** live Slack and other connectors, voice narration for field technicians, runbook-versus-actual-action deviation detection, contrast-based scope inference, question-value scoring and calibration, tree-descent retrieval over channel maps, a general conflict-ranking rule, a custom graph UI with time slider and edits.
 
