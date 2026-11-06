@@ -30,7 +30,7 @@ Written Friday 6 November 2026, ~22:30 (Helsinki), by Abhishek's Claude.
 The review is right that these are one product, and right about the weaknesses in Abhishek's original plan: no trigger, a numeric confidence score, and too many integrations.
 
 **Main changes from Abhishek's side:**
-1. **The demo is a video, not a live presentation.** This is Abhishek's plan for Sunday; it still needs confirming with Elisa on Discord. If it holds, Mikael's open question 5 is settled: **never build the live Slack bot.** It also means the video, not the slides, carries the pitch. It deserves its own protected time block and a script locked by Saturday noon, so the build produces exactly the screens the edit needs.
+1. **The demo is a video, not a live presentation. This is confirmed.** Mikael's open question 5 is settled: **never build the live Slack bot.** It also means the video, not the slides, carries the pitch. It deserves its own protected time block and a script locked by Saturday noon, so the build produces exactly the screens the edit needs.
 2. **Keep one small custom graph view, but only for the video.** Neo4j Browser is fine for building. On camera it looks generic, and the neutral judge rewards a picture they remember. Build one read-only page that draws the assertion graph from the store, styled to match, and nothing more: no search, no edits, no time slider. It's parallel work owned by Abhishek, off the spine and cut first if late. This is a scaled-down version of the original "edge", not the full feature.
 3. **Make the locked-barrier case core, not a cuttable closer.** It is one of only **two** examples Elisa named in the brief. It is the only one about *access/location* knowledge, which Abhishek's notes flag as exactly what their AI "can't get". It's also cheap: one email becomes a site assertion, which gets attached to the next dispatch. Cut expiry and conflict before this.
 4. **Rebalance Abhishek's workload.** The current split gives one non-coder eight jobs: topology, 8 scenario scripts, the mock Teams page, slides, README, data card, demo video and the Discord questions. With a fast-cut, voiced, bright video as the main deliverable, that won't fit. Proposed cuts and moves are in section 6.
@@ -74,7 +74,7 @@ This was filled before comparing with REVIEW_MIKAEL. It largely agrees.
 *The weights are our own guess. Elisa only says usability is primary and lists the rest as secondary.
 
 **Top 3 fixes, ranked by points per hour:**
-1. **Ask Elisa three things on Discord tonight** (10 minutes): video or live? What do their graph entity types and IDs look like? Is one in-thread question OK? This de-risks usability and feasibility at almost no cost.
+1. **Check Mikael's transcript of Elisa's briefing** (15 minutes, once it's in the repo). Look for what their graph entity types and IDs look like, whether one in-thread question is OK, and any video length limit. Only ask on Discord about what the transcript doesn't answer. This de-risks usability and feasibility at almost no cost.
 2. **Barrier case in the core demo** (about 1–2 hours of agent time plus one synthetic email and site record). This lifts relevance and Matti's impression.
 3. **Script the video before building screens** (about 1 hour on Saturday morning). This lifts demo clarity and keeps the build aimed at what will be shown.
 
@@ -105,18 +105,18 @@ This was filled before comparing with REVIEW_MIKAEL. It largely agrees.
   - The custom graph view must read the real store.
 
 **Root cause C: we built for an imagined Elisa.**
-- **What happened:** The invented topology didn't resemble their graph. A judge said "our entities don't look like this". Or the one-tap question was seen as "extra work". Or they wanted a live presentation and we only had a video.
-- **Early warning:** No reply from Elisa on Discord by Saturday morning.
+- **What happened:** The invented topology didn't resemble their graph. A judge said "our entities don't look like this". Or the one-tap question was seen as "extra work". 
+- **Early warning:** The briefing transcript contradicts our topology schema or the one-tap question, and we don't adjust.
 - **Mitigation:**
-  - Ask tonight, and follow up at the Elisa stand on Saturday morning.
-  - Name the question count out loud.
-  - Keep a 3-minute live run of `demo.py` ready as a fallback.
+  - Check the plan against Mikael's transcript as soon as it lands.
+  - Ask Elisa only about the remaining gaps.
+  - Name the question count out loud in the video.
 
 | | Likelihood | Severity | Action |
 |---|---|---|---|
 | A: didn't land on screen | High | High | Address now |
 | B: trust broke | Medium | High | Address now (record from `demo.py` only) |
-| C: built for an imagined Elisa | Medium | Medium | Mitigate (Discord tonight) |
+| C: built for an imagined Elisa | Medium | Medium | Mitigate (check the briefing transcript) |
 
 ---
 
@@ -135,7 +135,7 @@ This was filled before comparing with REVIEW_MIKAEL. It largely agrees.
 **Mikael and his agents** (unchanged): contracts, adapters, extractor, binder, store, `get_context`, stand-in agent, case-table tests, `demo.py`, plus the **barrier case as core**.
 
 **Abhishek, in priority order:**
-1. **Tonight:** post the Discord questions. Write the topology sheet (~20 nodes, 3 sites, including the barrier site with `access_notes`). Write 8 short scenario scripts.
+1. **Tonight:** read Mikael's briefing transcript and note any answers that change the plan. Write the topology sheet (~20 nodes, 3 sites, including the barrier site with `access_notes`). Write 8 short scenario scripts.
 2. **Saturday morning:** read the generated threads. Write the **video script and storyboard** (60–120 s, fast cuts, voiceover). Finish the mock Teams thread page.
 3. **Saturday afternoon:** the custom graph view (cut first if late). Prepare video assets: brand colours (purple `#534AB7`), title cards, voiceover draft.
 4. **Saturday 20:00, freeze:** record every beat from `demo.py`.
@@ -160,7 +160,11 @@ This was filled before comparing with REVIEW_MIKAEL. It largely agrees.
 
 ## 8. Questions still open
 
-- Video or live on Sunday? Is there a length limit?
+The demo format is settled: **video only** (confirmed Friday 22:20).
+
+Mikael is adding a **transcript of Elisa's briefing** to the repo. It should answer the remaining questions:
+- Is there a video length limit?
 - What shape are Elisa's graph entities (types, ID format)?
 - Is one in-thread question acceptable?
-- Mikael: please add Joni's deck and speaker notes to the repo.
+
+Any agent reading this: check that transcript before asking Elisa anything. Ask on Discord only about what it leaves open.
