@@ -64,7 +64,8 @@ A pipeline that reads the conversations people already have (Teams chat and emai
 
 1. **Detect.** Decide whether a conversation contains a reusable rule. Most messages produce nothing. Extract the rule in structured form: trigger, applies_to, action, avoid. The trigger is written as checks the agent can evaluate against telemetry (`counters_zero`, `link_up`, `optics_normal`), not as prose, so the agent verifies the precondition itself before proposing. Triggers are of two kinds: an incident pattern (event plus symptoms) or a workflow step (`dispatch_created` for the barrier key), because access knowledge is needed at dispatch time, not at diagnosis time.
 2. **Evidence check.** Every extracted field must be supported by an excerpt that actually appears in the source. Otherwise drop the assertion.
-2b. **Corroborate (first stretch task).** Search the existing corpus (other threads, emails) for the same trigger and symptoms. Attach matches as supporting sources. Source count raises trust, the earliest match sets `valid_from`, and if all matches share an attribute (install year, model) that becomes evidence for the `applies_to` predicate. Erkki says "several cases I've seen"; the system should find them.
+2a. **Merge, never duplicate.** Symptoms and actions are extracted into a small controlled vocabulary (`contracts/vocabulary.md`), so "disable and enable", "bounce the port" and "shut / no shut" all become `interface.bounce`. The merge key is trigger plus canonical action, matched exactly. Same key: add the new case to the existing assertion, no second assertion, and let the new entity's attributes vote on the candidates (4.4). Same trigger, different action: not a duplicate, a conflict, both `disputed`. Different trigger, same action: separate assertions. No fuzzy matching and no human review of near-duplicates. A case is a distinct incident (entity plus time); a source is a document. Erkki's chat and email are one case with two sources, and `support` counts cases. Mikael recalls from the recording that Elisa does not want duplicates; confirm from the transcript.
+2b. **Corroborate (first stretch task).** Search the existing corpus (other threads, emails) for the same merge key and run 2a on each match, so earlier cases vote on the candidates and the earliest sets `valid_from`. Erkki says "several cases I've seen"; the system should find them.
 3. **Bind.** Resolve the entities mentioned (explicit IDs, nicknames, typos) against the topology. Build the candidate scope set (4.4): the condition stated in the text plus the attributes of the device in the case and its ID. Do not choose between them or rank them; the intersection logic needs no ranking. If the candidates disagree on devices that exist in the topology, generate the one-tap question. If the text refers to attributes the topology does not have, record the candidate as unresolvable; it never matches.
 4. **Time.** Set `valid_from` from the conversation date and `recorded_at` from ingestion. `valid_to` defaults to null ("still believed true"). If the text states a condition under which the rule stops applying (for example a firmware fix), store it as text in `valid_while`. Whether `get_context` evaluates it per device is pending Elisa's answer (4.5).
 5. **Trust.** Record the speaker's role, and a trust level: `hunch`, `stated`, or `verified_by_outcome`. Outcome verification comes from the thread or from telemetry, never from a tap (4.6).
@@ -91,9 +92,11 @@ A pipeline that reads the conversations people already have (Teams chat and emai
     ],
     "decided": null
   },
-  "action": "disable the interface, wait, enable it",
-  "avoid": ["reboot", "replace the SFP again"],
+  "action": "interface.bounce",
+  "action_text": "disable the interface, wait, enable it",
+  "avoid": ["node.reboot", "sfp.replace"],
   "evidence": {
+    "cases": [{"entity": "TRN-042", "at": "2026-11-01T09:25:00Z", "outcome": "recovered"}],
     "sources": ["teams:thread-001", "email:001"],
     "excerpt": "Disable the interface, wait, enable it. Don't reboot.",
     "said_by_role": "expert"
@@ -322,7 +325,8 @@ Spine rows must pass before the feature freeze. Stretch rows belong to the stret
 | 4 | Chat with no reusable rule | Nothing extracted | spine |
 | 5 | A device mentioned in passing, not the subject | Not bound to that device | spine |
 | 6 | Hunch rather than verified fix | Trust `hunch`; returned flagged, never as a proposal | spine |
-| 7 | Same fix worked on a 2018 unit of a different model | Model candidate eliminated, install-year candidate supported; now proposes on any 2019-or-older unit without a question | spine |
+| 7 | Same fix worked on a 2018 unit of a different model, described in different words ("shut / no shut on the port, came back") | Merged into the existing assertion by key, no second assertion; model candidate eliminated, install-year candidate supported; now proposes on any 2019-or-older unit without a question | spine |
+| 7b | Same symptoms, a different remedy stated by another expert ("swap the SFP again, it is always the optic") | Not merged; both assertions `disputed`; escalated with both attached | spine (the mechanism; the two-expert thread itself is row 13) |
 | 8 | Same symptoms on a 2016 unit, fix did not work | Install-year candidate gets `against`; assertion status `review`, not silently kept | spine |
 | 9 | Typos or nicknames in a device ID | Resolved to the right entity, or no binding | spine |
 | 10 | Symptoms match but counters are rising | Trigger check fails; assertion not proposed, nobody asked (16.4) | spine |
@@ -369,6 +373,7 @@ Agents build against these and never edit them.
 - `contracts/predicates.md`: the small predicate language used by candidates (`attr op value`, `id == value`; `peer.attr` reserved, pending 16.2), and the evaluator's signature. Tested alone before anything uses it.
 - `contracts/get_context.md`: `get_context(entity_id, event, symptoms, at_time) -> list[Assertion]` plus the filter order (trigger match on event and symptoms, candidate intersection against the entity, `valid_while` and dates at `at_time`, trust threshold) and the per-entity outcome vocabulary from 4.3 (`proposed`, `declined`, `ambiguous`).
 - `contracts/message.schema.json`: the one message format adapters produce (author, role, timestamp, channel, thread, text).
+- `contracts/vocabulary.md`: the controlled lists the extractor must map into: events (`sfp_replaced`, `dispatch_created`), symptoms (`link_up`, `optics_normal`, `counters_zero`, `alarms_cleared`), actions (`interface.bounce`, `node.reboot`, `sfp.replace`, `counters.check`, `site.access_key`). Free text is kept alongside in `action_text`. Anything outside the list is extracted as `other` with its text and never merges. Extend the list by editing the contract, not by letting the model invent entries.
 
 ### 15.2 One module per agent task, one test per module
 
@@ -377,7 +382,7 @@ Build order is sequential on the spine because each module consumes the previous
 | Order | Module | Input fixture | Test asserts | Human gate (1 minute) |
 |---|---|---|---|---|
 | 1 | `adapters/` | Elisa's `teams_chat.json`, `email.txt` | 12 messages and 1 message in contract shape | Skim the output |
-| 2 | `extractor/` | the two above | exactly one assertion; `avoid` contains "reboot"; `evidence.excerpt` is a verbatim substring of the source; chit-chat fixture yields nothing | Read the assertion |
+| 2 | `extractor/` | the two above, plus a reworded thread ("shut / no shut") | exactly one assertion from chat plus email, with one case and two sources; `action` is `interface.bounce` for both wordings; `avoid` contains `node.reboot`; `evidence.excerpt` is a verbatim substring of the source; chit-chat fixture yields nothing | Read the assertion |
 | 3 | `predicates/` | fixture topology + a table of (predicate, entity, expected) | every row evaluates as expected, including `id ==` | Read the table |
 | 4 | `binder/` | assertion + topology | explicit ID resolves to the node; candidate set contains the stated condition plus the device's model, firmware, site and ID; a question string exists when candidates diverge on the demo topology | Read the candidates and the question text |
 | 5 | `store/` | bound assertions | round trip; query by entity returns them; one edge per candidate; Neo4j Browser shows the graph | Look at the graph |
