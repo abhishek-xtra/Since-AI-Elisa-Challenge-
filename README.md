@@ -121,4 +121,4 @@ Elisa's challenge owner answered our five questions:
 - Merging is by exact key. Corroborating a rule across differently keyed assertions is a named hook only (`extractor/corroborate.py`).
 - The stand-in agent is a stand-in: the real operations agent's runbook, tickets and phone calls as channels are out of scope.
 - The Neo4j store is untested; the JSON store is what runs.
-- Secrets written in messages are stored verbatim (see [Data](#data)).
+- Access details written in messages, such as where a key is kept or a gate code, are stored as written; redaction is a production policy decision (see [Data](#data)).
