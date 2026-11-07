@@ -50,7 +50,8 @@ def _candidates(rule: ExtractedRule, origin: Node | Site, topology: Topology) ->
         if isinstance(site := lookup(topology, origin.site), Site):
             attrs.append(("region", f"'{site.region}'", f"{origin.id}'s site"))
     else:
-        attrs = [("site", f"'{origin.id}'", origin.id), ("region", f"'{origin.region}'", origin.id)]
+        # a site-bound fact (where the key is) is about that site; region is a candidate only if the speaker said so
+        attrs = [("site", f"'{origin.id}'", origin.id)]
     out = [stated] if stated else []
     for attr, value, of in attrs:
         predicate = f"{attr} == {value}"

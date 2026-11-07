@@ -136,7 +136,7 @@ def test_workflow_binds_site():
     out = do_bind(r, msgs("Heads up for TRN-033 dispatches: " + excerpt))
     assert out.applies_to.entity_type == "site"
     assert out.evidence.cases[0].entity == "OULU-03"
-    assert preds(out) == {"site == 'OULU-03'": "closed", "region == 'north'": "closed"}
+    assert preds(out) == {"site == 'OULU-03'": "closed"}  # no region candidate: access knowledge is site-specific
 
 
 @pytest.mark.parametrize("cond,excerpt", [
