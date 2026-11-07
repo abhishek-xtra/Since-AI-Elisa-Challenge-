@@ -1,7 +1,8 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { source as defaultSource, type Beat, type DataSource, type IncidentBody, type Thread, type Topology } from './data';
 import { buildChannels, itemsOf, type Item, type LiveIncident, type ModelInput } from './model';
-import { longDate, PostCard } from './Thread';
+import { longDate, PostCard, TypingRow, type Play } from './Thread';
+import { applyReveal, EASE, motionOK, revealSteps, TIMING, typist, urlReveal } from './reveal';
 import { ReportFault } from './ReportFault';
 import * as I from './icons';
 
@@ -39,7 +40,13 @@ const APP_BAR: [string, (p: { size?: number }) => JSX.Element][] = [
   ['Activity', I.Bell], ['Chat', I.ChatIcon], ['Teams', I.TeamsIcon], ['Calendar', I.CalendarIcon], ['Calls', I.CallIcon], ['OneDrive', I.CloudIcon], ['Apps', I.MoreIcon],
 ];
 
-export default function App({ source = defaultSource, beat = beatFromUrl() }: { source?: DataSource; beat?: number | null }) {
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+// the TIMING table as CSS variables, for app.css
+const REVEAL_VARS = { ...Object.fromEntries(Object.entries(TIMING).map(([k, v]) => [`--rv-${k}`, `${v}ms`])), '--rv-ease': EASE } as React.CSSProperties;
+
+export default function App({ source = defaultSource, beat = beatFromUrl(), reveal: revealParam = urlReveal() }:
+  { source?: DataSource; beat?: number | null; reveal?: { auto: number | null } | null }) {
+  const [reveal] = useState(() => (beat === null ? null : revealParam)); // replay only; fixed at mount so timers and memos hold
   const [input, setInput] = useState<ModelInput | null>(null);
   const [topology, setTopology] = useState<Topology | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +71,18 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
     })().catch((e) => setError(String(e)));
   }, [source, beat]);
 
-  const channels = useMemo(() => (input ? buildChannels(input, beat) : []), [input, beat]);
+  const allChannels = useMemo(() => (input ? buildChannels(input, beat) : []), [input, beat]);
+  // Reveal mode: per channel, the beat's new items as steps, and how many of them are on screen
+  const steps = useMemo(() => {
+    if (!reveal || !input || beat === null) return {};
+    const prev = new Set(buildChannels(input, beat - 1).flatMap(itemsOf).map((i) => i.id));
+    return Object.fromEntries(allChannels.map((c) => [c.id, revealSteps(c, prev)]));
+  }, [reveal, input, beat, allChannels]);
+  const [progress, setProgress] = useState<Record<string, number>>({});
+  const [play, setPlay] = useState<Play>({});
+  const [dim, setDim] = useState(false);
+  const channels = useMemo(() => (reveal ? allChannels.map((c) => applyReveal(c, steps[c.id] ?? [], progress[c.id] ?? 0)) : allChannels),
+    [reveal, allChannels, steps, progress]);
   const current = channels.find((c) => c.id === selected);
 
   useEffect(() => {
@@ -72,8 +90,73 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
     const ids = itemsOf(current).map((i) => i.id);
     setSeen((s) => (s ? new Set([...s, ...ids]) : s));
     setOpened((s) => new Set([...s, ...ids]));
+    setPlay({});
     if (postsRef.current) postsRef.current.scrollTop = postsRef.current.scrollHeight; // Teams opens at the newest post
-  }, [current]);
+  }, [selected, allChannels]); // eslint-disable-line react-hooks/exhaustive-deps -- not on every reveal step
+
+  const busy = useRef(false);
+  const next = async () => {
+    const list = steps[selected] ?? [], n = progress[selected] ?? 0, step = list[n], ch = selected;
+    if (busy.current || !step) return;
+    busy.current = true;
+    const motion = motionOK(), name = typist(step), id = step.item.id;
+    if (motion && name) {
+      setPlay({ typing: { post: step.root ? '' : step.post, name } });
+      await wait(TIMING.typing);
+    }
+    if (motion && step.answer) {
+      const q = step.item;
+      const index = q.kind === 'agent' && q.question ? q.question.options.findIndex((o) => o.label === q.answeredLabel) : -1;
+      setPlay({ answering: { id, index, pressed: false } });
+      await wait(TIMING.cursor);
+      setPlay({ answering: { id, index, pressed: true } });
+      await wait(TIMING.press);
+    }
+    setProgress((p) => ({ ...p, [ch]: n + 1 }));
+    setSeen((s) => s && new Set([...s, id]));
+    setPlay({ fresh: step.answer ? null : id });
+    if (motion && !step.answer) { setDim(true); setTimeout(() => setDim(false), TIMING.dim); }
+    busy.current = false;
+  };
+  const back = () => {
+    if (busy.current) return;
+    setProgress((p) => ({ ...p, [selected]: Math.max(0, (p[selected] ?? 0) - 1) }));
+    setPlay({});
+  };
+  const keys = useRef({ next, back });
+  keys.current = { next, back };
+  useEffect(() => {
+    if (!reveal) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); keys.current.next(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); keys.current.back(); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [reveal]);
+  const shown = progress[selected] ?? 0;
+  useEffect(() => { // ?reveal=auto: the next step `every` ms after the last one landed
+    if (!reveal?.auto || shown >= (steps[selected]?.length ?? 0)) return;
+    const t = setTimeout(() => keys.current.next(), reveal.auto);
+    return () => clearTimeout(t);
+  }, [reveal, selected, shown, steps]);
+  const scrolling = useRef(0);
+  useEffect(() => { // keep the newest item (or typing row) in the lower third
+    const c = postsRef.current, el = c?.querySelector('.typing, .reveal-in');
+    if (!c || !el) return;
+    const r = el.getBoundingClientRect(), bottom = r.top + Math.max(r.height, el.firstElementChild?.scrollHeight ?? 0);
+    const from = c.scrollTop, to = Math.max(0, Math.min(from + bottom - c.getBoundingClientRect().top - c.clientHeight * 0.85, c.scrollHeight - c.clientHeight));
+    cancelAnimationFrame(scrolling.current);
+    if (!motionOK() || !window.requestAnimationFrame) { c.scrollTop = to; return; }
+    // own easing instead of behavior: 'smooth', so the duration is in TIMING and headless frames advance it
+    const t0 = performance.now(); // not the rAF timestamp: headless virtual time does not advance it
+    const tick = () => {
+      const k = Math.min(1, (performance.now() - t0) / TIMING.scroll);
+      c.scrollTop = from + (to - from) * (1 - (1 - k) ** 3);
+      if (k < 1) scrolling.current = requestAnimationFrame(tick);
+    };
+    scrolling.current = requestAnimationFrame(tick);
+  }, [play]);
 
   const unread = (items: Item[]) => !!seen && items.some((i) => !seen.has(i.id));
   // Activity: notices to the viewer (Erkki) on screen at this beat that he has not opened yet
@@ -116,7 +199,7 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
   };
 
   return (
-    <div className="app">
+    <div className="app" style={reveal ? REVEAL_VARS : undefined}>
       <header className="titlebar">
         <span className="app-title">Microsoft Teams</span>
         <div className="title-center">
@@ -133,7 +216,7 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
           {APP_BAR.map(([label, Icon]) => (
             <button key={label} type="button" className={`appbar-item${label === 'Teams' ? ' selected' : ''}`} aria-current={label === 'Teams' ? 'page' : undefined}>
               <span className="appbar-icon"><Icon />{label === 'Activity' && unreadNotices > 0 && (
-                <span className="badge" aria-label={`${unreadNotices} unread`}>{unreadNotices}</span>)}</span>
+                <span key={reveal ? unreadNotices : undefined} className={`badge${reveal ? ' bump' : ''}`} aria-label={`${unreadNotices} unread`}>{unreadNotices}</span>)}</span>
               <span className="appbar-label">{label}</span>
             </button>
           ))}
@@ -181,19 +264,27 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
             </div>
           </div>
           {error && <p className="error" role="alert">{error}</p>}
-          <div className="posts" ref={postsRef}>
-            {reporting && topology && <ReportFault topology={topology} onSubmit={onReport} onClose={() => setReporting(false)} />}
-            {current?.posts.length === 0 && <p className="empty">No posts yet.</p>}
-            {current?.posts.map((p, i, all) => (
-              <Fragment key={p.id}>
-                {p.root.ts.slice(0, 10) !== all[i - 1]?.root.ts.slice(0, 10) && (
-                  <p className="day-divider" role="separator"><span>{longDate(p.root.ts)}</span></p>)}
-                <PostCard post={p} onAnswer={onAnswer} />
-              </Fragment>
-            ))}
-            {!!current?.posts.length && (
-              <p className="up-to-date"><I.CheckIcon /> You're up to date{newestSite && <> · {newestSite}</>}</p>)}
-          </div>
+          {(() => {
+            const rootTyping = play.typing?.post === '' ? play.typing.name : null;
+            const posts = (
+              <div className={`posts${reveal ? ' reveal-mode' : ''}${dim ? ' dim' : ''}`} ref={postsRef}>
+                {reporting && topology && <ReportFault topology={topology} onSubmit={onReport} onClose={() => setReporting(false)} />}
+                {current?.posts.length === 0 && !rootTyping && <p className="empty">No posts yet.</p>}
+                {current?.posts.map((p, i, all) => (
+                  <Fragment key={p.id}>
+                    {p.root.ts.slice(0, 10) !== all[i - 1]?.root.ts.slice(0, 10) && (
+                      <p className="day-divider" role="separator"><span>{longDate(p.root.ts)}</span></p>)}
+                    <PostCard post={p} onAnswer={onAnswer} play={reveal ? play : undefined} />
+                  </Fragment>
+                ))}
+                {rootTyping && <TypingRow name={rootTyping} />}
+                {!!current?.posts.length && (
+                  <p className="up-to-date"><I.CheckIcon /> You're up to date{newestSite && <> · {newestSite}</>}</p>)}
+              </div>
+            );
+            // reveal mode: an invisible strip at the right edge advances on click (mouse-only recording)
+            return reveal ? <div className="posts-area">{posts}<div className="reveal-strip" onClick={() => keys.current.next()} aria-hidden="true" /></div> : posts;
+          })()}
           <div className="compose" aria-disabled={!live}>
             <div className="compose-box">
               <input aria-label="Start a post" placeholder="Start a post" readOnly disabled={!live} />

@@ -49,3 +49,13 @@ describe('replay', () => {
     expect(screen.queryByLabelText('2 unread')).toBeNull();
   });
 });
+
+describe('reveal mode off', () => {
+  it('?beat=7 renders the same post list as before reveal mode existed', async () => {
+    const source = createMockSource();
+    const beat7 = await source.getBeat(7);
+    const { container } = render(<App source={source} beat={7} />);
+    await screen.findAllByText(beat7.data.agent_text!);
+    expect(container.querySelector('.posts')!.outerHTML).toMatchSnapshot();
+  });
+});

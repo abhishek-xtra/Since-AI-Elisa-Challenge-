@@ -151,6 +151,37 @@ h1, h2, p { margin: 0; }
   .status-line { padding-left: 0; }
 }
 
+/* Reveal mode (?reveal=1). Durations come from TIMING in src/reveal.ts as --rv-* variables on .app */
+.posts-area { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
+.reveal-strip { position: absolute; top: 0; right: 0; bottom: 0; width: 40px; cursor: default; }
+.reveal-in { animation: rv-enter var(--rv-enter) var(--rv-ease) both; }
+.reveal-in.expand { display: grid; animation: rv-enter var(--rv-enter) var(--rv-ease) both, rv-expand var(--rv-expand) var(--rv-ease) both; }
+.reveal-in.expand > * { min-height: 0; overflow: hidden; }
+.reveal-in.drop { animation: rv-drop var(--rv-drop) var(--rv-ease) both; }
+.reveal-in .reaction { animation: rv-pop var(--rv-pop) var(--rv-ease) var(--rv-reaction) both; }
+@keyframes rv-enter { from { opacity: 0; transform: translateY(12px); } }
+@keyframes rv-expand { from { grid-template-rows: 0fr; } to { grid-template-rows: 1fr; } }
+@keyframes rv-drop { from { opacity: 0; transform: translateY(-12px); } }
+@keyframes rv-pop { from { opacity: 0; transform: scale(0.4); } 60% { transform: scale(1.15); } }
+.badge.bump { animation: rv-bump var(--rv-badge) var(--rv-ease); }
+@keyframes rv-bump { 50% { transform: scale(1.35); } }
+
+.reveal-mode .msg, .reveal-mode .status-card { transition: opacity 200ms ease; }
+.reveal-mode.dim .msg, .reveal-mode.dim .status-card { opacity: 0.7; }
+.reveal-mode.dim .reveal-in .msg, .reveal-mode.dim .reveal-in .status-card { opacity: 1; }
+
+.typing { display: flex; align-items: center; gap: var(--s2); min-height: 20px; font-size: 12px; color: var(--text-muted); animation: rv-enter var(--rv-enter) var(--rv-ease) both; }
+.typing-dots { display: inline-flex; gap: 3px; }
+.typing-dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--t-muted); animation: rv-dot 1.2s ease-in-out infinite; }
+.typing-dots i:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes rv-dot { 0%, 60%, 100% { opacity: 0.35; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+
+.reveal-mode .adaptive-card { position: relative; }
+.play-cursor { position: absolute; left: 0; top: 0; z-index: 1; pointer-events: none; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)); }
+.card-button.pressed { background: var(--t-brand-strong); transform: scale(0.98); }
+
 @media (prefers-reduced-motion: reduce) {
+  .typing { display: none; }
   * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }

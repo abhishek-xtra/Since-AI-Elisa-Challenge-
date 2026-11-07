@@ -14,6 +14,10 @@ npm run build
 
 - **Replay** (what the video records): `http://localhost:5173/?beat=N`, N = 1..9 (as many as there are beat files). Shows the cumulative state after beat N.
   Optional `&channel=faults|experts|site-access|field-chat|general` opens that channel first.
+- **Reveal** (recording like a live chat): add `&reveal=1`. The channel opens at the previous beat's state; Space or Right
+  shows the beat's next item (with typing row and animation), Left hides the last, a click on the invisible 40 px strip at the
+  right edge of the posts also advances. `&reveal=auto&every=1400` advances by itself, `every` ms after each item lands.
+  Durations: `TIMING` in `src/reveal.ts`. Without `reveal` nothing changes.
 - **Live**: no `?beat`. "Report fault" (channel header) and the question buttons call the API.
 
 ## Switch to the backend
