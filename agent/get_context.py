@@ -9,6 +9,7 @@ from agent.notify import notify
 from agent.questions import build_question, question_key, record_question
 from contracts.models import Assertion, ContextResult, Topology
 from extractor.merge import dispute_pairs
+from extractor.vote import entity_type
 from predicates import evaluate, lookup, parse
 from predicates.evaluate import _attribute
 
@@ -54,8 +55,10 @@ def scope_outcome(results: dict[str, str], entity, topology: Topology) -> tuple[
     failed = [p for p, r in results.items() if r in ("fails", "missing")]
     unknown = [p for p, r in results.items() if r == "unknown"]
     say = lambda ps: "; ".join(describe(p, results[p], entity, topology) for p in ps)
+    if not results:  # every candidate eliminated and nothing decided: no scope is left that could hold
+        return "declined", "no surviving scope candidate"
     if not failed and not unknown:
-        return "proposed", f"all hold: {', '.join(held)}" if held else "no scope left to check"
+        return "proposed", f"all hold: {', '.join(held)}"
     if failed and not held:
         return "declined", say(failed) + (f". Unknown: {say(unknown)}" if unknown else "")
     if failed:
@@ -67,8 +70,14 @@ def filter_one(a: Assertion, entity, topology: Topology, at: datetime) -> Contex
     """Steps 2 to 5 for one trigger-matched assertion (precedence among disputed ones is applied afterwards)."""
     if reason := validity_reason(a, at):
         return ContextResult(assertion=a, outcome="declined", reason=reason)
-    results = scope_results(a, entity, topology)
-    outcome, reason = scope_outcome(results, entity, topology)
+    if entity_type(entity) != a.applies_to.entity_type:
+        return ContextResult(assertion=a, outcome="declined",
+                             reason=f"entity type {entity_type(entity)} does not match {a.applies_to.entity_type}")
+    try:
+        results = scope_results(a, entity, topology)
+        outcome, reason = scope_outcome(results, entity, topology)
+    except ValueError as e:  # one bad stored predicate declines its own assertion, never the others
+        return ContextResult(assertion=a, outcome="declined", reason=f"invalid predicate: {e}")
     if outcome == "declined":
         return ContextResult(assertion=a, outcome=outcome, reason=reason)
     if a.trust == "hunch":
@@ -106,6 +115,8 @@ def precedence(results: list[ContextResult]) -> None:
 
 def get_context(store, topology: Topology, entity_id: str, event: str, symptoms: list[str],
                 at_time: datetime) -> list[ContextResult]:
+    if at_time.tzinfo is None or at_time.utcoffset() is None:
+        raise ValueError("at_time must be timezone-aware")
     entity = lookup(topology, entity_id)
     if entity is None:
         raise ValueError(f"{entity_id} is not in the topology")

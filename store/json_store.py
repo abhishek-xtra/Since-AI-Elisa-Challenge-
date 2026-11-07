@@ -1,5 +1,7 @@
 """JSON-file store: {"assertions": [...]}, rewritten on every write, ordered by id."""
 import json
+import os
+import secrets
 from pathlib import Path
 
 from contracts.models import Assertion
@@ -17,7 +19,7 @@ class JsonStore(Store):
 
     def _save(self):
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        tmp = self.path.with_suffix(".tmp")  # write-then-rename so a crash never leaves half a file
+        tmp = self.path.with_name(f"{self.path.name}.{os.getpid()}.{secrets.token_hex(4)}.tmp")  # write-then-rename, unique per writer
         tmp.write_text(json.dumps({"assertions": [a.model_dump(mode="json") for a in self.all()]}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         tmp.replace(self.path)
 

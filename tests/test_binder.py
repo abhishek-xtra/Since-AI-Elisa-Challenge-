@@ -168,3 +168,18 @@ def test_unparsed_condition_logged_in_basis():
     out = do_bind(rule(stated_condition="the weird ones", condition_is_relative=False), load_teams(EX / "teams_chat.json"))
     assert len(out.applies_to.candidates) == 5
     assert all("'the weird ones' did not parse" in c.basis for c in out.applies_to.candidates)
+
+
+def test_stated_candidate_failing_on_origin_is_dropped():
+    out = do_bind(rule(stated_condition="installed after 2020", condition_is_relative=False), msgs("SFP on TRN-087.", "Counters zero."))
+    # TRN-087 is 2018: "> 2020" would exclude its own case; the origin's attribute candidate takes its place
+    assert "install_year > 2020" not in preds(out) and "install_year == 2018" in preds(out)
+
+
+def test_expiry_goes_to_valid_while():
+    out = do_bind(rule(stated_condition="stopped after firmware 5.0", condition_is_relative=False), msgs("SFP on TRN-087."))
+    assert out.valid_while == "stopped after firmware 5.0" and not any("5.0" in p for p in preds(out))
+
+
+def test_failed_origin_is_review():
+    assert do_bind(rule(outcome="failed"), msgs("SFP on TRN-087.")).status == "review"

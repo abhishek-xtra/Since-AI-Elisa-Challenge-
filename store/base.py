@@ -9,9 +9,10 @@ ORIGIN_ATTRS = {"site": None, "region": "region:", "model": "model:"}  # attr ->
 
 
 def scope_target(predicate: str, origin: str | None) -> str | None:
-    """Graph id of the topology entity a candidate names: site/region/model value, else the case origin."""
-    attr, _, value = parse(predicate)
-    if attr in ORIGIN_ATTRS:
+    """Graph id of the topology entity a candidate names: an == on site/region/model points at that value; any other
+    predicate (!=, ordering, install_year, firmware) is drawn on the case origin."""
+    attr, op, value = parse(predicate)
+    if attr in ORIGIN_ATTRS and op == "==":
         return f"{ORIGIN_ATTRS[attr] or ''}{value}"
     return origin
 
@@ -50,7 +51,7 @@ class Store(ABC):
         return [a for a in self.all() if names(a)]
 
     def next_id(self) -> str:
-        nums = [int(m.group(1)) for a in self.all() if (m := re.fullmatch(r"CA-(\d{4})", a.id))]
+        nums = [int(m.group(1)) for a in self.all() if (m := re.fullmatch(r"CA-(\d{4,})", a.id))]
         return f"CA-{max(nums, default=0) + 1:04d}"
 
     def graph(self, topology: Topology) -> dict:
@@ -89,6 +90,6 @@ class Store(ABC):
             for c in a.evidence.cases:
                 edge(a.id, c.entity, "CASE")
         for e in edges:  # an entity outside the topology (e.g. an unresolved case) still gets a node, so no edge dangles
-            kind = next((k for k in ("region", "model") if e["to"].startswith(k + ":")), "node")
+            kind = next((k for k in ("region", "model") if e["to"].startswith(k + ":")), "unknown")
             node(e["to"], e["to"].split(":", 1)[-1], kind)
         return {"nodes": list(nodes.values()), "edges": edges}

@@ -37,6 +37,8 @@ def test_newer_open():
     ("since 2020", "install_year >= 2020"),
     ("firmware 4.1", "firmware == '4.1'"),
     ("firmware below 5.2", "firmware < '5.2'"),
+    ("before firmware 5.0", "firmware < '5.0'"),
+    ("units since firmware 4.1", "firmware >= '4.1'"),
     ("model tx200", "model == 'TX-200'"),
     ("units at OULU-11", "site == 'OULU-11'"),
     ("anything in the north", "region == 'north'"),
@@ -53,6 +55,6 @@ def test_stated_number_beats_relative_flag():
     assert stated_candidate(rule("units older than 2018", True), TRN042, TOPO).edge == "closed"
 
 
-@pytest.mark.parametrize("cond", [None, "", "the weird ones"])
+@pytest.mark.parametrize("cond", [None, "", "the weird ones", "stopped after firmware 5.0", "fixed in firmware 5.2"])
 def test_nothing(cond):
     assert stated_candidate(rule(cond), TRN042, TOPO) is None

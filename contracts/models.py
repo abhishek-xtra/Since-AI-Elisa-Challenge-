@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from contracts.vocabulary import (Action, CaseOutcome, Channel, Edge, EdgeAnswer, EntityType, Event, ExtractedOutcome, NodeType,
                                   Outcome, Role, Status, Symptom, TriggerKind, Trust)
@@ -114,7 +114,7 @@ class Evidence(Strict):
 
 class Assertion(Strict):
     """A context assertion: a reusable operational rule captured from a conversation. Nothing is ever deleted."""
-    id: str = Field(pattern=r"^CA-\d{4}$", description="'CA-' plus four digits.")
+    id: str = Field(pattern=r"^CA-\d{4,}$", description="'CA-' plus at least four digits.")
     trigger: Trigger
     applies_to: AppliesTo
     action: Action = Field(description="Canonical action from contracts/vocabulary.md.")
@@ -130,6 +130,12 @@ class Assertion(Strict):
     valid_from: datetime = Field(description="When it became true (conversation time).")
     valid_to: datetime | None = Field(description="null means still believed true.")
     valid_while: str | None = Field(description="Stated end condition, stored as text only. Nothing evaluates it (pending).")
+
+    @model_validator(mode="after")
+    def _valid_to_after_valid_from(self):
+        if self.valid_to is not None and self.valid_to < self.valid_from:
+            raise ValueError(f"valid_to {self.valid_to} is before valid_from {self.valid_from}")
+        return self
 
 
 # ---------- get_context results (contracts/get_context.md) ----------

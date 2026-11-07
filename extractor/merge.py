@@ -3,7 +3,7 @@ from contracts.models import Assertion, Topology
 from contracts.vocabulary import VALUE_CARRYING_ACTIONS
 from extractor.supersede import supersede
 from extractor.trust import merged_trust
-from extractor.vote import vote
+from extractor.vote import fail_duplicate, vote
 
 PLACEHOLDER_ID = "CA-0000"
 
@@ -36,10 +36,10 @@ def _absorb(old: Assertion, new: Assertion, topology: Topology) -> None:
         if dup is None:
             old.evidence.cases.append(nc)
             vote(old, nc.entity, nc.outcome, topology)
+        elif nc.outcome == "failed" and dup.outcome != "failed":
+            fail_duplicate(old, dup, topology)  # as record_outcome: a failure always counts
         elif dup.outcome is None and nc.outcome:
             dup.outcome = nc.outcome  # same incident; the other source reported how it ended
-            if nc.outcome == "failed":
-                old.status = "review"  # as record_outcome: no second vote
     old.trust = merged_trust(old.evidence.cases, old.trust, new.trust)
 
 
@@ -68,7 +68,9 @@ def merge(existing: list[Assertion], new: Assertion, topology: Topology) -> list
         if trigger_key(old) != trigger_key(new):
             continue
         if old.action != new.action:
-            old.status = new.status = "disputed"
+            for x in (old, new):
+                if x.status != "review":  # contradicted by an outcome stays under review
+                    x.status = "disputed"
         elif value and _same_entity(old, new):
             supersede(old, new)
     return out

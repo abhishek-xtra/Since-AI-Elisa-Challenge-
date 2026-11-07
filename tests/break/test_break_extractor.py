@@ -165,7 +165,6 @@ def test_a11_long_thread_finds_buried_rule():
 
 # A12 --------------------------------------------------------------------------------------------------------------
 
-@xfail("'stopped after firmware 5.0' parses to firmware == '5.0' (inverted, fails on the origin itself); no valid_while")
 def test_a12_expiry_condition_is_kept():
     a, rule = bound("a12_expiry.json")
     p = preds(a)
@@ -197,13 +196,11 @@ def test_a14_same_day_chat_and_email_about_different_devices_are_two_cases(tmp_p
 
 # A15+ (extra) -----------------------------------------------------------------------------------------------------
 
-@xfail("binder takes the MOST-mentioned device as origin: an earlier device named twice beats the current one")
 def test_a15_origin_is_the_current_device():
     a, _ = bound("a15_two_devices.json")
     assert a.evidence.cases[0].entity == "TRN-087"
 
 
-@xfail("a brand-new assertion whose only case FAILED stays status open / trust stated and would be proposed")
 def test_a16_rule_that_failed_on_its_origin_is_not_proposed(tmp_path):
     (a, rule), _ = run("a16_fix_by_other_action.json")
     assert rule.outcome == "failed" and a.action == "interface.bounce"

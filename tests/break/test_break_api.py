@@ -53,12 +53,11 @@ def test_c1_beat3_on_fresh_out(tmp_path):
     assert r.returncode != 0 and "beat 3 needs the state of beat 2" in r.stderr and "Traceback" not in r.stderr
 
 
-@pytest.mark.xfail(strict=False, reason="break test C1b: --beat 3 on an out/ left by a full run crashes (question is None)")
 def test_c1b_beat3_on_dirty_out(tmp_path):
     out = tmp_path / "out"
     assert demo(out).returncode == 0
-    r = demo(out, "--beat", "3")
-    assert r.returncode == 0, r.stderr[-600:]
+    r = demo(out, "--beat", "3")  # fixed: refuses with a clear message instead of crashing on the later state
+    assert r.returncode != 0 and "already ran" in r.stderr and "--clean" in r.stderr and "Traceback" not in r.stderr
 
 
 # ---------- C2: symptom outside the vocabulary, and other bad bodies ----------
@@ -74,7 +73,6 @@ def test_c2_bad_event_and_unknown_entity(client):
     assert r.status_code == 404 and r.json()["detail"] == "TRN-999 is not in the topology"
 
 
-@pytest.mark.xfail(strict=False, reason="break test C2b: a naive at_time (no offset) is a 500, TypeError aware vs naive")
 def test_c2b_naive_at_time(client):
     r = incident(client, at_time="2026-11-07T10:00:00")
     assert r.status_code in (200, 422), (r.status_code, r.text[:200])
@@ -93,7 +91,6 @@ def test_c4_answer_flow(client):
 
 # ---------- C5: a malformed predicate in the store ----------
 
-@pytest.mark.xfail(strict=False, reason="break test C5: a malformed predicate makes /incident a 404 'not found' for a node that exists")
 def test_c5_bad_predicate_is_not_404(client, tmp_path):
     bad = bounce(id="CA-0002", action="sfp.replace", text="x", cands=[("install_year == '2019'", "closed")])
     JsonStore(tmp_path / "out" / "store.json").replace_all([bounce(), bad])
@@ -103,7 +100,6 @@ def test_c5_bad_predicate_is_not_404(client, tmp_path):
 
 # ---------- C6: path traversal through /threads/{id} on Windows ----------
 
-@pytest.mark.xfail(strict=False, reason="break test C6: backslashes in thread_id escape out/ on Windows")
 def test_c6_threads_path_traversal(client, tmp_path):
     secret = tmp_path / "secret.json"
     secret.write_text('{"leak": true}', encoding="utf-8")
@@ -135,3 +131,16 @@ def test_c8_incident_on_empty_out(monkeypatch, tmp_path):
     monkeypatch.setenv("LLM_OFFLINE", "1")
     r = incident(TestClient(app, raise_server_exceptions=False))
     assert r.status_code == 200 and r.json()["results"] == []
+
+
+# ---------- B15 through the API: the lock serialises read-modify-write ----------
+
+def test_b15_concurrent_api_answers_accept_one(client):
+    import threading
+    assert incident(client).status_code == 200
+    codes = []
+    ts = [threading.Thread(target=lambda i=i: codes.append(
+        client.post("/answer", json={"assertion_id": "CA-0001", "option_index": i % 3}).status_code)) for i in range(8)]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
+    assert sorted(codes) == [200] + [409] * 7, codes

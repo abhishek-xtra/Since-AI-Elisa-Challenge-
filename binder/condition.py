@@ -11,6 +11,11 @@ _YEAR = re.compile(r"\b(older than|newer than|prior to|before|after|since|from|p
 _YEAR_OP = {"older than": "<", "prior to": "<", "before": "<", "pre": "<", "newer than": ">", "after": ">", "since": ">=", "from": ">="}
 _FIRMWARE = re.compile(r"\bfirmware\s+(?:version\s+)?(below|under|before|older than|above|after|newer than)?\s*v?(\d+(?:\.\d+)*)\b", re.I)
 _FIRMWARE_OP = {"": "==", "below": "<", "under": "<", "before": "<", "older than": "<", "above": ">", "after": ">", "newer than": ">"}
+# operator word before the word firmware: "before firmware 5.0", "since fw 5.2"
+_FIRMWARE_PRE = re.compile(r"\b(below|under|before|older than|above|after|newer than|since|from)\s+(?:firmware|fw)\s+(?:version\s+)?v?(\d+(?:\.\d+)*)\b", re.I)
+_FIRMWARE_PRE_OP = {**_FIRMWARE_OP, "since": ">=", "from": ">="}
+# an end condition ("stopped after firmware 5.0", "fixed in 5.2", "no longer since 5.0"), not a scope: kept as valid_while
+EXPIRY = re.compile(r"\b(stopped|stops|fixed|no longer|not needed|until)\b", re.I)
 _MODEL = re.compile(r"\bmodel\s+([A-Za-z]+[ -]?\d+)\b", re.I)
 _NEWER = re.compile(r"\b(newer|newest|new|recent|later|younger)\b", re.I)
 _THIS_SITE = re.compile(r"\b(this|that|the same) site\b", re.I)
@@ -30,6 +35,10 @@ def stated_candidate(rule: ExtractedRule, origin: Node | Site, topology: Topolog
 
     if m := _YEAR.search(text):
         return closed(f"install_year {_YEAR_OP[m.group(1).lower()]} {int(m.group(2))}")
+    if EXPIRY.search(text):
+        return None  # bind() stores the text in valid_while
+    if m := _FIRMWARE_PRE.search(text):
+        return closed(f"firmware {_FIRMWARE_PRE_OP[m.group(1).lower()]} '{m.group(2)}'")
     if m := _FIRMWARE.search(text):
         return closed(f"firmware {_FIRMWARE_OP[(m.group(1) or '').lower()]} '{m.group(2)}'")
     if m := _MODEL.search(text):

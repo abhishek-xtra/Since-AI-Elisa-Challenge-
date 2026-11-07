@@ -3,14 +3,15 @@ Deterministic. Never asks a question, never calls the LLM, never writes to the t
 import logging
 import re
 
-from binder.condition import stated_candidate
-from binder.resolve import normalise_id, resolve_entities
+from binder.condition import EXPIRY, stated_candidate
+from binder.resolve import _TOKEN, normalise_id, resolve_entities
 from contracts.models import Assertion, Candidate, ExtractedRule, Message, Node, Site, Topology
-from predicates import lookup, parse
+from predicates import evaluate, lookup, parse
 
 log = logging.getLogger(__name__)
 
 _ONLY_THIS = re.compile(r"\b(?:only|just)\s+(?:this|that)\s+(?:one|unit|node|device|box)\b", re.I)
+_CURRENT = re.compile(r"\b(?:now|currently|this|working on)\b[^.?!]{0,12}$", re.I)  # "Now it's X", "working on X"
 _ONLY_ID = re.compile(r"\bonly\s+(?:on\s+)?([A-Za-z]+[ _-]?\d+)\b", re.I)
 
 
@@ -22,10 +23,22 @@ def _origin(assertion: Assertion, messages: list[Message], topology: Topology) -
     if incident := next((m.incident for m in messages if m.incident), None):
         return lookup(topology, incident.entity_id)
     want = Site if assertion.trigger.kind == "workflow" else Node
-    for eid, _ in resolve_entities([m.text for m in messages], topology):
-        if isinstance(entity := lookup(topology, eid), want):
-            return entity
-    return None
+
+    def named(texts: list[str]) -> list[str]:
+        return [eid for eid, _ in resolve_entities(texts, topology) if isinstance(lookup(topology, eid), want)]
+
+    # The opening message reports the current incident: one entity there is the origin; several, the one introduced
+    # as current ("Now it's TRN-087"); else the most mentioned in the thread. An earlier device named often loses.
+    opening = next((m.text for m in messages if named([m.text])), "")
+    first = named([opening])
+    if len(first) == 1:
+        return lookup(topology, first[0])
+    for t in _TOKEN.finditer(opening):
+        eid = next((e for e in first if normalise_id(e) == normalise_id(t.group(0))), None)
+        if eid and _CURRENT.search(opening[:t.start()]):
+            return lookup(topology, eid)
+    everywhere = named([m.text for m in messages])
+    return lookup(topology, everywhere[0]) if everywhere else None
 
 
 def _only_this(rule: ExtractedRule, origin_id: str) -> str | None:
@@ -43,7 +56,12 @@ def _candidates(rule: ExtractedRule, origin: Node | Site, topology: Topology) ->
     if phrase := _only_this(rule, origin.id):
         return [Candidate(predicate=f"id == '{origin.id}'", support=1, against=0, basis=f"{rule.said_by}: '{phrase}'")]
     stated = stated_candidate(rule, origin, topology)
-    note = f"; stated condition '{rule.stated_condition}' did not parse" if rule.stated_condition and not stated else ""
+    if stated and evaluate(stated.predicate, origin, topology, stated.edge) != "holds":
+        # the case happened on the origin, so a scope that excludes it is a mis-parse; it would only ask nonsense
+        log.warning("binder: stated candidate %r does not hold on origin %s; dropped", stated.predicate, origin.id)
+        stated = None
+    expiry = rule.stated_condition and EXPIRY.search(rule.stated_condition)
+    note = f"; stated condition '{rule.stated_condition}' did not parse" if rule.stated_condition and not stated and not expiry else ""
     if isinstance(origin, Node):
         attrs = [("model", f"'{origin.model}'", origin.id), ("firmware", f"'{origin.firmware}'", origin.id),
                  ("install_year", str(origin.install_year), origin.id), ("site", f"'{origin.site}'", origin.id)]
@@ -82,4 +100,8 @@ def bind(assertion: Assertion, rule: ExtractedRule, messages: list[Message], top
     data["applies_to"]["candidates"] = [c.model_dump() for c in _candidates(rule, origin, topology)]
     data["evidence"]["cases"] = [{"entity": origin.id, "at": holder.timestamp,
                                   "outcome": None if rule.outcome == "unknown" else rule.outcome}]
+    if rule.stated_condition and EXPIRY.search(rule.stated_condition):
+        data["valid_while"] = rule.stated_condition  # an end condition, text only (nothing evaluates it)
+    if rule.outcome == "failed":
+        data["status"] = "review"  # the rule did not work on its own origin: never proposed until a human looks
     return Assertion.model_validate(data)

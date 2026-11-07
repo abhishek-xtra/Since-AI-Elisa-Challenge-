@@ -264,8 +264,8 @@
   "description": "A context assertion: a reusable operational rule captured from a conversation. Nothing is ever deleted.",
   "properties": {
     "id": {
-      "description": "'CA-' plus four digits.",
-      "pattern": "^CA-\\d{4}$",
+      "description": "'CA-' plus at least four digits.",
+      "pattern": "^CA-\\d{4,}$",
       "title": "Id",
       "type": "string"
     },

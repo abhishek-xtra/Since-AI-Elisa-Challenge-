@@ -52,7 +52,7 @@ Python 3.14; pydantic 2 (contracts, LLM output schemas); google-genai on Vertex 
 
 ## Data
 
-All data is synthetic. Elisa's example chat and email in `data/elisa_examples/` are used unmodified (the adapters date them 2026-11-01, as they carry times only). Every generated scenario thread is listed in `data/DATA_CARD.md` with its model, script and hand edits. Data handling: names and device IDs are illustrative, there is no personal or customer data, and nothing leaves the machine except the prompts sent to Vertex AI; GDPR handling of real chats is out of scope for this build.
+All data is synthetic. Elisa's example chat and email in `data/elisa_examples/` are used unmodified (the adapters date them 2026-11-01, as they carry times only). Every generated scenario thread is listed in `data/DATA_CARD.md` with its model, script and hand edits. Data handling: names and device IDs are illustrative, there is no personal or customer data, and nothing leaves the machine except the prompts sent to Vertex AI; GDPR handling of real chats is out of scope for this build. Facts are stored verbatim, including any code or key written in a message (a gate code ends up in the store, `graph.json` and the thread files); masking them is a policy decision for Elisa.
 
 ## Demo beats
 

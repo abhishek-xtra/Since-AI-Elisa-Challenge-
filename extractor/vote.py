@@ -1,7 +1,7 @@
 """Candidate voting (BACKEND_PROMPT 5.2). Pure topology arithmetic, no model call. Mutates and returns the assertion."""
 import logging
 
-from contracts.models import Assertion, Topology
+from contracts.models import Assertion, Site, Topology
 from contracts.vocabulary import CaseOutcome
 from predicates import evaluate, lookup, parse
 from predicates.evaluate import _attribute
@@ -17,10 +17,20 @@ def raise_edge(predicate: str, entity, topology: Topology) -> str:
     return f"{attr} {op} {value}" if isinstance(value, int) else f"{attr} {op} '{value}'"
 
 
+def entity_type(entity) -> str:
+    """The entity's kind in applies_to.entity_type terms: 'site' or the node's type."""
+    return "site" if isinstance(entity, Site) else entity.type
+
+
 def vote(assertion: Assertion, case_entity: str, outcome: CaseOutcome | None, topology: Topology) -> Assertion:
     entity = lookup(topology, case_entity)
     if entity is None:
         log.warning("vote skipped: %s not in topology", case_entity)
+        return assertion
+    if entity_type(entity) != assertion.applies_to.entity_type:
+        # a site's attributes say nothing about a node rule (and vice versa); counting it would eliminate candidates
+        log.warning("vote skipped: %s is a %s, %s is about %s", case_entity, entity_type(entity), assertion.id,
+                    assertion.applies_to.entity_type)
         return assertion
     for c in assertion.applies_to.candidates:
         if c.against:
@@ -39,3 +49,11 @@ def vote(assertion: Assertion, case_entity: str, outcome: CaseOutcome | None, to
     if outcome == "failed":
         assertion.status = "review"
     return assertion
+
+
+def fail_duplicate(assertion: Assertion, case, topology: Topology) -> None:
+    """A 'failed' report for a case already counted (same entity, same day, outcome None or 'recovered'): a failure
+    always counts, so the case becomes failed, candidates that hold get against, and the assertion goes to review."""
+    case.outcome = "failed"
+    vote(assertion, case.entity, "failed", topology)
+    assertion.status = "review"  # also when vote() skipped the entity

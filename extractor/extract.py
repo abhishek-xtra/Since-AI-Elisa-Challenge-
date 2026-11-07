@@ -108,6 +108,13 @@ def extract(messages: list[Message], recorded_at: datetime | None = None) -> tup
     if rule.outcome != "unknown" and not (rule.outcome_excerpt and norm(rule.outcome_excerpt) in thread):
         log.warning("outcome ignored: outcome_excerpt is not verbatim in the thread: %r", rule.outcome_excerpt)
         rule = rule.model_copy(update={"outcome": "unknown"})
+    # the role is the header's, never the model's (or the speaker's own) claim; an email's author is its From line
+    roles = {m.author.casefold(): m.role for m in messages}
+    if (role := roles.get(rule.said_by.strip().casefold())) and role != rule.said_by_role:
+        log.info("said_by_role %r replaced by %s's header role %r", rule.said_by_role, rule.said_by, role)
+        rule = rule.model_copy(update={"said_by_role": role})
+    elif role is None:
+        log.info("said_by %r is not a message author; keeping the model's role %r", rule.said_by, rule.said_by_role)
     workflow = rule.trigger_kind == "workflow"
     assertion = Assertion(
         id="CA-0000",

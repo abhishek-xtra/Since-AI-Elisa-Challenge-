@@ -222,6 +222,8 @@ def run(n: int) -> None:
         wipe()
     elif not out_path(f"beat_{n - 1}.json").exists():
         sys.exit(f"beat {n} needs the state of beat {n - 1}: run demo.py (or --beat {n - 1}) first")
+    elif out_path(f"beat_{n}.json").exists():  # out/ already holds a later state; beat n would run on the wrong one
+        sys.exit(f"beat {n} already ran in this out/: run demo.py --clean (or start again from --beat 1)")
     s = store()
     title, lines, data, threads = BEATS[n](s)
     emit(n, title, lines, data)

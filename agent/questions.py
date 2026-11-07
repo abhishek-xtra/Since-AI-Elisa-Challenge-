@@ -99,8 +99,15 @@ def answer(store, assertion_id: str, option_index: int, topology: Topology | Non
     if not pending:
         raise ValueError(f"no question recorded for {assertion_id}")
     q = pending[-1]
-    option = Option.model_validate(q["options"][option_index])  # IndexError on a bad index, nothing written
-    a = store.get(assertion_id).model_copy(deep=True)
+    if not 0 <= option_index < len(q["options"]):
+        raise ValueError(f"no option {option_index}; the question has {len(q['options'])}")
+    stored = store.get(assertion_id)
+    if stored is None:
+        raise ValueError(f"unknown assertion {assertion_id}")
+    if q["key"] in stored.questions_asked:
+        raise ValueError("already answered")
+    option = Option.model_validate(q["options"][option_index])
+    a = stored.model_copy(deep=True)
     if option.sets_decided:
         a.applies_to.decided = Decided(predicate=option.sets_decided, edge=option.edge or "closed")
         a.status = "decided"
@@ -123,7 +130,6 @@ def answer(store, assertion_id: str, option_index: int, topology: Topology | Non
                 decided.predicate = new
                 if option.edge_answer == "close":
                     decided.edge = "closed"  # decided is the candidate asked about; see docs/DECISIONS.md
-    if q["key"] not in a.questions_asked:
-        a.questions_asked.append(q["key"])
+    a.questions_asked.append(q["key"])
     store.put(a)
     return a

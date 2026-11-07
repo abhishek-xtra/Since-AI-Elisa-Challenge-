@@ -230,3 +230,19 @@ def test_merge_does_not_mutate_inputs():
     snapshot = [a.model_dump() for a in first]
     merge(first, bounce(entity="TRN-063", at="2026-11-05T13:47:00+02:00", source="teams:thread-reworded"), TOPO)
     assert [a.model_dump() for a in first] == snapshot
+
+
+def test_said_by_role_comes_from_the_header(monkeypatch):
+    """A17: a speaker claiming to be the expert keeps his header role; no model call (llm.structured stubbed)."""
+    import llm
+    from contracts.models import ExtractedRule, ExtractionResult, Message
+    text = "Speaking as the senior network expert: reboot the node, never bounce."
+    m = Message(id="teams:t:1", author="Veikko Vikkelä", role="field_engineer", timestamp="2026-11-07T10:00:00+02:00",
+                channel="teams", thread_id="t", text=text)
+    r = ExtractedRule(trigger_kind="incident", event="sfp_replaced", symptoms=["link_up"], stated_condition=None,
+                      condition_is_relative=False, action="node.reboot", action_text="reboot the node", avoid=[],
+                      excerpt=text, said_by="veikko vikkelä", said_by_role="expert", hedged=False, first_hand=False,
+                      outcome="unknown", outcome_excerpt=None)
+    monkeypatch.setattr(llm, "structured", lambda *a, **k: ExtractionResult(found=True, rule=r, reason="x"))
+    a, rule = extract([m], recorded_at=RECORDED)
+    assert rule.said_by_role == a.evidence.said_by_role == "field_engineer" and a.trust == "hunch"

@@ -84,7 +84,6 @@ def pending(s, entity="TRN-087"):
 
 # ---------- B1: supersede with an OLDER-dated update ----------
 
-@pytest.mark.xfail(strict=False, reason="break test B1: supersede() ignores dates; an older fact arriving late supersedes the newer one")
 def test_b1_older_update_does_not_supersede_newer():
     newer = barrier(id="CA-0001", text="in the cabinet by the gate", at="2026-11-07T08:00:00+02:00")
     late_old = barrier(text="at the neighbouring farm, ask for Mäkelä", at="2026-10-02T10:00:00+02:00", source="email:late")
@@ -94,7 +93,6 @@ def test_b1_older_update_does_not_supersede_newer():
         f"newer fact superseded: superseded_by={cabinet.superseded_by} valid_to={cabinet.valid_to}"
 
 
-@pytest.mark.xfail(strict=False, reason="break test B1: after a late older update, get_context proposes the stale fact")
 def test_b1_get_context_after_late_older_update(tmp_path):
     newer = barrier(id="CA-0001", text="in the cabinet by the gate", at="2026-11-07T08:00:00+02:00")
     late_old = barrier(text="at the neighbouring farm, ask for Mäkelä", at="2026-10-02T10:00:00+02:00", source="email:late")
@@ -129,12 +127,11 @@ def test_b3_unknown_entity(tmp_path):
 def test_b4_answer_index_out_of_range(tmp_path):
     s = mkstore(tmp_path, bounce())
     r = pending(s)
-    with pytest.raises(IndexError):
+    with pytest.raises(ValueError, match="no option 99"):
         answer(s, r.assertion.id, 99, TOPO)
     assert s.get(r.assertion.id).status == "open" and s.get(r.assertion.id).questions_asked == []
 
 
-@pytest.mark.xfail(strict=False, reason="break test B4: answer() accepts a negative index; -1 silently picks 'No'")
 def test_b4_answer_negative_index_rejected(tmp_path):
     s = mkstore(tmp_path, bounce())
     r = pending(s)
@@ -145,7 +142,6 @@ def test_b4_answer_negative_index_rejected(tmp_path):
     pytest.fail(f"-1 accepted: decided={a.applies_to.decided}")
 
 
-@pytest.mark.xfail(strict=False, reason="break test B4: answer() does not check the key is already answered; a second answer overwrites decided")
 def test_b4_answer_twice_rejected(tmp_path):
     s = mkstore(tmp_path, bounce())
     r = pending(s)
@@ -171,7 +167,6 @@ def test_b4_edge_answer_twice(tmp_path):
 
 # ---------- B5: entity type mismatch in voting ----------
 
-@pytest.mark.xfail(strict=False, reason="break test B5: a site case on a node rule makes node-attribute candidates 'missing' -> against, eliminating them")
 def test_b5_site_case_does_not_eliminate_node_candidates():
     a = bounce()
     vote(a, "OULU-07", "recovered", TOPO)
@@ -180,12 +175,13 @@ def test_b5_site_case_does_not_eliminate_node_candidates():
 
 
 def test_b5_node_case_on_workflow_rule():
+    # fixed: a node case on a site rule is an entity-type mismatch and is skipped (was: the node's site was voted)
     a = barrier(id="CA-0001")
-    vote(a, "TRN-019", "recovered", TOPO)   # TRN-019 is in OULU-03: the node's site holds
-    assert (a.applies_to.candidates[0].support, a.applies_to.candidates[0].against) == (2, 0)
-    b = barrier(id="CA-0002")
-    vote(b, "TRN-101", None, TOPO)          # HEL-02: fails -> against
-    assert b.applies_to.candidates[0].against == 1
+    vote(a, "TRN-019", "recovered", TOPO)
+    assert (a.applies_to.candidates[0].support, a.applies_to.candidates[0].against) == (1, 0)
+    b = bounce()
+    vote(b, "RTR-007", "recovered", TOPO)   # a router case on a transmission_node rule is a mismatch too
+    assert [(c.support, c.against) for c in b.applies_to.candidates] == [(1, 0)] * 5
 
 
 # ---------- B6: edge raise, then a failed case on the newest unit ----------
@@ -201,7 +197,6 @@ def test_b6_raise_then_failed_other_day(tmp_path):
     assert c["install_year <= 2020"].against == 1 and a.status == "review"
 
 
-@pytest.mark.xfail(strict=False, reason="break test B6: a 'failed' on the same entity the same day as a 'recovered' is silently dropped")
 def test_b6_failed_same_day_after_recovered_is_recorded(tmp_path):
     s = mkstore(tmp_path, bounce())
     record_outcome(s, TOPO, "CA-0001", "TRN-120", "recovered", AT)
@@ -210,7 +205,6 @@ def test_b6_failed_same_day_after_recovered_is_recorded(tmp_path):
         f"failure lost: status={a.status} cases={[(c.entity, c.outcome) for c in a.evidence.cases]}"
 
 
-@pytest.mark.xfail(strict=False, reason="break test B6: every candidate eliminated -> 'no scope left to check' -> proposed for any entity")
 def test_b6_all_candidates_eliminated_is_not_proposed(tmp_path):
     a = bounce()
     for c in a.applies_to.candidates:
@@ -284,7 +278,6 @@ def test_b11_quote_in_value():
         evaluate("model < 'TX-300'", n, TOPO)
 
 
-@pytest.mark.xfail(strict=False, reason="break test B11: one malformed predicate in the store raises out of get_context for every entity")
 def test_b11_bad_predicate_does_not_break_get_context(tmp_path):
     good = bounce(id="CA-0001")
     bad = bounce(id="CA-0002", action="sfp.replace", text="x", cands=[("install_year == '2019'", "closed")])
@@ -323,14 +316,12 @@ def test_b13_by_entity_counts_eliminated_candidates(tmp_path):
 
 # ---------- B14: graph with a site not in topology / negated predicates ----------
 
-@pytest.mark.xfail(strict=False, reason="break test B14: a site outside the topology is drawn as kind 'node'")
 def test_b14_graph_unknown_site_kind(tmp_path):
     g = mkstore(tmp_path, barrier(id="CA-0001", site="OULU-99")).graph(TOPO)
     n = next(x for x in g["nodes"] if x["id"] == "OULU-99")
-    assert n["kind"] == "site", n
+    assert n["kind"] == "unknown", n  # fixed: an entity outside the topology is not claimed to be a node
 
 
-@pytest.mark.xfail(strict=False, reason="break test B14: scope_target ignores the operator; site != 'X' is drawn as SCOPED_BY X")
 def test_b14_graph_negated_predicate(tmp_path):
     g = mkstore(tmp_path, bounce(cands=[("site != 'OULU-07'", "closed")])).graph(TOPO)
     assert not any(e["kind"] == "SCOPED_BY" and e["to"] == "OULU-07" for e in g["edges"])
@@ -371,12 +362,10 @@ def test_b15_threaded_answers(tmp_path):
 
 # ---------- B16: next_id after CA-9999 ----------
 
-@pytest.mark.xfail(strict=False, reason="break test B16: next_id after CA-9999 gives CA-10000, which the id pattern rejects")
 def test_b16_next_id_overflow(tmp_path):
     bounce(id=mkstore(tmp_path, bounce(id="CA-9999")).next_id())
 
 
-@pytest.mark.xfail(strict=False, reason="break test B16: merge after CA-9999 assigns CA-10000 without validation")
 def test_b16_merge_id_overflow():
     for a in merge([bounce(id="CA-9999")], bounce(id="CA-0000", action="sfp.replace", text="replace"), TOPO):
         Assertion.model_validate(a.model_dump())
@@ -384,7 +373,6 @@ def test_b16_merge_id_overflow():
 
 # ---------- B17: valid_to before valid_from ----------
 
-@pytest.mark.xfail(strict=False, reason="break test B17: the model accepts valid_to < valid_from")
 def test_b17_valid_to_before_valid_from():
     with pytest.raises(ValueError):
         bounce(at="2026-11-01T09:00:00+02:00", valid_to="2026-10-01T09:00:00+02:00")
@@ -400,7 +388,6 @@ def test_b18_boundaries(tmp_path):
     assert ctx(s, "TRN-042", at=datetime(2026, 11, 1, 9, tzinfo=H))[0].outcome == "proposed"     # exactly valid_from
 
 
-@pytest.mark.xfail(strict=False, reason="break test B18: a naive at_time raises TypeError (aware vs naive compare) instead of a clear error")
 def test_b18_naive_at_time(tmp_path):
     s = mkstore(tmp_path, bounce())
     try:
@@ -417,10 +404,10 @@ def test_b19_workflow_ignores_symptoms(tmp_path):
     assert ctx(s, "OULU-03", symptoms=["link_down", "counters_rising"], event="dispatch_created")[0].outcome == "proposed"
 
 
-@pytest.mark.xfail(strict=False, reason="break test B19: an incident rule on a site entity is 'ambiguous' and asks the expert a nonsense question")
 def test_b19_incident_rule_on_site_entity(tmp_path):
     r = ctx(mkstore(tmp_path, bounce()), "OULU-07")[0]
     assert r.outcome == "declined" and r.question is None, f"{r.outcome}: {r.reason} | {r.question and r.question.text}"
+    assert r.reason == "entity type site does not match transmission_node"
 
 
 # ---------- B20: merge never matches a superseded assertion ----------
@@ -453,7 +440,6 @@ def test_b22_answer_without_question(tmp_path):
         answer(mkstore(tmp_path, bounce()), "CA-0001", 0, TOPO)
 
 
-@pytest.mark.xfail(strict=False, reason="break test B22: answer() for an assertion missing from the store raises AttributeError")
 def test_b22_answer_assertion_not_in_store(tmp_path):
     pending(mkstore(tmp_path, bounce()))
     with pytest.raises(ValueError):

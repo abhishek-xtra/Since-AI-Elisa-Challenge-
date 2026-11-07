@@ -4,7 +4,7 @@ from datetime import datetime
 from contracts.models import Assertion, Case, Topology
 from contracts.vocabulary import CaseOutcome
 from extractor.trust import merged_trust
-from extractor.vote import vote
+from extractor.vote import fail_duplicate, vote
 
 
 def record_outcome(store, topology: Topology, assertion_id: str, entity_id: str, outcome: CaseOutcome,
@@ -17,10 +17,10 @@ def record_outcome(store, topology: Topology, assertion_id: str, entity_id: str,
     if dup is None:
         a.evidence.cases.append(Case(entity=entity_id, at=at, outcome=outcome))
         vote(a, entity_id, outcome, topology)
+    elif outcome == "failed" and dup.outcome != "failed":
+        fail_duplicate(a, dup, topology)  # None -> failed or recovered -> failed: the failure counts
     elif dup.outcome is None:
         dup.outcome = outcome  # same incident, now with its outcome; no second vote (as in merge)
-        if outcome == "failed":
-            a.status = "review"
     a.trust = merged_trust(a.evidence.cases, a.trust)
     store.put(a)
     return a

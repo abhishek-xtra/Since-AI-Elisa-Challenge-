@@ -4,9 +4,12 @@ from contracts.models import Assertion
 
 
 def supersede(old: Assertion, new: Assertion) -> bool:
-    """New replaces old unless new is a hunch. Both are kept; nothing is deleted. Returns whether it superseded."""
+    """The later-dated fact replaces the earlier one unless the arriving one is a hunch. Both are kept; nothing is
+    deleted. An older fact that arrives late is the one superseded, so valid_to is never before valid_from."""
     if new.trust == "hunch":
         return False
+    if new.valid_from < old.valid_from:
+        old, new = new, old
     new.supersedes = old.id
     old.superseded_by = new.id
     old.valid_to = new.valid_from
