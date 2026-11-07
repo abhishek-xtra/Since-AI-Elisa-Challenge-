@@ -92,13 +92,16 @@ export function adviceSentence(a: Assertion): string {
   return `${doText.replace(/[.\s]+$/, "")}.${tail}`;
 }
 
+// Day and time as written in the data: the backend's "09:14+02:00" is 09:14 in Finland, not 07:14.
+const wallClock = (iso: string) => new Date(/^\d{4}-\d\d-\d\dT\d\d:\d\d/.test(iso) ? `${iso.slice(0, 16)}Z` : iso);
+
 export function formatDay(iso: string): string {
-  const d = new Date(iso);
+  const d = wallClock(iso);
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
 }
 
 export function formatTime(iso: string): string {
-  const d = new Date(iso);
+  const d = wallClock(iso);
   return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
 }
 

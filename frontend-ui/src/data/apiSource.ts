@@ -1,4 +1,5 @@
 // Talks to the backend's api/app.py (BACKEND_PROMPT section 8). Same shapes as the out/ files.
+import { adaptAssertion, adaptBeat, adaptGraph, adaptResult, adaptThread } from "./adapt";
 import type { Assertion, Beat, ChatReply, ContextResult, DataSource, Graph, Thread } from "./types";
 
 /** Thrown when an optional backend endpoint (B3, B4, beats) does not exist. */
@@ -21,21 +22,24 @@ export function createApiSource(baseUrl: string, fetchImpl: FetchLike = (...a) =
   }
 
   let assertionsCache: Promise<Assertion[]> | null = null;
-  const allAssertions = () => (assertionsCache ??= call<Assertion[]>("/assertions").catch((e) => {
+  const allAssertions = () => (assertionsCache ??= call<Assertion[]>("/assertions").then((all) => all.map(adaptAssertion)).catch((e) => {
     assertionsCache = null;
     throw e;
   }));
 
   return {
-    getGraph: () => call<Graph>("/graph"),
-    getThread: (id) => call<Thread>(`/threads/${encodeURIComponent(id)}`),
+    getGraph: () => call<Graph>("/graph").then(adaptGraph),
+    getThread: (id) => call<Thread>(`/threads/${encodeURIComponent(id)}`).then(adaptThread),
     async getAssertion(id) {
       const found = (await allAssertions()).find((a) => a.id === id);
       if (!found) throw new Error(`No assertion ${id}`);
       return found;
     },
-    reportIncident: (args) =>
-      call<{ results: ContextResult[]; agent_text: string }>("/incident", { method: "POST", body: JSON.stringify(args) }),
+    async reportIncident(args) {
+      const r = await call<{ results: ContextResult[]; agent_text: string }>("/incident", { method: "POST", body: JSON.stringify(args) });
+      assertionsCache = null;
+      return { ...r, results: r.results.map(adaptResult) };
+    },
     async answer(assertion_id, option_index) {
       await call<unknown>("/answer", { method: "POST", body: JSON.stringify({ assertion_id, option_index }) });
       assertionsCache = null;
@@ -48,11 +52,11 @@ export function createApiSource(baseUrl: string, fetchImpl: FetchLike = (...a) =
     },
     async getBeat(n) {
       try {
-        return await call<Beat>(`/beats/${n}`);
+        return adaptBeat(await call<Beat>(`/beats/${n}`));
       } catch (e) {
         if (!(e instanceof NotAvailable)) throw e;
         // Fallback: the backend's out/beat_N.json copied into frontend-ui/public/out/.
-        return call<Beat>(`/out/beat_${n}.json`, undefined, `/out/beat_${n}.json`);
+        return adaptBeat(await call<Beat>(`/out/beat_${n}.json`, undefined, `/out/beat_${n}.json`));
       }
     },
   };

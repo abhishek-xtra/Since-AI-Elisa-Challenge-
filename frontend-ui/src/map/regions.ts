@@ -39,11 +39,12 @@ export const ALAND: RegionInfo = { key: "aland", name: "Åland", fi: "Ahvenanmaa
 
 /** Older or broader values still work: they get a name and a place, but no cell. */
 const AREAS: RegionInfo[] = [
-  { key: "north", name: "Northern Finland", fi: "Pohjois-Suomi", at: [26.9, 67.4] },
-  { key: "south", name: "Southern Finland", fi: "Etelä-Suomi", at: [26.2, 61.2] },
   { key: "east", name: "Eastern Finland", fi: "Itä-Suomi", at: [29.0, 62.6] },
   { key: "west", name: "Western Finland", fi: "Länsi-Suomi", at: [22.6, 62.6] },
 ];
+
+/** The demo backend's region values are fixed at "north" (the Oulu sites) and "south" (Helsinki): light those regions. */
+export const REGION_ALIASES: Record<string, string> = { north: "north_ostrobothnia", south: "uusimaa" };
 
 const fold = (s: string) =>
   s
@@ -58,7 +59,8 @@ for (const r of [...REGIONS, ALAND, ...AREAS]) for (const k of [r.key, r.name, r
 
 /** Finds a region by its key, English name or Finnish name, ignoring case and accents. */
 export function findRegion(value: string): RegionInfo | undefined {
-  return INDEX.get(fold(value.replace(/^region:/, "")));
+  const key = fold(value.replace(/^region:/, ""));
+  return INDEX.get(REGION_ALIASES[key] ?? key);
 }
 
 // ---------- approximate borders ----------

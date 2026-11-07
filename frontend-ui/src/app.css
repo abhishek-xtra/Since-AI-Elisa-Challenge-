@@ -1653,6 +1653,7 @@ button.count-badge:active,
   border: 1px solid var(--line-strong);
   font-size: 12px;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 /* ---------- reduced motion: final states, no movement ---------- */
@@ -1802,4 +1803,122 @@ button.count-badge:active,
 .zoom-controls .zoom-fit {
   font-size: 12px;
   font-weight: 600;
+}
+
+/* ---------- beat replay on the map: context growing over time ---------- */
+
+/* A candidate scope: dashed and faint until the expert's answer decides it. */
+.edge-scope {
+  stroke: var(--context);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+  opacity: 0.55;
+  animation: fade-in var(--dur-slow) var(--ease-out) both;
+}
+
+/* A tip that no longer applies (replaced, expired, under review) fades and keeps a small label. */
+.tip-node {
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+.tip-node.stale {
+  opacity: 0.45;
+}
+
+.tip-node.stale .tip-dot {
+  background: var(--net);
+  box-shadow: none;
+  animation: none;
+}
+
+.tip-node.stale .tip-label {
+  color: var(--text-muted);
+  font-weight: 400;
+  text-decoration: line-through;
+  text-decoration-color: var(--line-strong);
+}
+
+.tip-stale {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* The incident device, declined or with nothing to add: dimmed dot, the reason under it in full. */
+.net-node.dim .net-dot,
+.net-node.dim .net-label,
+.net-node.dim .net-sublabel {
+  opacity: 0.4;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+.net-note {
+  margin-top: 4px;
+  max-width: 280px;
+  width: max-content;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  color: var(--text);
+  font-size: var(--fs-small);
+  text-align: center;
+  white-space: normal;
+  animation: pop-in var(--dur) var(--ease-out) both;
+}
+
+/* The timeline: Play, then one step per beat. */
+.beat-controls.timeline {
+  flex-wrap: wrap;
+  max-width: calc(100vw - 2 * var(--s4));
+}
+
+.beat-steps {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.beat-steps li {
+  display: flex;
+  align-items: center;
+}
+
+/* The line between steps fills in as the beats pass. */
+.beat-steps li + li::before {
+  content: "";
+  width: 14px;
+  height: 2px;
+  background: var(--line-strong);
+  transition: background var(--dur) var(--ease-out);
+}
+
+.beat-steps li.done::before {
+  background: var(--context);
+}
+
+.beat-controls .beat-step {
+  min-width: 32px;
+  padding: 0;
+  border-radius: var(--radius-round);
+  color: var(--text-muted);
+  transition: background var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+
+.beat-controls li.done .beat-step {
+  border-color: var(--context);
+  color: var(--context-text);
+}
+
+.beat-controls .beat-step[aria-current="step"] {
+  background: var(--context);
+  border-color: var(--context);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+.beat-controls.timeline .beat-label {
+  max-width: 320px;
 }

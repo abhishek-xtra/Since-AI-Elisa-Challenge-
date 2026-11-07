@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BeatControls } from "../components/BeatControls";
 import { CheckIcon, NetworkIcon } from "../components/Icons";
 import { getSource, loadAssertions } from "../data";
+import { beatState, loadBeats, threadAtBeat } from "../data/adapt";
 import { adviceSentence, formatDay, formatTime, normalise } from "../data/derive";
 import type { Assertion, Beat, ContextResult, Notification, Thread, ThreadItem } from "../data/types";
 import { useQuery } from "../router";
@@ -15,22 +16,33 @@ interface Loaded {
   thread: Thread;
   assertions: Assertion[];
   beat: Beat | null;
+  beats: Beat[];
 }
 
 async function load(id: string, beatN: number): Promise<Loaded> {
   const src = getSource();
-  if (beatN && src.getBeat) {
-    const beat = await src.getBeat(beatN);
-    const thread = beat.thread && beat.thread.thread_id === id ? beat.thread : await src.getThread(id);
-    return { thread, assertions: beat.assertions, beat };
+  const beats = await loadBeats(src);
+  const s = beatN ? beatState(beats, beatN) : null;
+  if (s) {
+    const beat = s.beat;
+    const thread = beat.thread && beat.thread.thread_id === id ? beat.thread : threadAtBeat(await src.getThread(id), beats, beatN);
+    return { thread, assertions: s.assertions, beat, beats };
   }
   const [thread, assertions] = await Promise.all([src.getThread(id), loadAssertions(src)]);
-  return { thread, assertions, beat: null };
+  return { thread, assertions, beat: null, beats };
 }
 
 /** Message id → the tips whose excerpt it holds. One line per tip, on one message only. */
 export function captureLines(thread: Thread, assertions: Assertion[]): Map<string, Assertion[]> {
   const out = new Map<string, Assertion[]>();
+  if (thread.captured) {
+    // Real backend: it names the message, so nothing is guessed.
+    for (const c of thread.captured) {
+      const a = assertions.find((x) => x.id === c.assertion_id);
+      if (a) out.set(c.message_id, [...(out.get(c.message_id) ?? []), a]);
+    }
+    return out;
+  }
   const messages = thread.items.filter((i): i is MessageItem => i.type === "message");
   for (const a of assertions) {
     if (!a.evidence.sources.some((s) => s === `teams:${thread.thread_id}` || s === thread.thread_id)) continue;
@@ -99,7 +111,7 @@ function QuestionCard({
           <p className="question-text">{item.text}</p>
           {answered ? (
             <p className="question-answered pop">
-              <CheckIcon /> Answered: {answered.label}
+              <CheckIcon /> {answered.label ? `Answered: ${answered.label}` : "Answered"}
             </p>
           ) : (
             <>
@@ -190,12 +202,15 @@ export function ThreadPage({ id }: { id: string }) {
 
   // Beat notifications appear once that beat's question has been answered.
   const beatQuestionsAnswered = thread.items.every((i) => i.type !== "question" || answerOf(i));
-  const extraNotices: Notification[] = beat && beatQuestionsAnswered ? (beat.notifications ?? []) : [];
+  // A real (cumulative) thread already holds its notifications; this beat's own wait for the answer.
+  const extraNotices: Notification[] = beat && beatQuestionsAnswered && !thread.cumulative ? (beat.notifications ?? []) : [];
+  const waiting = (item: ThreadItem) => item.type === "notification" && item.beat === beatN && !beatQuestionsAnswered;
   const findResult = (n: Notification) => beat?.results?.find((r) => resultId(r) === n.assertion_id);
 
   let lastDay = "";
   const rows: JSX.Element[] = [];
   thread.items.forEach((item, idx) => {
+    if (waiting(item)) return;
     const at = itemDate(item);
     const day = at ? formatDay(at) : "";
     if (day && day !== lastDay) {
@@ -230,7 +245,7 @@ export function ThreadPage({ id }: { id: string }) {
           </div>
         ))}
       </div>
-      <BeatControls title={beat?.title} />
+      <BeatControls title={beat?.title} beats={state.value.beats} />
     </main>
   );
 }

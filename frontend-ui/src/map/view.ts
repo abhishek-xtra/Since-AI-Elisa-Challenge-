@@ -1,5 +1,5 @@
 // Chooses what is in view and counts badges (FRONTEND_PROMPT 5.3). Pure, so it is easy to test.
-import { attachments, formatDay, isHunch, isLive, labelFor, regionId, scopeHolds, withNetworkEdges } from "../data/derive";
+import { attachments, boundTargets, formatDay, isHunch, isLive, labelFor, regionId, scopeHolds, withNetworkEdges } from "../data/derive";
 import type { Assertion, Graph, GraphNode } from "../data/types";
 import { findRegion } from "./regions";
 
@@ -26,12 +26,18 @@ export interface ViewNode {
   tip?: Assertion;
   hunch?: boolean;
   badge?: Badge;
+  /** Beat replay: a tip that no longer applies (replaced, expired, under review) stays, faded, with this word. */
+  stale?: string;
+  /** Beat replay: what the beat decided for this device, shown under it; dimmed when it was declined. */
+  note?: string;
+  dim?: boolean;
 }
 
 export interface ViewEdge {
   from: string;
   to: string;
-  kind: "net" | "tip" | "badge";
+  /** "scope": a tip's candidate scope, drawn until the expert's answer decides it. */
+  kind: "net" | "tip" | "scope" | "badge";
 }
 
 export interface MapView {
@@ -46,6 +52,8 @@ export interface ViewOptions {
   showHunches: boolean;
   expanded: string[];
   at: Date;
+  /** Beat replay: keep tips that no longer apply, marked stale, instead of dropping them. */
+  keepStale?: boolean;
 }
 
 const NET_KINDS = new Set(["IN_SITE", "IN_REGION", "OF_MODEL"]);
@@ -98,8 +106,16 @@ function siteOfEntity(g: Graph, id: string): string | undefined {
   return undefined;
 }
 
-export function visibleTips(assertions: Assertion[], showHunches: boolean, at: Date) {
-  return assertions.filter((a) => isLive(a, at) && (showHunches || !isHunch(a)));
+export function visibleTips(assertions: Assertion[], showHunches: boolean, at: Date, keepStale = false) {
+  return assertions.filter((a) => (keepStale || isLive(a, at)) && (showHunches || !isHunch(a)));
+}
+
+/** Why a tip no longer applies, in one word, or undefined while it does. */
+export function staleWord(a: Assertion, at: Date): string | undefined {
+  if (a.superseded_by) return "Replaced";
+  if (!isLive(a, at)) return "Expired";
+  if (a.status === "review") return "Under review";
+  return undefined;
 }
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -151,7 +167,7 @@ export function localView(graph: Graph, assertions: Assertion[], opts: ViewOptio
   }
   for (const e of g.edges) if (NET_KINDS.has(e.kind) && inView.has(e.from) && inView.has(e.to)) edges.push({ from: e.from, to: e.to, kind: "net" });
 
-  const candidates = visibleTips(assertions, opts.showHunches, opts.at);
+  const candidates = visibleTips(assertions, opts.showHunches, opts.at, opts.keepStale);
   const shown: Assertion[] = [];
   const outside: Assertion[] = [];
   for (const a of candidates) {
@@ -162,13 +178,16 @@ export function localView(graph: Graph, assertions: Assertion[], opts: ViewOptio
       continue;
     }
     shown.push(a);
-    nodes.push({ id: a.id, kind: "tip", label: labelFor(a), tip: a, hunch: isHunch(a) });
+    nodes.push({ id: a.id, kind: "tip", label: labelFor(a), tip: a, hunch: isHunch(a), stale: staleWord(a, opts.at) });
     const targets = att.length ? att : [opts.focus];
-    for (const t of targets) edges.push({ from: a.id, to: t, kind: "tip" });
+    // Undecided scope: the edges that only exist through a candidate predicate are drawn as candidates.
+    const scope = a.applies_to.decided ? [] : boundTargets(a);
+    const cased = new Set(a.evidence.cases.map((c) => c.entity));
+    for (const t of targets) edges.push({ from: a.id, to: t, kind: scope.includes(t) && !cased.has(t) ? "scope" : "tip" });
   }
 
   // Only devices that matter get a text label: the focus, and devices where a tip was used.
-  const tipEnds = new Set(edges.filter((e) => e.kind === "tip").map((e) => e.to));
+  const tipEnds = new Set(edges.filter((e) => e.kind === "tip" || e.kind === "scope").map((e) => e.to));
   for (const n of nodes) {
     if (n.kind !== "device" || n.focus) continue;
     if (!tipEnds.has(n.id)) {

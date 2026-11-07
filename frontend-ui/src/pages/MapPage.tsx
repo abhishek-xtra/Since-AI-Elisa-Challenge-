@@ -3,6 +3,7 @@ import { BeatControls } from "../components/BeatControls";
 import { ChatPanel } from "../components/ChatPanel";
 import { TipCard } from "../components/TipCard";
 import { getSource, loadAssertions } from "../data";
+import { beatFocus, beatState, loadBeats } from "../data/adapt";
 import { labelFor } from "../data/derive";
 import type { Assertion, Beat, ChatReply, ContextResult, Graph } from "../data/types";
 import { ZoomControls } from "../components/ZoomControls";
@@ -19,25 +20,36 @@ export const DEFAULT_FOCUS = "TRN-087";
 interface Loaded {
   graph: Graph;
   assertions: Assertion[];
-  beat: Beat | null;
+  /** Every beat, loaded once, so stepping through them is instant. */
+  beats: Beat[];
 }
 
-async function load(beatN: number): Promise<Loaded> {
+async function load(): Promise<Loaded> {
   const src = getSource();
   const graph = await src.getGraph();
-  if (beatN && src.getBeat) {
-    const beat = await src.getBeat(beatN);
-    // A beat is a snapshot: drop the graph's current assertion edges and use the beat's assertions.
-    const ids = new Set(graph.nodes.filter((n) => n.kind === "assertion").map((n) => n.id));
-    return { graph: { nodes: graph.nodes, edges: graph.edges.filter((e) => !ids.has(e.from)) }, assertions: beat.assertions, beat };
-  }
-  return { graph, assertions: await loadAssertions(src, graph), beat: null };
+  const [assertions, beats] = await Promise.all([loadAssertions(src, graph), loadBeats(src)]);
+  return { graph, assertions, beats };
+}
+
+/** What the map shows: live, or the cumulative state at a beat. */
+function atBeat(loaded: Loaded, beatN: number) {
+  const s = beatN ? beatState(loaded.beats, beatN) : null;
+  if (!s) return { graph: loaded.graph, assertions: loaded.assertions, beat: null, at: new Date() };
+  // A beat is a snapshot: drop the graph's current assertion edges and use the beat's assertions.
+  const ids = new Set(loaded.graph.nodes.filter((n) => n.kind === "assertion").map((n) => n.id));
+  const graph = { nodes: loaded.graph.nodes, edges: loaded.graph.edges.filter((e) => !ids.has(e.from)) };
+  return { graph, assertions: s.assertions, beat: s.beat, at: s.at };
 }
 
 const resultId = (r: ContextResult) => (typeof r.assertion === "string" ? r.assertion : r.assertion.id);
 
-function beatFocus(beat: Beat): string | undefined {
-  return beat.incident?.entity_id ?? beat.assertions[0]?.evidence.cases[0]?.entity;
+/** The beat's verdict for its incident device: the decline reason (dimmed), or "nothing to add" when no tip applied. */
+function verdict(beat: Beat): { note: string; dim: boolean } | null {
+  if (!beat.incident || !beat.results) return null;
+  if (beat.results.some((r) => r.outcome === "proposed")) return null;
+  const declined = beat.results.find((r) => r.outcome === "declined");
+  if (declined) return { note: declined.reason, dim: true };
+  return beat.agent_text ? { note: beat.agent_text, dim: false } : null;
 }
 
 function useWindowSize() {
@@ -68,8 +80,8 @@ function NodeView({
     return (
       <button
         type="button"
-        className={`tip-node${n.hunch ? " hunch" : ""}${selected ? " selected" : ""}${highlighted ? " ring" : ""}`}
-        aria-label={n.label}
+        className={`tip-node${n.hunch ? " hunch" : ""}${n.stale ? " stale" : ""}${selected ? " selected" : ""}${highlighted ? " ring" : ""}`}
+        aria-label={n.stale ? `${n.label} (${n.stale})` : n.label}
         aria-expanded={selected}
         onClick={(e) => {
           e.stopPropagation();
@@ -79,6 +91,7 @@ function NodeView({
         <span className="tip-dot" aria-hidden="true" />
         <span className="node-text" aria-hidden="true">
           <span className="tip-label">{n.label}</span>
+          {n.stale && <span className="tip-stale">{n.stale}</span>}
         </span>
       </button>
     );
@@ -113,11 +126,12 @@ function NodeView({
     );
   const hub = n.kind !== "device";
   return (
-    <div className={`net-node${hub ? " hub" : ""}${n.focus ? " focus" : ""}${n.quiet ? " quiet" : ""}`} title={n.title}>
+    <div className={`net-node${hub ? " hub" : ""}${n.focus ? " focus" : ""}${n.quiet ? " quiet" : ""}${n.dim ? " dim" : ""}`} title={n.title}>
       <span className={`net-dot${hub ? " hub" : ""}`} aria-hidden="true" />
       <span className="node-text">
         <span className="net-label">{n.label}</span>
         {n.sublabel && <span className="net-sublabel">{n.sublabel}</span>}
+        {n.note && <span className="net-note">{n.note}</span>}
       </span>
     </div>
   );
@@ -133,17 +147,18 @@ export function MapPage() {
   const q = useQuery();
   const beatN = Number(q.get("beat")) || 0;
   const zoomedOut = q.get("zoom") === "out";
-  const [state, reload] = useAsync(() => load(beatN), String(beatN));
+  const [state, reload] = useAsync(load, "map");
   const [showHunches, setShowHunches] = useState(false);
   const [expanded, setExpanded] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [highlighted, setHighlighted] = useState<string[]>([]);
   const { w, h } = useWindowSize();
 
-  const loaded = state.status === "ready" ? state.value : null;
+  const all = state.status === "ready" ? state.value : null;
+  const loaded = useMemo(() => (all ? atBeat(all, beatN) : null), [all, beatN]);
   const beat = loaded?.beat ?? null;
   const focus = (beat && beatFocus(beat)) || q.get("focus") || DEFAULT_FOCUS;
-  const at = useMemo(() => (beat ? new Date(beat.at_time) : new Date()), [beat]);
+  const at = loaded?.at ?? new Date();
 
   useEffect(() => setExpanded([]), [focus, zoomedOut]);
   useEffect(() => {
@@ -164,21 +179,26 @@ export function MapPage() {
   const view: MapView | null = useMemo(() => {
     if (!loaded) return null;
     if (zoomedOut) return regionView(loaded.graph, loaded.assertions, { showHunches, at });
-    return localView(loaded.graph, loaded.assertions, { focus, showHunches, expanded, at });
-  }, [loaded, zoomedOut, focus, showHunches, expanded, at]);
+    const v = localView(loaded.graph, loaded.assertions, { focus, showHunches, expanded, at, keepStale: !!beat });
+    const said = beat && verdict(beat);
+    const f = v.nodes.find((n) => n.id === focus);
+    if (said && f) Object.assign(f, said);
+    return v;
+  }, [loaded, zoomedOut, focus, showHunches, expanded, at, beat]);
 
   // Lay out with hunches included, so turning the toggle on or off never moves anything.
   const layoutView: MapView | null = useMemo(() => {
     if (!loaded) return null;
     if (zoomedOut) return regionView(loaded.graph, loaded.assertions, { showHunches: true, at });
-    return localView(loaded.graph, loaded.assertions, { focus, showHunches: true, expanded, at });
-  }, [loaded, zoomedOut, focus, expanded, at]);
+    return localView(loaded.graph, loaded.assertions, { focus, showHunches: true, expanded, at, keepStale: !!beat });
+  }, [loaded, zoomedOut, focus, expanded, at, beat]);
   // World coordinates: the focus sits at (0, 0); zoom and drag move the whole world.
   const positions = useMemo(() => (layoutView && !zoomedOut ? layout(layoutView) : new Map<string, { x: number; y: number }>()), [layoutView, zoomedOut]);
 
   // Each new level or focus re-mounts the canvas. It blooms out from the focus,
   // unless it arrived through a zoom transition, which already carries the motion.
-  const canvasKey = `${zoomedOut}|${focus}|${beatN}`;
+  // Not keyed by beat: stepping beats on one device keeps the map, and only new tips and edges grow in.
+  const canvasKey = `${zoomedOut}|${focus}`;
   const bloom = useMemo(() => !(document.documentElement.dataset.transition ?? "").startsWith("zoom"), [canvasKey]);
   // Nodes that appear later (an expanded badge) grow out of the badge that was clicked.
   const spawnRef = useRef<{ key: string; x: number; y: number } | null>(null);
@@ -204,7 +224,7 @@ export function MapPage() {
         <p className="map-status" role="alert">Couldn't load the map. {state.error.message}</p>
       </main>
     );
-  if (!view || !loaded) return null;
+  if (!view || !loaded || !all) return null;
 
   const selectedTip = view.tips.find((t) => t.id === selected) ?? null;
   const tipAt = selectedTip ? positions.get(selectedTip.id) : undefined;
@@ -365,7 +385,7 @@ export function MapPage() {
 
       <div onClick={(e) => e.stopPropagation()}>
         <ChatPanel onReply={onReply} />
-        <BeatControls title={beat?.title} />
+        <BeatControls title={beat?.title} beats={all.beats} timeline />
       </div>
     </main>
   );

@@ -118,7 +118,7 @@ export interface Assertion {
 // ---- 4.6 / 5.4 get_context ----
 export interface QuestionOption {
   label: string;
-  sets_decided: string;
+  sets_decided: string | null;
 }
 
 export interface Question {
@@ -127,6 +127,9 @@ export interface Question {
   thread_id: string;
   text: string;
   options: QuestionOption[];
+  /** Real backend: identifies a question across beat and thread files. */
+  key?: string;
+  entity_id?: string;
 }
 
 export interface ContextResult {
@@ -172,18 +175,24 @@ export interface Graph {
 
 // ---- section 8: out/thread_<id>.json ----
 // "The messages of a thread plus any question and notification targeting it, in display order."
-export type ThreadItem =
+// Real backend: replay (adapt.ts threadAtBeat) marks questions and notifications with the beat they belong to.
+export type ThreadItem = (
   | ({ type: "message" } & Message)
   | ({ type: "question" } & Question & {
       at?: string;
       answer?: { option_index: number; label: string; at?: string } | null;
     })
-  | ({ type: "notification" } & Notification & { result?: ContextResult });
+  | ({ type: "notification" } & Notification & { result?: ContextResult })
+) & { beat?: number };
 
 export interface Thread {
   thread_id: string;
   participants?: string[];
   items: ThreadItem[];
+  /** Real backend: the message whose text holds each tip's excerpt. */
+  captured?: { message_id: string; assertion_id: string }[];
+  /** Real backend: the file is the final state after all beats, so replay filters it (adapt.ts threadAtBeat). */
+  cumulative?: boolean;
 }
 
 // ---- section 8: out/beat_N.json ("everything printed in that beat, as data") ----
@@ -198,6 +207,9 @@ export interface Beat {
   thread_id?: string;
   thread?: Thread;
   notifications?: Notification[];
+  /** Real backend: the question this beat asked, and the tap that answered it. */
+  question?: Question;
+  answer?: { option_index: number };
 }
 
 // ---- POST /chat (addendum B4) ----

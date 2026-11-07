@@ -97,7 +97,10 @@ describe("Finland map", () => {
     expect(findRegion("region:north_ostrobothnia")?.name).toBe("North Ostrobothnia");
     expect(findRegion("Pohjois-Pohjanmaa")?.key).toBe("north_ostrobothnia");
     expect(findRegion("Päijät-Häme")?.key).toBe("paijat_hame");
-    expect(findRegion("north")?.name).toBe("Northern Finland"); // older broad values still read well
+    // The demo backend's fixed values: "north" lights North Ostrobothnia, "south" Uusimaa.
+    expect(findRegion("north")?.key).toBe("north_ostrobothnia");
+    expect(findRegion("region:south")?.key).toBe("uusimaa");
+    expect(findRegion("east")?.name).toBe("Eastern Finland"); // older broad values still read well
     expect(findRegion("atlantis")).toBeUndefined();
     const cells = regionCells();
     expect(cells.size).toBe(REGIONS.length);

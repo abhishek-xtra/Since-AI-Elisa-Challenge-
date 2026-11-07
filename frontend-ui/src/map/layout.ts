@@ -20,7 +20,7 @@ const STARTS = 40;
 
 /** Room each kind of node needs, label included. */
 const RADIUS: Record<ViewNodeKind, number> = { badge: 84, tip: 64, device: 46, site: 58, region: 58, model: 50 };
-const LINK: Record<string, number> = { tip: 110, badge: 160, net: 120 };
+const LINK: Record<string, number> = { tip: 110, scope: 110, badge: 160, net: 120 };
 
 // ---------- geometry ----------
 
