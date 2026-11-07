@@ -9,10 +9,10 @@ Written Friday 6 November 2026, ~22:30 (Helsinki), by Abhishek's Claude.
 - Elisa's brief (PDF)
 - Elisa's example pack: `use_case.md`, `teams_chat.json`, `email.txt`, `reference_architecture.png`
 
-**Not read:** Joni's pitch deck with speaker notes, which REVIEW_MIKAEL cites. It is not in Abhishek's folder or this repo. Mikael, please add it, or a summary of it, to the repo, which is private.
+**Not read:** the AI architect's pitch deck with speaker notes, which REVIEW_MIKAEL cites. It is not in Abhishek's folder or this repo. Mikael, please add it, or a summary of it, to the repo, which is private.
 
 **How this was made:**
-- **The `elisa-hackathon-judge` skill:** a three-judge panel (Joni, Matti, a neutral judge) scoring against Elisa's criteria.
+- **The `elisa-hackathon-judge` skill:** a three-judge panel (The AI architect, the head of operations, a neutral judge) scoring against Elisa's criteria.
 - **Product brainstorming in assumption-testing mode:** listing every assumption and finding the riskiest one.
 - **A pre-mortem in Gary Klein's style:** "it's Sunday 13:00 and we didn't place, why?" This was applied inline from the arn-spark pre-mortem method, because there is no product-concept file for the full pipeline.
 
@@ -56,9 +56,9 @@ This was filled before comparing with REVIEW_MIKAEL. It largely agrees.
 
 ## 3. Judge panel: the merged plan as planned (nothing is built yet)
 
-**Joni (AI architect):** "Trigger plus `applies_to` plus `avoid` is exactly how I'd want an assertion to look, and abstaining on 'older units' instead of guessing shows they understood that a wrong link is worse than none. The decline on TRN-101 makes the filter credible. I'll want to know how this maps to *our* graph entities. If their topology schema is invented without asking us, that's a gap."
+**The AI architect (AI architect):** "Trigger plus `applies_to` plus `avoid` is exactly how I'd want an assertion to look, and abstaining on 'older units' instead of guessing shows they understood that a wrong link is worse than none. The decline on TRN-101 makes the filter credible. I'll want to know how this maps to *our* graph entities. If their topology schema is invented without asking us, that's a gap."
 
-**Matti (autonomous ops):** "Erkki doing nothing and tapping once is what I asked for. The 'your tip was used today' message is a nice touch for the people side. I want to see the barrier: that's the one that actually stopped a dispatch. If it's missing or just a slide, I'll notice."
+**The head of operations (autonomous ops):** "Erkki doing nothing and tapping once is what I asked for. The 'your tip was used today' message is a nice touch for the people side. I want to see the barrier: that's the one that actually stopped a dispatch. If it's missing or just a slide, I'll notice."
 
 **Neutral judge:** "The 'agent says reboot' to 'agent says bounce, cites Erkki' flip is a clear wow moment. My worry is that a three-hour review window with many teams means I'll remember the video, not the README. If the video is a terminal recording with a voiceover, it blends in."
 
@@ -75,7 +75,7 @@ This was filled before comparing with REVIEW_MIKAEL. It largely agrees.
 
 **Top 3 fixes, ranked by points per hour:**
 1. **Check Mikael's transcript of Elisa's briefing** (15 minutes, once it's in the repo). Look for what their graph entity types and IDs look like, whether one in-thread question is OK, and any video length limit. Only ask on Discord about what the transcript doesn't answer. This de-risks usability and feasibility at almost no cost.
-2. **Barrier case in the core demo** (about 1–2 hours of agent time plus one synthetic email and site record). This lifts relevance and Matti's impression.
+2. **Barrier case in the core demo** (about 1–2 hours of agent time plus one synthetic email and site record). This lifts relevance and the head of operations's impression.
 3. **Script the video before building screens** (about 1 hour on Saturday morning). This lifts demo clarity and keeps the build aimed at what will be shown.
 
 **Hard questions they'll likely ask:**

@@ -1,4 +1,4 @@
-// Turns the backend's real out/ shapes (docs/TEAMS_CLONE_HANDOFF.md section 2 in the backend repo) into
+// Turns the backend's real out/ shapes (docs/process/TEAMS_CLONE_HANDOFF.md section 2 in the backend repo) into
 // the types this UI was built on. Every function passes the mock shapes through unchanged.
 import type { Assertion, Beat, ContextResult, DataSource, Graph, Notification, Question, Thread, ThreadItem } from "./types";
 

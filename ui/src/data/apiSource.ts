@@ -1,7 +1,7 @@
 import type { DataSource } from './types';
 import { fillerThreads, reportThreads, topologyData } from './fixtures';
 
-/** Calls the backend routes of docs/TEAMS_CLONE_HANDOFF.md 2.5. Filler chats, reports and topology stay local. */
+/** Calls the backend routes of docs/process/TEAMS_CLONE_HANDOFF.md 2.5. Filler chats, reports and topology stay local. */
 export function createApiSource(base: string): DataSource {
   const call = async <T>(path: string, body?: unknown): Promise<T> => {
     const res = await fetch(base + path, body === undefined ? undefined : {

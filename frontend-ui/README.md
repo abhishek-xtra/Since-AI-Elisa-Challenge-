@@ -1,6 +1,6 @@
 # Frontend UI: context layer
 
-The screens the video uses to show the backend at work. The backend is the product; this only shows what its data says. Build spec: `FRONTEND_PROMPT.md`.
+The screens the video uses to show the backend at work. The backend is the product; this only shows what its data says. Build spec: `docs/process/FRONTEND_PROMPT.md`.
 
 ## Run it
 

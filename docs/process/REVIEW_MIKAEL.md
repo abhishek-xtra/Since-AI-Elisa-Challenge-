@@ -1,13 +1,13 @@
 # Review of both handoffs against Elisa's brief
 
-Written Friday 6 November 2026, ~22:30, against ABHISHEK_HANDOFF.md and MIKAEL_HANDOFF.md v3. Sources read: challenge brief (docx), Joni's pitch deck with speaker notes (now in the repo as `elisa_challenge_deck_joni.html`), use_case.md, teams_chat.json, email.txt, reference_architecture.png. The audio recording was transcribed later; see `TRANSCRIPT_RECORDING.md`.
+Written Friday 6 November 2026, ~22:30, against ABHISHEK_HANDOFF.md and MIKAEL_HANDOFF.md v3. Sources read: challenge brief (docx), the AI architect's pitch deck with speaker notes (now in the repo as `challenge/briefing_deck.html`), use_case.md, teams_chat.json, email.txt, reference_architecture.png. The audio recording was transcribed later; see `TRANSCRIPT_RECORDING.md`.
 
 **Status, updated Friday 23:55.** The merged direction below still holds and `REVIEW_ABHISHEK.md` independently agreed with it. Since this review was written, `MIKAEL_HANDOFF.md` moved to v5 and is the current plan. The comparison table and the critiques are kept as the record of why; the "Recommended final idea" section has been rewritten to match v5. What changed after 22:30:
 
 - Scope binding became a candidate set that evidence narrows (candidate elimination, no scores), instead of one predicate plus abstention. Handoff 4.3, 4.4.
 - Duplicates are prevented by an exact merge key over a controlled vocabulary; cases and sources are counted separately. Handoff 4.2 step 2a, `contracts/vocabulary.md`.
 - Triggers are telemetry checks, of two kinds: incident pattern or workflow step. Handoff 4.2.
-- Competing facts get a deterministic precedence before escalation, because Joni asked for one in the briefing. Handoff 4.6.
+- Competing facts get a deterministic precedence before escalation, because the AI architect asked for one in the briefing. Handoff 4.6.
 - Claims about Elisa's network that the material does not support are in a "pending Elisa" lane, out of the spine. Handoff section 16.
 - From the recording: no duplicates confirmed, advisory only, agent interruption acceptable, agent knows model and firmware per device, region and season as scope, capture inside the agent's escalation thread. Handoff section 17.
 - From Abhishek's review: the Elisa review is video only (confirmed), the barrier case is in the spine, a read-only graph page replaces the searchable one for now, video-first timeline with two hard checks. Handoff 2b, 7, 8.

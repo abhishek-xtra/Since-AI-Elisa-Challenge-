@@ -48,4 +48,4 @@ Written by the orchestrator (Claude Fable) for Mikael. Everything below is on br
 2. `cd C:\dev\elisa\repo; git checkout backend; $env:LLM_OFFLINE="1"; py -3.14 -m pytest -q; py -3.14 demo.py` to see it yourself (about 1 minute).
 3. Merge when satisfied: `git checkout main; git merge backend; git push`. Abhishek's frontend switches with `VITE_DATA_SOURCE=api` once `uvicorn api.app:app` runs.
 4. Tell Abhishek: topology IDs and site names are final (OULU-07, OULU-11, OULU-03, HEL-02); read `data/scenarios/*/thread.json` for realism; the mock fixtures in `FRONTEND_PROMPT.md` match `out/` shapes, with `captured` and `answered` fields added to thread files and `GET /beats/{n}` present.
-5. Discord answers from Joni: nothing in the build depends on them; they change wording and pending items only.
+5. Discord answers from the AI architect: nothing in the build depends on them; they change wording and pending items only.

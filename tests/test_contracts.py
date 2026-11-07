@@ -12,7 +12,7 @@ from contracts.models import SCHEMAS, Assertion, Topology, json_schema
 ROOT = Path(__file__).resolve().parent.parent
 CONTRACTS = ROOT / "contracts"
 
-# The example from BACKEND_PROMPT.md 4.4, verbatim.
+# The example from docs/process/BACKEND_PROMPT.md 4.4, verbatim.
 EXAMPLE_ASSERTION = {
     "id": "CA-0001",
     "trigger": {"kind": "incident", "event": "sfp_replaced", "symptoms": ["link_up", "optics_normal", "counters_zero"]},

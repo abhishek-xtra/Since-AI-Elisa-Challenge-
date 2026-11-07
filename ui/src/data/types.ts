@@ -1,4 +1,4 @@
-// Mirrors the backend JSON (docs/TEAMS_CLONE_HANDOFF.md section 2) field for field.
+// Mirrors the backend JSON (docs/process/TEAMS_CLONE_HANDOFF.md section 2) field for field.
 
 export type Role = 'field_engineer' | 'expert' | 'other';
 

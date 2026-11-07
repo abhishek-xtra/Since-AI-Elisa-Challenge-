@@ -26,8 +26,8 @@
 **Event:** Since AI Hackathon 2026, 6–8 November, Turku. **Challenge partner:** Elisa Oyj.
 
 **Elisa contacts:**
-- Joni Nuvola, AI architect: `joni.nuvola@elisa.fi`, Discord `jnuvola`. He is at the stand on Saturday.
-- Matti Penttilä, Head of Autonomous Network Operations: `matti.s.penttila@elisa.fi`, Discord `mattipenttila_26920`.
+- Elisa's AI architect, AI architect: `[removed]`, Discord `[removed]`. He is at the stand on Saturday.
+- Elisa's head of Autonomous Network Operations: `[removed]`, Discord `[removed]`.
 
 ### 1.2 Submission facts
 
@@ -123,8 +123,8 @@ They are in Abhishek's local folder `Hackathon/Since AI/Elisa_SinceAI2026/`, and
 
 Transcribed from his notebook, with spelling lightly cleaned. ★ marks points he starred.
 
-- Joni Nuvola: AI architect
-- Matti Penttilä
+- Elisa's AI architect: AI architect
+- Elisa's head of Autonomous Network Operations
 - They already use AI a lot in their systems, so a typical implementation is not needed
 - The AI does everything right, but there's some info the AI can't get, like location situations
 - There are lots of quirks that the AI can't understand
@@ -153,7 +153,7 @@ Transcribed from his notebook, with spelling lightly cleaned. ★ marks points h
 
 Sources:
 - `TRANSCRIPT_RECORDING.md`, cleaned. `TRANSCRIPT_RECORDING_raw.md` has the confidence flags.
-- `elisa_challenge_deck_joni.html`, Joni's deck. Open it in a browser; N shows the speaker notes.
+- `challenge/briefing_deck.html`, the AI architect's deck. Open it in a browser; N shows the speaker notes.
 
 | What Elisa said | Time | What it means for us |
 |---|---|---|
@@ -170,7 +170,7 @@ Sources:
 | "During the summer this happens"; "during the snow, something happens in the [region]" | 33:05, 33:37 | Region as a scope candidate, season as a trigger (stretch). "Lapland" was a transcription guess; it is not Elisa's word. |
 | The graph models devices, sites, physical components and logical configuration data | 31:11 | Our topology contract matches |
 | Ticketing is legacy: "we want to get rid of these ticketing systems", "we don't want any tickets anymore" | 28:03, 30:57 | Nothing keys on tickets (5.1) |
-| Joni's term for the modelled network is "digital master" (raw 31:04; could be a mis-hearing of "digital twin") | 31:04 | Say "your network model in the graph database" when unsure |
+| The AI architect's term for the modelled network is "digital master" (raw 31:04; could be a mis-hearing of "digital twin") | 31:04 | Say "your network model in the graph database" when unsure |
 | Channels: Teams, emails, phone calls, monitoring; the platform does not matter | 13:19, 13:28 | A mock Teams page and file ingestion are fine |
 | Synthetic topology is expected | 26:19 | Our topology sheet |
 | Advisory only: no actions on the network; answer back to the engineer | 34:58 | The agent proposes, never acts |
@@ -252,7 +252,7 @@ Teams chat / email / reply to the agent        (experts do nothing)
 
 - **Primary inputs.** `teams_chat.json` and `email.txt`. Adapters convert them to one message format: author, role, timestamp, channel or thread, text. Slack or any other source can be added later without changing the rest.
 - **The agent's own escalation thread is a capture channel** (recording 19:35, 27:18).
-  - This is Joni's preferred design for a new problem: the engineer explains it to the agent, and the explanation is captured whole, with the incident's entities already known.
+  - This is the AI architect's preferred design for a new problem: the engineer explains it to the agent, and the explanation is captured whole, with the incident's entities already known.
   - Elisa also already lets users flag "this response was bad, the correct solution is X because Y".
   - In both cases binding is unambiguous. The message format carries an optional `incident` field (entity IDs, event, symptoms), and the extractor skips entity resolution when it is present.
   - Stretch (scenario 14). The pitch point holds either way: the same assertion comes out whether the knowledge arrived in Teams, email or a reply to the agent.
@@ -399,7 +399,7 @@ Attribute values are placeholders for whatever the synthetic topology gives TRN-
   - a firmware or software change recorded in the topology
   - a newer contradicting assertion
 - **Validity may be a condition, not only a date.**
-  - Joni's deck says a firmware fix ends a rule. The agent knows per-device firmware (35:43).
+  - the AI architect's deck says a firmware fix ends a rule. The agent knows per-device firmware (35:43).
   - If firmware is upgraded per device over time, an assertion can carry `valid_while` (e.g. `firmware < 5.0`), evaluated per entity at `at_time`. That is what Elisa's t=x cross-referencing means in practice.
   - **Current plan:** the spine uses dates; `valid_while` is stored as text, pending Elisa's answer on staggered rollout. See proposal 14.1 to build it now on synthetic data.
   - The barrier key would expire the same way when the site's lock attribute changes.
@@ -491,7 +491,7 @@ Expiry (firmware fix) and conflict (two experts) go on slides with screenshots i
 - **Structure: chapters.**
   - A short intro, then **one chapter per thing Elisa asked for**, then a short outro.
   - Each chapter opens on a **big, bold title screen** in one consistent template. Keep it short on screen, so it adds energy without eating demo time.
-  - The chapter names are Joni's own definition of success (22:48).
+  - The chapter names are the AI architect's own definition of success (22:48).
 
 | Chapter | Shows | Demo beat |
 |---|---|---|
@@ -523,8 +523,8 @@ Expiry (firmware fix) and conflict (two experts) go on slides with screenshots i
 
 ### 6.4 Pitch notes
 
-- **Name the network carefully.** Say "your network model in the graph database". If using Joni's term, "digital master", treat it as his word from the transcript.
-- **"No scores" is not anti-confidence.** Joni mentioned a future "confidence model" before agents may act (35:30). Our trust levels and case counts are the foundation such a model would need.
+- **Name the network carefully.** Say "your network model in the graph database". If using the AI architect's term, "digital master", treat it as his word from the transcript.
+- **"No scores" is not anti-confidence.** the AI architect mentioned a future "confidence model" before agents may act (35:30). Our trust levels and case counts are the foundation such a model would need.
 - **Be honest about prior art.** The general problem is known (section 11). The pitch focuses on linking, time and trust.
 - **Explain the stand-in agent.** It stands in for their agent; the deliverable is the tool.
 
@@ -658,7 +658,7 @@ The headline is Elisa's three steps plus the decline, not C versus B.
 Ordered by what the answer changes. Questions 1–4 decide demo beats; 5–8 decide pending items only.
 
 ```
-Hi Joni, thanks for the briefing. We're building a context layer that binds assertions from Teams/email into a synthetic copy of your network graph. A few short questions so our topology and demo match how things actually work at Elisa. One-line answers are plenty.
+Hi, thanks for the briefing. We're building a context layer that binds assertions from Teams/email into a synthetic copy of your network graph. A few short questions so our topology and demo match how things actually work at Elisa. One-line answers are plenty.
 
 1. Does a device in your graph carry its installation date (or year)? And do sites carry a region or location? Erkki's "older units, around 2019" only works for an agent if that attribute exists somewhere it can read.
 
@@ -786,20 +786,20 @@ Sequential on the spine. Only data writing, the UI pages and the slides run in p
 ## 14. Open proposals (Abhishek, not yet adopted; do not build until a human moves them into the plan)
 
 **14.1 Staleness in the spine and the video.**
-- **Why:** Joni raised stale facts twice, unprompted (06:32, 09:07), and "right time validity" is a judging criterion. The agent knows per-device firmware (35:43).
+- **Why:** the AI architect raised stale facts twice, unprompted (06:32, 09:07), and "right time validity" is a judging criterion. The agent knows per-device firmware (35:43).
 - **Proposed:** build scenario 15 on our synthetic topology now, without waiting for Elisa's answer on rollout. A node gets a firmware patch; the tip stops being proposed there but still applies to its unpatched siblings. Add it as beat 6 in `demo.py`, and keep the "Stay true" video chapter.
 - **Cost:** one predicate in `valid_while`, one scenario, one beat.
 
 **14.2 Escalation-thread capture ahead of the graph search box.**
-- **Why:** scenario 14 is how Joni said *he* would build it (19:35), so it will land better with Elisa than a search box.
+- **Why:** scenario 14 is how the AI architect said *he* would build it (19:35), so it will land better with Elisa than a search box.
 - **Proposed:** move it to stretch position 2.
 
 **14.3 One phone-call transcript as an input.**
-- **Why:** Joni listed phone calls as an Elisa channel (13:19).
+- **Why:** the AI architect listed phone calls as an Elisa channel (13:19).
 - **Proposed:** one scenario written as a call transcript, run through the same adapter. It shows a third channel at almost no cost.
 
-**14.4 Matti's seasonal example on screen.**
-- **Why:** Matti, a judge, said "during the summer this happens" (33:05).
+**14.4 the head of operations's seasonal example on screen.**
+- **Why:** the head of operations, a judge, said "during the summer this happens" (33:05).
 - **Proposed:** if scenario 13 is built, it gets a short moment in the video, or a closing slide.
 
 ---
@@ -819,7 +819,7 @@ Sequential on the spine. Only data writing, the UI pages and the slides run in p
 - **Briefing material in the repo:**
   - `TRANSCRIPT_RECORDING.md`
   - `TRANSCRIPT_RECORDING_raw.md`
-  - `elisa_challenge_deck_joni.html`
+  - `challenge/briefing_deck.html`
 - **History:** `MIKAEL_HANDOFF.md`, `ABHISHEK_HANDOFF.md`, `REVIEW_MIKAEL.md`, `REVIEW_ABHISHEK.md`. They can move to `docs/history/` once both humans agree.
 - **No secrets or API keys in the repo.**
 

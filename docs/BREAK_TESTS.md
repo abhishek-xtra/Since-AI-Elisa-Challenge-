@@ -22,4 +22,4 @@ Also fixed: an older-dated update superseding a newer fact (B1); a failed outcom
 
 ## Spend
 
-Break tests and fixes cost about 2.7 EUR of live calls (19 adversarial threads, two full re-extractions for the `break-2` prompt, one reverted experiment). Total for the night: see `docs/MORNING_REPORT.md`.
+Break tests and fixes cost about 2.7 EUR of live calls (19 adversarial threads, two full re-extractions for the `break-2` prompt, one reverted experiment). Total for the night: see `docs/process/MORNING_REPORT.md`.

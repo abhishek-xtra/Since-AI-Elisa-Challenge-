@@ -1,6 +1,6 @@
 # Gates run overnight (orchestrator standing in for Mikael)
 
-Re-run any of these yourself. All commands from the repo root, PowerShell, with `$env:GOOGLE_CLOUD_PROJECT="project-f6c7adf3-6f57-4fdb-90e"` set (or `LLM_OFFLINE=1` to prove the cache is enough).
+Re-run any of these yourself. All commands from the repo root, PowerShell, with `$env:GOOGLE_CLOUD_PROJECT="<your-gcp-project>"` set (or `LLM_OFFLINE=1` to prove the cache is enough).
 
 ## Gate 0: contracts, topology, llm.py  (tag `gate-0`)
 

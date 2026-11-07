@@ -1,6 +1,6 @@
 # Team-chat clone (Microsoft Teams look) for the demo
 
-Spec: `docs/TEAMS_CLONE_HANDOFF.md` and `docs/DEMO_CHAT.md`. Vite + React 18 + TypeScript, plain CSS, vitest.
+Spec: `docs/process/TEAMS_CLONE_HANDOFF.md` and `docs/DEMO_CHAT.md`. Vite + React 18 + TypeScript, plain CSS, vitest.
 
 ## Run
 
