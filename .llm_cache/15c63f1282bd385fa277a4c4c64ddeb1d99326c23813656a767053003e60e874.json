@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"found\":false,\"rule\":null,\"reason\":\"The conversation only contains a one-off instruction to reboot a specific device with no stated condition or fault.\"}",
+  "input_tokens": 3029,
+  "output_tokens": 48
+}

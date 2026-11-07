@@ -1,0 +1,16 @@
+{
+  "channel": "teams",
+  "note": "Written by hand (no model) for the one-off instruction scenario. Synthetic; TRN-055 is deliberately not in data/topology.json.",
+  "date": "2026-11-09",
+  "placeholder": false,
+  "participants": [
+    {"name": "Erkki Expert", "role": "Network Expert"},
+    {"name": "Timo Laine", "role": "Field Engineer"}
+  ],
+  "messages": [
+    {"seq": 1, "time": "11:02", "author": "Erkki Expert", "role": "Network Expert",
+     "text": "Timo, reboot TRN-055 now please, I'm on my way, back online in 10"},
+    {"seq": 2, "time": "11:04", "author": "Timo Laine", "role": "Field Engineer",
+     "text": "done"}
+  ]
+}

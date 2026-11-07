@@ -705,5 +705,27 @@
       }
     ],
     "passed": true
+  },
+  {
+    "scenario": "16_one_off",
+    "trap": "a one-off instruction that looks like a rule (an action on a device). No condition, nothing reusable: extracted false, no assertion.",
+    "lane": "spine",
+    "placeholder": false,
+    "inputs": [
+      "data/scenarios/16_one_off/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "nothing created or changed"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "0 assertion(s), want 0"
+      }
+    ],
+    "passed": true
   }
 ]
