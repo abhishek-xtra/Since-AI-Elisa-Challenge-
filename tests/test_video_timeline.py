@@ -45,13 +45,13 @@ def test_kinds_and_counts_stable(tmp_path):
 
 def test_variants(tmp_path):
     """The two short-clip variants: 08_conflict gives a dispute; the hedged 12b gives a hunch that supersedes nothing."""
-    for name in ("dispute", "hunch"):
+    for name in ("dispute", "hunch", "all"):
         out = tmp_path / f"{name}.json"
         subprocess.run([sys.executable, str(ROOT / "scripts" / "video_timeline.py"), "--variant", name, "--out", str(out)],
                        cwd=ROOT, env={**os.environ, "LLM_OFFLINE": "1"}, check=True, capture_output=True)
         assert out.read_text(encoding="utf-8") == (ROOT / "out" / f"video_timeline_{name}.json").read_text(encoding="utf-8")
         events = json.loads(out.read_text(encoding="utf-8"))["events"]
-        if name == "dispute":
+        if name in ("dispute", "all"):
             assert next(e for e in events if e["kind"] == "dispute")["said_by"] == ["Erkki Expert", "Jari Korhonen"]
             continue
         hunch = [e["assertion_id"] for e in events if e["kind"] == "capture" and e["trust"] == "hunch"]

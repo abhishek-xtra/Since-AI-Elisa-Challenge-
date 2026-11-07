@@ -11,7 +11,7 @@ import "../tree/tree.css";
 
 const W = 1920;
 const H = 1080;
-const C = { x: 880, y: 470 };
+const C = { x: 900, y: 470 };
 const DEG = Math.PI / 180;
 // The wheel, placed by hand so no label meets another at 1920x1080: the centre, three named sectors around it (Faults
 // right, Site access lower left, Other on top) and their sub-branches. Tips grow out of a sub-branch along its
@@ -19,31 +19,33 @@ const DEG = Math.PI / 180;
 // capture quote.
 const SKELETON: Record<string, { x: number; y: number; dir?: number; label?: "lab-u" | "lab-d" }> = {
   root: C,
-  faults: { x: 1080, y: 430 }, access: { x: 720, y: 640 }, other: { x: 880, y: 300 },
-  sfp_replaced: { x: 1180, y: 300, dir: -20, label: "lab-u" },
-  alarm_raised: { x: 1310, y: 470, dir: 5, label: "lab-u" },
-  fault_other: { x: 1200, y: 640, dir: 20, label: "lab-d" },
-  keys: { x: 600, y: 790, dir: 170, label: "lab-d" },
-  route: { x: 500, y: 500, dir: 185, label: "lab-u" },
-  unsorted: { x: 880, y: 150, dir: -90, label: "lab-u" },
+  faults: { x: 1150, y: 430 }, access: { x: 690, y: 640 }, other: { x: 900, y: 290 },
+  sfp_replaced: { x: 1290, y: 300, dir: -15, label: "lab-u" },
+  alarm_raised: { x: 1430, y: 520, dir: 10, label: "lab-u" },
+  fault_other: { x: 1290, y: 720, dir: 25, label: "lab-d" },
+  keys: { x: 580, y: 770, dir: 175, label: "lab-d" },
+  route: { x: 480, y: 520, dir: 190, label: "lab-u" },
+  unsorted: { x: 900, y: 130, dir: -90, label: "lab-u" },
 };
-const TIP_DIST: Record<string, number> = { sfp_replaced: 230, alarm_raised: 230, fault_other: 230, keys: 200, route: 200, unsorted: 200 };
-const LEAF_DIST: Record<string, number> = { sfp_replaced: 190, alarm_raised: 190, fault_other: 190, keys: 150, route: 150, unsorted: 150 };
-const LEAF_STEP = 14;
-const TIP_SPREAD = 150; // two tips in one sub-branch sit side by side across its direction, further apart with big fans
+const TIP_DIST: Record<string, number> = { sfp_replaced: 250, alarm_raised: 250, fault_other: 250, keys: 210, route: 210, unsorted: 200 };
+const LEAF_DIST: Record<string, number> = { sfp_replaced: 160, alarm_raised: 160, fault_other: 160, keys: 130, route: 130, unsorted: 130 };
+const LEAF_STEP = 13;
+const COMPACT_DIST = 70; // more than two tips in a sub-branch: leaves shrink to a tight fan of dots
+const COMPACT_STEP = 14;
+const TIP_SPREAD = 140; // tips in one sub-branch sit side by side across its direction, further apart with big fans
 const FOOTER = "Visualisation for the video. The tree is drawn from the stored assertions; the system itself has no tree.";
 const step = (e: TimelineEvent) => (e.kind === "message" ? 900 : e.kind === "notification" ? 1800 : 3400);
 
 interface Pos { id: string; x: number; y: number; a: number; parent?: string; label?: string }
-interface Leaf extends Pos { c: Candidate; fall: boolean; tip: string; i: number }
+interface Leaf extends Pos { c: Candidate; fall: boolean; tip: string; i: number; compact: boolean }
 
 const toward = (from: { x: number; y: number }, a: number, d: number) => ({ x: from.x + d * Math.cos(a * DEG), y: from.y + d * Math.sin(a * DEG) });
 const side = (p: Pos) => (Math.cos(p.a * DEG) >= -0.05 ? "right" : "left");
 
-/** Tips on screen: superseded ones only at the moment they are replaced. Leaves: the decided one once a tap decided. */
+/** Every stored tip stays on screen (a replaced fact is kept, dim). Leaves: the decided one once a tap decided. */
 function placeAll(tips: Tip[], t: number, events: TimelineEvent[]) {
   const cur = events[t];
-  const shown = tips.filter((x) => !x.superseded_by || (cur?.kind === "supersede" && cur.assertion_id === x.assertion_id));
+  const shown = tips;
   const pos: Pos[] = [{ id: "root", a: 0, ...C }];
   const leaves: Leaf[] = [];
   for (const top of TOP) pos.push({ id: top.id, a: 0, parent: "root", ...SKELETON[top.id] });
@@ -51,7 +53,8 @@ function placeAll(tips: Tip[], t: number, events: TimelineEvent[]) {
     const s = SKELETON[sub.id];
     pos.push({ id: sub.id, a: s.dir!, parent: sub.parent, x: s.x, y: s.y });
     const mine = shown.filter((x) => branchOf(x) === sub.id).sort((a, b) => a.bornAt - b.bornAt);
-    const spread = Math.max(TIP_SPREAD, 52 * Math.max(0, ...mine.map((x) => x.candidates.length)));
+    const compact = mine.length > 2;
+    const spread = compact ? TIP_SPREAD : Math.max(TIP_SPREAD, 46 * Math.max(0, ...mine.map((x) => x.candidates.length)));
     mine.forEach((tip, k) => {
       const base = toward(s, s.dir!, TIP_DIST[sub.id]);
       const off = (k - (mine.length - 1) / 2) * spread;
@@ -62,8 +65,9 @@ function placeAll(tips: Tip[], t: number, events: TimelineEvent[]) {
       const live = tip.candidates.filter((c) => c.against === 0);
       const list = tip.decided && !tapped ? live.filter((c) => c.predicate === tip.decided!.predicate) : live;
       list.forEach((c, i) => {
-        const la = s.dir! + (i - (list.length - 1) / 2) * LEAF_STEP;
-        leaves.push({ id: `${tip.assertion_id}:${c.predicate}`, a: la, parent: tip.assertion_id, ...toward(tp, la, LEAF_DIST[sub.id]), c,
+        const la = s.dir! + (i - (list.length - 1) / 2) * (compact ? COMPACT_STEP : LEAF_STEP);
+        leaves.push({ id: `${tip.assertion_id}:${c.predicate}`, a: la, parent: tip.assertion_id, compact,
+          ...toward(tp, la, compact ? COMPACT_DIST : LEAF_DIST[sub.id]), c,
           tip: tip.assertion_id, i, fall: tapped && !!tip.decided && c.predicate !== tip.decided.predicate });
       });
     });
@@ -107,7 +111,7 @@ export function TreePage() {
   }
   const path = new Set(chain.map((p) => p.id));
   const pulse = chain.slice(1).map((p, i) => link(chain[i], p).replace(/^M [^ ]+ [^ ]+ /, "")).reduce((d, s) => `${d} ${s}`, chain.length ? `M ${chain[0].x} ${chain[0].y}` : "");
-  const dim = (id: string) => (target && !path.has(id) ? " dim" : "");
+  const dim = (id: string) => (target && !path.has(id) && t !== last ? " dim" : ""); // the last frame shows the whole wheel
   const reason = r && r.outcome === "declined" && target ? reasonWords(r, target, inc!) : "";
 
   // camera: lean toward where something happens, then ease back to the whole wheel
@@ -115,12 +119,13 @@ export function TreePage() {
     ? byId.get(cur.assertion_id) : target ? byId.get(target.assertion_id) : undefined;
   // keep everything that is drawn inside the frame while the camera leans in
   const all = [...pos, ...leaves];
-  const minX = Math.min(...all.map((p) => p.x - (leaves.includes(p as Leaf) && side(p) === "left" ? 140 : 170)));
-  const maxX = Math.max(...all.map((p) => p.x + (leaves.includes(p as Leaf) && side(p) === "right" ? 300 : 170)));
-  const minY = Math.min(...all.map((p) => p.y - 110)), maxY = Math.max(...all.map((p) => p.y + 120));
-  const zoom = Math.min(focus ? 1.05 : 1, W / (maxX - minX), (H - 130) / (maxY - minY));
-  const fx = focus ? C.x + (focus.x - C.x) * 0.3 : C.x;
-  const fy = focus ? C.y + (focus.y - C.y) * 0.3 : C.y;
+  const minX = Math.min(...all.map((p) => p.x - (leaves.includes(p as Leaf) && side(p) === "left" ? 150 : 150)));
+  const maxX = Math.max(...all.map((p) => p.x + (leaves.includes(p as Leaf) && side(p) === "right" ? 220 : 150)));
+  const minY = Math.min(...all.map((p) => p.y - 90)), maxY = Math.max(...all.map((p) => p.y + 100));
+  const final = t === last;  // the last event: ease out until the whole wheel is in frame
+  const zoom = Math.min(focus && !final ? 1.05 : 1, W / (maxX - minX), (H - 130) / (maxY - minY));
+  const fx = focus && !final ? C.x + (focus.x - C.x) * 0.3 : C.x;
+  const fy = focus && !final ? C.y + (focus.y - C.y) * 0.3 : C.y;
   const clamp = (v: number, lo: number, hi: number) => (lo > hi ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, v)));
   const tx = clamp(C.x - fx * zoom, -minX * zoom, W - maxX * zoom);
   const ty = clamp(C.y - fy * zoom, -minY * zoom, H - 130 - maxY * zoom);
@@ -136,7 +141,7 @@ export function TreePage() {
   return (
     <main className={`t-stage${still ? " still" : ""}`} style={still ? ({ "--still": `-${Number(still)}ms` } as React.CSSProperties) : undefined}>
       <div className="t-frame" style={{ width: W, height: H, transform: `translate(-50%, -50%) scale(${scale})` }}>
-        <div className="t-canvas" style={{ transform: camera }}>
+        <div className={`t-canvas${final ? " final" : ""}`} style={{ transform: camera }}>
           <svg className="t-links" width={W} height={H} aria-hidden="true">
             {[...pos, ...leaves].filter((p) => p.parent).map((p) => {
               const par = byId.get(p.parent!)!;
@@ -157,14 +162,15 @@ export function TreePage() {
                 style={{ transform: `translate(${p.x}px, ${p.y}px)` }}>
                 <span className="t-dot" />
                 <span className="t-name">{p.id === "root" ? ROOT : b!.name}</span>
-                {b && b.parent !== "root" && <span className="t-cap">{b.caption}</span>}
+                {b && b.parent !== "root" && <span className={`t-cap${!filled.has(p.id) && filled.has(b.parent) ? " quiet" : ""}`}>{b.caption}</span>}
               </div>
             );
           })}
 
           {shown.map((x) => {
             const p = byId.get(x.assertion_id)!;
-            const gone = x.expired ? `expired ${day(x.valid_to!)}` : retracted.has(x.assertion_id) ? `${x.said_by.split(" ")[0]} took it back` : "";
+            const gone = x.superseded_by ? `replaced ${day(x.valid_to!)}` : x.expired ? `expired ${day(x.valid_to!)}`
+              : retracted.has(x.assertion_id) ? `${x.said_by.split(" ")[0]} took it back` : "";
             const isTarget = target?.assertion_id === x.assertion_id;
             const tag = isTarget && r!.outcome === "proposed" ? sourceTag(x) : "";
             const line = gone || (isTarget && reason && !stopLeaf ? reason : "") || tag || (x.status === "disputed" ? "disputed" : x.trust === "hunch" ? "hunch" : "");
@@ -181,12 +187,13 @@ export function TreePage() {
           {leaves.map((l) => {
             const res = l.tip === r?.assertion_id ? results[l.c.predicate] : undefined;
             const tip = tips.get(l.tip)!;
+            const named = !l.compact || tip.decided?.predicate === l.c.predicate || res === "holds" || stopLeaf?.id === l.id;
             const gone = tip.expired || retracted.has(tip.assertion_id) || tip.superseded_by;
             return (
-              <div key={l.id} className={`t-node t-leaf ${side(l)}${res ? ` r-${res}` : ""}${gone ? " gone" : ""}${l.fall ? " fall" : ""}${l.tip === r?.assertion_id ? (res ? "" : " dim") : dim(l.id)}`}
+              <div key={l.id} className={`t-node t-leaf ${side(l)}${l.compact ? " compact" : ""}${res ? ` r-${res}` : ""}${gone ? " gone" : ""}${l.fall ? " fall" : ""}${l.tip === r?.assertion_id ? (res ? "" : " dim") : dim(l.id)}`}
                 style={{ transform: `translate(${l.x}px, ${l.y}px)`, "--i": l.i } as React.CSSProperties}>
                 <span className="t-dot" />
-                <span className="t-label">{leafWords(l.c)}{l.c.edge === "open" && <em className="t-open"> ↗ open</em>}</span>
+                {named && <span className="t-label">{leafWords(l.c)}{l.c.edge === "open" && <em className="t-open"> ↗ open</em>}</span>}
                 {stopLeaf?.id === l.id && reason && <span className="t-reason">{reason}</span>}
               </div>
             );
