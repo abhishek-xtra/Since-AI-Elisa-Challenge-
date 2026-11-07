@@ -1,0 +1,724 @@
+{
+  "nodes": [
+    {
+      "id": "OULU-07",
+      "label": "Oulu 07",
+      "kind": "site",
+      "attrs": {
+        "name": "Oulu 07",
+        "region": "north",
+        "access": ""
+      }
+    },
+    {
+      "id": "region:north",
+      "label": "north",
+      "kind": "region",
+      "attrs": {}
+    },
+    {
+      "id": "OULU-11",
+      "label": "Oulu 11",
+      "kind": "site",
+      "attrs": {
+        "name": "Oulu 11",
+        "region": "north",
+        "access": ""
+      }
+    },
+    {
+      "id": "OULU-03",
+      "label": "Oulu 03",
+      "kind": "site",
+      "attrs": {
+        "name": "Oulu 03",
+        "region": "north",
+        "access": "Locked barrier on the access road."
+      }
+    },
+    {
+      "id": "HEL-02",
+      "label": "Helsinki 02",
+      "kind": "site",
+      "attrs": {
+        "name": "Helsinki 02",
+        "region": "south",
+        "access": ""
+      }
+    },
+    {
+      "id": "region:south",
+      "label": "south",
+      "kind": "region",
+      "attrs": {}
+    },
+    {
+      "id": "TRN-042",
+      "label": "TRN-042",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-200",
+        "install_year": 2019,
+        "firmware": "4.1",
+        "site": "OULU-07",
+        "region": "north"
+      }
+    },
+    {
+      "id": "model:TX-200",
+      "label": "TX-200",
+      "kind": "model",
+      "attrs": {}
+    },
+    {
+      "id": "TRN-045",
+      "label": "TRN-045",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-200",
+        "install_year": 2019,
+        "firmware": "4.0",
+        "site": "OULU-07",
+        "region": "north"
+      }
+    },
+    {
+      "id": "TRN-120",
+      "label": "TRN-120",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-200",
+        "install_year": 2020,
+        "firmware": "4.1",
+        "site": "OULU-07",
+        "region": "north"
+      }
+    },
+    {
+      "id": "TRN-044",
+      "label": "TRN-044",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-300",
+        "install_year": 2022,
+        "firmware": "5.2",
+        "site": "OULU-07",
+        "region": "north"
+      }
+    },
+    {
+      "id": "model:TX-300",
+      "label": "TX-300",
+      "kind": "model",
+      "attrs": {}
+    },
+    {
+      "id": "RTR-007",
+      "label": "RTR-007",
+      "kind": "node",
+      "attrs": {
+        "model": "RX-10",
+        "install_year": 2021,
+        "firmware": "7.2",
+        "site": "OULU-07",
+        "region": "north"
+      }
+    },
+    {
+      "id": "model:RX-10",
+      "label": "RX-10",
+      "kind": "model",
+      "attrs": {}
+    },
+    {
+      "id": "TRN-087",
+      "label": "TRN-087",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-200",
+        "install_year": 2018,
+        "firmware": "4.1",
+        "site": "OULU-11",
+        "region": "north"
+      }
+    },
+    {
+      "id": "TRN-063",
+      "label": "TRN-063",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-250",
+        "install_year": 2018,
+        "firmware": "4.1",
+        "site": "OULU-11",
+        "region": "north"
+      }
+    },
+    {
+      "id": "model:TX-250",
+      "label": "TX-250",
+      "kind": "model",
+      "attrs": {}
+    },
+    {
+      "id": "TRN-088",
+      "label": "TRN-088",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-250",
+        "install_year": 2021,
+        "firmware": "4.3",
+        "site": "OULU-11",
+        "region": "north"
+      }
+    },
+    {
+      "id": "RTR-011",
+      "label": "RTR-011",
+      "kind": "node",
+      "attrs": {
+        "model": "RX-10",
+        "install_year": 2019,
+        "firmware": "7.0",
+        "site": "OULU-11",
+        "region": "north"
+      }
+    },
+    {
+      "id": "TRN-019",
+      "label": "TRN-019",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-200",
+        "install_year": 2016,
+        "firmware": "3.8",
+        "site": "OULU-03",
+        "region": "north"
+      }
+    },
+    {
+      "id": "TRN-033",
+      "label": "TRN-033",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-200",
+        "install_year": 2017,
+        "firmware": "4.1",
+        "site": "OULU-03",
+        "region": "north"
+      }
+    },
+    {
+      "id": "TRN-034",
+      "label": "TRN-034",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-250",
+        "install_year": 2019,
+        "firmware": "4.2",
+        "site": "OULU-03",
+        "region": "north"
+      }
+    },
+    {
+      "id": "RTR-003",
+      "label": "RTR-003",
+      "kind": "node",
+      "attrs": {
+        "model": "RX-10",
+        "install_year": 2017,
+        "firmware": "6.9",
+        "site": "OULU-03",
+        "region": "north"
+      }
+    },
+    {
+      "id": "TRN-101",
+      "label": "TRN-101",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-300",
+        "install_year": 2023,
+        "firmware": "5.2",
+        "site": "HEL-02",
+        "region": "south"
+      }
+    },
+    {
+      "id": "TRN-102",
+      "label": "TRN-102",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-300",
+        "install_year": 2024,
+        "firmware": "5.10",
+        "site": "HEL-02",
+        "region": "south"
+      }
+    },
+    {
+      "id": "TRN-105",
+      "label": "TRN-105",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-200",
+        "install_year": 2019,
+        "firmware": "4.1",
+        "site": "HEL-02",
+        "region": "south"
+      }
+    },
+    {
+      "id": "TRN-106",
+      "label": "TRN-106",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-250",
+        "install_year": 2020,
+        "firmware": "4.3",
+        "site": "HEL-02",
+        "region": "south"
+      }
+    },
+    {
+      "id": "TRN-110",
+      "label": "TRN-110",
+      "kind": "node",
+      "attrs": {
+        "model": "TX-300",
+        "install_year": 2022,
+        "firmware": "5.2",
+        "site": "HEL-02",
+        "region": "south"
+      }
+    },
+    {
+      "id": "RTR-021",
+      "label": "RTR-021",
+      "kind": "node",
+      "attrs": {
+        "model": "RX-20",
+        "install_year": 2023,
+        "firmware": "8.1",
+        "site": "HEL-02",
+        "region": "south"
+      }
+    },
+    {
+      "id": "model:RX-20",
+      "label": "RX-20",
+      "kind": "model",
+      "attrs": {}
+    },
+    {
+      "id": "RTR-022",
+      "label": "RTR-022",
+      "kind": "node",
+      "attrs": {
+        "model": "RX-20",
+        "install_year": 2024,
+        "firmware": "8.1",
+        "site": "HEL-02",
+        "region": "south"
+      }
+    },
+    {
+      "id": "CA-0001",
+      "label": "Bounce, don't reboot",
+      "kind": "assertion",
+      "attrs": {
+        "action": "interface.bounce",
+        "action_text": "Disable the interface, wait a little, then enable it again",
+        "avoid": [
+          "sfp.replace",
+          "node.reboot"
+        ],
+        "trust": "verified_by_outcome",
+        "status": "decided",
+        "said_by": "Erkki Expert",
+        "valid_from": "2026-11-01T09:14:00+02:00",
+        "valid_to": null,
+        "superseded_by": null,
+        "cases": 1
+      }
+    },
+    {
+      "id": "teams:thread-001",
+      "label": "teams:thread-001",
+      "kind": "source",
+      "attrs": {}
+    },
+    {
+      "id": "email:email-001",
+      "label": "email:email-001",
+      "kind": "source",
+      "attrs": {}
+    },
+    {
+      "id": "CA-0002",
+      "label": "Site access",
+      "kind": "assertion",
+      "attrs": {
+        "action": "site.access_key",
+        "action_text": "at the neighbouring farm, ask for Mäkelä",
+        "avoid": [],
+        "trust": "stated",
+        "status": "open",
+        "said_by": "Kalle Niskanen",
+        "valid_from": "2026-10-02T10:00:00+02:00",
+        "valid_to": "2026-11-07T10:15:00+02:00",
+        "superseded_by": "CA-0003",
+        "cases": 1
+      }
+    },
+    {
+      "id": "email:email-12_barrier",
+      "label": "email:email-12_barrier",
+      "kind": "source",
+      "attrs": {}
+    },
+    {
+      "id": "CA-0003",
+      "label": "Site access",
+      "kind": "assertion",
+      "attrs": {
+        "action": "site.access_key",
+        "action_text": "in the site cabinet",
+        "avoid": [],
+        "trust": "stated",
+        "status": "open",
+        "said_by": "Veikko Vikkelä",
+        "valid_from": "2026-11-07T10:15:00+02:00",
+        "valid_to": null,
+        "superseded_by": null,
+        "cases": 1
+      }
+    },
+    {
+      "id": "teams:thread-12b_barrier_update",
+      "label": "teams:thread-12b_barrier_update",
+      "kind": "source",
+      "attrs": {}
+    }
+  ],
+  "edges": [
+    {
+      "from": "OULU-07",
+      "to": "region:north",
+      "kind": "IN_REGION"
+    },
+    {
+      "from": "OULU-11",
+      "to": "region:north",
+      "kind": "IN_REGION"
+    },
+    {
+      "from": "OULU-03",
+      "to": "region:north",
+      "kind": "IN_REGION"
+    },
+    {
+      "from": "HEL-02",
+      "to": "region:south",
+      "kind": "IN_REGION"
+    },
+    {
+      "from": "TRN-042",
+      "to": "OULU-07",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-042",
+      "to": "model:TX-200",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-045",
+      "to": "OULU-07",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-045",
+      "to": "model:TX-200",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-120",
+      "to": "OULU-07",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-120",
+      "to": "model:TX-200",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-044",
+      "to": "OULU-07",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-044",
+      "to": "model:TX-300",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "RTR-007",
+      "to": "OULU-07",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "RTR-007",
+      "to": "model:RX-10",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-087",
+      "to": "OULU-11",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-087",
+      "to": "model:TX-200",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-063",
+      "to": "OULU-11",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-063",
+      "to": "model:TX-250",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-088",
+      "to": "OULU-11",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-088",
+      "to": "model:TX-250",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "RTR-011",
+      "to": "OULU-11",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "RTR-011",
+      "to": "model:RX-10",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-019",
+      "to": "OULU-03",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-019",
+      "to": "model:TX-200",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-033",
+      "to": "OULU-03",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-033",
+      "to": "model:TX-200",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-034",
+      "to": "OULU-03",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-034",
+      "to": "model:TX-250",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "RTR-003",
+      "to": "OULU-03",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "RTR-003",
+      "to": "model:RX-10",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-101",
+      "to": "HEL-02",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-101",
+      "to": "model:TX-300",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-102",
+      "to": "HEL-02",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-102",
+      "to": "model:TX-300",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-105",
+      "to": "HEL-02",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-105",
+      "to": "model:TX-200",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-106",
+      "to": "HEL-02",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-106",
+      "to": "model:TX-250",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "TRN-110",
+      "to": "HEL-02",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "TRN-110",
+      "to": "model:TX-300",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "RTR-021",
+      "to": "HEL-02",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "RTR-021",
+      "to": "model:RX-20",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "RTR-022",
+      "to": "HEL-02",
+      "kind": "IN_SITE"
+    },
+    {
+      "from": "RTR-022",
+      "to": "model:RX-20",
+      "kind": "OF_MODEL"
+    },
+    {
+      "from": "CA-0001",
+      "to": "TRN-042",
+      "kind": "SCOPED_BY",
+      "predicate": "install_year <= 2019",
+      "support": 1,
+      "against": 0,
+      "edge": "closed"
+    },
+    {
+      "from": "CA-0001",
+      "to": "model:TX-200",
+      "kind": "SCOPED_BY",
+      "predicate": "model == 'TX-200'",
+      "support": 1,
+      "against": 0,
+      "edge": "closed"
+    },
+    {
+      "from": "CA-0001",
+      "to": "TRN-042",
+      "kind": "SCOPED_BY",
+      "predicate": "firmware == '4.1'",
+      "support": 1,
+      "against": 0,
+      "edge": "closed"
+    },
+    {
+      "from": "CA-0001",
+      "to": "OULU-07",
+      "kind": "SCOPED_BY",
+      "predicate": "site == 'OULU-07'",
+      "support": 1,
+      "against": 0,
+      "edge": "closed"
+    },
+    {
+      "from": "CA-0001",
+      "to": "region:north",
+      "kind": "SCOPED_BY",
+      "predicate": "region == 'north'",
+      "support": 1,
+      "against": 0,
+      "edge": "closed"
+    },
+    {
+      "from": "CA-0001",
+      "to": "teams:thread-001",
+      "kind": "EVIDENCED_BY"
+    },
+    {
+      "from": "CA-0001",
+      "to": "email:email-001",
+      "kind": "EVIDENCED_BY"
+    },
+    {
+      "from": "CA-0001",
+      "to": "TRN-042",
+      "kind": "CASE"
+    },
+    {
+      "from": "CA-0002",
+      "to": "OULU-03",
+      "kind": "SCOPED_BY",
+      "predicate": "site == 'OULU-03'",
+      "support": 1,
+      "against": 0,
+      "edge": "closed"
+    },
+    {
+      "from": "CA-0002",
+      "to": "email:email-12_barrier",
+      "kind": "EVIDENCED_BY"
+    },
+    {
+      "from": "CA-0002",
+      "to": "OULU-03",
+      "kind": "CASE"
+    },
+    {
+      "from": "CA-0003",
+      "to": "OULU-03",
+      "kind": "SCOPED_BY",
+      "predicate": "site == 'OULU-03'",
+      "support": 1,
+      "against": 0,
+      "edge": "closed"
+    },
+    {
+      "from": "CA-0003",
+      "to": "teams:thread-12b_barrier_update",
+      "kind": "EVIDENCED_BY"
+    },
+    {
+      "from": "CA-0003",
+      "to": "OULU-03",
+      "kind": "CASE"
+    }
+  ]
+}
