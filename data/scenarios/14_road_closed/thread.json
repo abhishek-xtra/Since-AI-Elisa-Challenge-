@@ -1,0 +1,18 @@
+{
+  "channel": "teams",
+  "note": "Written by hand (no model) for the temporary-fact scenario. Synthetic; names and IDs are illustrative.",
+  "date": "2026-11-09",
+  "placeholder": false,
+  "participants": [
+    {"name": "Kalle Niskanen", "role": "Field Engineer"},
+    {"name": "Timo Laine", "role": "Field Engineer"}
+  ],
+  "messages": [
+    {"seq": 1, "time": "07:40", "author": "Kalle Niskanen", "role": "Field Engineer",
+     "text": "Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side."},
+    {"seq": 2, "time": "07:52", "author": "Timo Laine", "role": "Field Engineer",
+     "text": "Thanks, good to know. Is the forest track ok for the van?"},
+    {"seq": 3, "time": "07:55", "author": "Kalle Niskanen", "role": "Field Engineer",
+     "text": "Yes, it's gravel but fine, I came in that way."}
+  ]
+}

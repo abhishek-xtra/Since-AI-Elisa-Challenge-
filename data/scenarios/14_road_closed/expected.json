@@ -1,0 +1,48 @@
+{
+  "scenario": "14_road_closed",
+  "placeholder": false,
+  "inputs": [
+    "data/scenarios/14_road_closed/thread.json"
+  ],
+  "ingest_first": [],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "workflow",
+      "event": "dispatch_created"
+    },
+    "action": "site.access_key",
+    "trust": "stated",
+    "applies_to": {
+      "entity_type": "site"
+    },
+    "valid_to": "2026-11-20T23:59:59+02:00"
+  },
+  "checks": {
+    "assertion_count": 1,
+    "origin_entity": "OULU-11",
+    "action_text_contains": "forest track"
+  },
+  "bind": {
+    "candidates_include": [
+      "site == 'OULU-11'"
+    ]
+  },
+  "incidents": [
+    {
+      "entity": "OULU-11",
+      "event": "dispatch_created",
+      "symptoms": [],
+      "at": "2026-11-15T08:00:00+02:00",
+      "expect": "proposed"
+    },
+    {
+      "entity": "OULU-11",
+      "event": "dispatch_created",
+      "symptoms": [],
+      "at": "2026-11-21T08:00:00+02:00",
+      "expect": "declined",
+      "reason_contains": "expired"
+    }
+  ]
+}

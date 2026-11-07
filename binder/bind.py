@@ -4,6 +4,7 @@ import logging
 import re
 
 from binder.condition import EXPIRY, stated_candidate
+from binder.expiry import stated_valid_to
 from binder.resolve import _TOKEN, normalise_id, resolve_entities
 from contracts.models import Assertion, Candidate, ExtractedRule, Message, Node, Site, Topology
 from predicates import evaluate, lookup, parse
@@ -105,6 +106,9 @@ def bind(assertion: Assertion, rule: ExtractedRule, messages: list[Message], top
                                   "outcome": None if rule.outcome == "unknown" else rule.outcome}]
     if rule.stated_condition and EXPIRY.search(rule.stated_condition):
         data["valid_while"] = rule.stated_condition  # an end condition, text only (nothing evaluates it)
+    # an explicit end date ("until 20 Nov") in the condition or the rule sentence itself ends the fact on that day
+    if valid_to := stated_valid_to(rule.stated_condition, holder.timestamp) or stated_valid_to(rule.excerpt, holder.timestamp):
+        data["valid_to"] = valid_to
     if rule.outcome == "failed":
         data["status"] = "review"  # the rule did not work on its own origin: never proposed until a human looks
     return Assertion.model_validate(data)

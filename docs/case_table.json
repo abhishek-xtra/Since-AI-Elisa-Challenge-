@@ -611,5 +611,57 @@
       }
     ],
     "passed": true
+  },
+  {
+    "scenario": "14_road_closed",
+    "trap": "a temporary fact. It must stop applying after the date the engineer gave, with nobody retracting it: valid_to 2026-11-20 end of day Helsinki, parsed in code from the stated \"until 20 Nov\".",
+    "lane": "spine",
+    "placeholder": false,
+    "inputs": [
+      "data/scenarios/14_road_closed/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0001'], changed []"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "bind include site == 'OULU-11'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "origin_entity",
+        "passed": true,
+        "why": "CA-0001: 'OULU-11', want 'OULU-11'"
+      },
+      {
+        "name": "action_text_contains",
+        "passed": true,
+        "why": "CA-0001: 'use the forest track from the north side', want 'forest track'"
+      },
+      {
+        "name": "step 1 OULU-11 dispatch_created @2026-11-15 -> proposed",
+        "passed": true,
+        "why": "CA-0001 proposed: all hold: site == 'OULU-11'"
+      },
+      {
+        "name": "step 2 OULU-11 dispatch_created @2026-11-21 -> declined",
+        "passed": true,
+        "why": "CA-0001 declined: expired 2026-11-20"
+      }
+    ],
+    "passed": true
   }
 ]

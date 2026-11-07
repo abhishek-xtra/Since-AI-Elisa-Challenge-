@@ -18,6 +18,7 @@ All files under `data/scenarios/` are synthetic. Each thread or email was genera
 | `scenarios/12_barrier/email.txt` | 12 barrier key | gemini-3.5-flash | `12_barrier/script.md` | key paragraph rewritten: model wrote "He says to call ahead" (garbled from the script); added "If you get dispatched to OULU-03" and "I picked it up from him myself yesterday" (first-hand) | true |
 | `scenarios/12b_barrier_update/thread.json` | 12b key moved | gemini-3.5-flash | `12b_barrier_update/script.md` | msg 2: smiley added | true |
 | `scenarios/12b_barrier_update/thread_hedged.json` | 12b hedged variant (run as `12c_barrier_hedged`) | gemini-3.5-flash | `12b_barrier_update/script_hedged.md` | msg 1: "I heard some rumor that ..." -> the scripted "someone said the key might be in the cabinet now" | true |
+| `scenarios/14_road_closed/thread.json` | 14 temporary fact with an end date ("until 20 Nov") | none, written by hand | `14_road_closed/script.md` | n/a | false |
 
 Folders `01_core`, `02_newer_unit`, `03_other_model_2018`, `11_counters_rising` and `12c_barrier_hedged` have no generated files: their `script.md` (`output: none`) describes the incident, and `expected.json` points at other inputs.
 
