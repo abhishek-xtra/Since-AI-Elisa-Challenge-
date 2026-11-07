@@ -107,7 +107,10 @@ class Log(logging.Handler):
         self.lines = []
 
     def emit(self, record):
-        self.lines.append((record.name, record.getMessage()))
+        msg = record.getMessage()
+        for root in (str(ROOT), ROOT.as_posix()):  # no machine paths in the log: the file must be identical on every clone
+            msg = msg.replace(root, '<repo>')
+        self.lines.append((record.name, msg))
 
 
 def holders(messages, excerpt: str) -> list[str]:
