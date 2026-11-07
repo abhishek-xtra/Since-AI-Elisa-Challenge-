@@ -236,5 +236,5 @@ export interface DataSource {
   getContextFor?(entity_id: string): Promise<Assertion[]>; // backend extra B3; optional
   chat?(text: string): Promise<ChatReply>; // B4; optional
   getBeat?(n: number): Promise<Beat>; // out/beat_N.json, for beat replay
-  getVideoTimeline?(): Promise<VideoTimeline>; // out/video_timeline.json, for /grow
+  getVideoTimeline?(name?: string): Promise<VideoTimeline>; // out/video_timeline[_<name>].json, for /grow and /tree
 }

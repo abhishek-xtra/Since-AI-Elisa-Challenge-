@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"action\": \"site.access_key\", \"action_text\": \"For the site access key, go to the neighbouring farm and ask for M\\u0041kel\\u0041.\", \"avoid\": [], \"cites\": [\"CA-0001\"]}",
+  "input_tokens": 737,
+  "output_tokens": 77
+}

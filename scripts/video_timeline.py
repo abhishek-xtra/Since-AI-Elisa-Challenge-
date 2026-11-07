@@ -1,11 +1,12 @@
 """Event log for the video's "context tree" page (frontend-ui /grow). Visualisation data only: the system has no tree.
 
-py -3.14 scripts/video_timeline.py [--out out/video_timeline.json] [--all] [--skip FOLDER ...]
+py -3.14 scripts/video_timeline.py [--variant dispute|hunch] [--out PATH] [--all] [--skip FOLDER ...]
 
 Default: the demo story. Elisa's chat and email, 12_barrier, 12b_barrier_update, 13 Sami, 14 road closed, 15 retraction,
 plus 04 chit-chat and 16 one-off as noise that captures nothing. --all: every synthetic thread (05 to 10 and the hedged
 12b too), which changes the outcome (docs/DECISIONS.md, "Video timeline"). --skip leaves further scenario folders (or
-"<folder>/<file>") out of either set.
+"<folder>/<file>") out of either set. --variant writes out/video_timeline_<name>.json for a short clip: "dispute" adds
+08_conflict (Jari against Erkki), "hunch" swaps the 12b update for its hedged variant.
 
 One JsonStore, the chosen captured conversations ingested in date order with pipeline.ingest (as demo.py does),
 and the incidents of every scenario's expected.json plus the demo beats' incidents and answers run with get_context at
@@ -178,8 +179,9 @@ def run_incident(step: dict, s: JsonStore, ev: list, expired: set) -> list:
                     "question": r.question.model_dump(mode="json") if r.question else None,
                     "action_text": a.action_text, "said_by": a.evidence.said_by, "trust": a.trust, "status": a.status})
     missed = [a.id for a in s.all() if not trigger_matches(a, step["event"], step["symptoms"])]
+    site = entity.id if entity_type(entity) == "site" else entity.site
     ev.append({"kind": "incident", "at": at.isoformat(), "entity": step["entity"], "event": step["event"],
-               "symptoms": step["symptoms"], "source": step["source"], "results": per, "not_matched": missed,
+               "entity_site": site, "entity_region": lookup(TOPO, site).region, "symptoms": step["symptoms"], "source": step["source"], "results": per, "not_matched": missed,
                "agent_text": text})
     for r in results:
         if r.reason.startswith("expired") and r.assertion.id not in expired:
@@ -212,6 +214,12 @@ def do_answer(step: dict, last: list, s: JsonStore, ev: list, at) -> None:
 # Synthetic threads written to test one rule each on a fresh store; together they change the demo's outcome.
 NOT_DEMO = {"05_mentioned_in_passing", "06_hunch", "07_reworded_other_model", "08_conflict", "09_failed_2016", "10_typos",
             "12c_barrier_hedged", "12b_barrier_update/thread_hedged.json"}
+
+
+VARIANTS = {
+    "dispute": NOT_DEMO - {"08_conflict"},
+    "hunch": (NOT_DEMO - {"12c_barrier_hedged", "12b_barrier_update/thread_hedged.json"}) | {"12b_barrier_update/thread.json"},
+}
 
 
 def build(skip=frozenset(NOT_DEMO)) -> list[dict]:
@@ -255,11 +263,14 @@ def build(skip=frozenset(NOT_DEMO)) -> list[dict]:
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--out", default=str(ROOT / "out" / "video_timeline.json"))
+    ap.add_argument("--variant", choices=sorted(VARIANTS), help="a short-clip variant of the demo story")
+    ap.add_argument("--out", help="default out/video_timeline.json, or out/video_timeline_<variant>.json")
     ap.add_argument("--all", action="store_true", help="every synthetic thread too (changes the outcome)")
     ap.add_argument("--skip", nargs="*", default=[], help="further scenario folders to leave out")
     args = ap.parse_args()
-    events = build((set() if args.all else NOT_DEMO) | set(args.skip))
+    args.out = args.out or str(ROOT / "out" / f"video_timeline{'_' + args.variant if args.variant else ''}.json")
+    base = set() if args.all else VARIANTS[args.variant] if args.variant else NOT_DEMO
+    events = build(base | set(args.skip))
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps({"note": "Visualisation for the video. The tree is drawn from the stored "
                                           "assertions; the system itself has no tree.", "events": events},

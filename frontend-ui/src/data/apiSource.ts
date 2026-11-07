@@ -61,6 +61,9 @@ export function createApiSource(baseUrl: string, fetchImpl: FetchLike = (...a) =
       }
     },
     // Static copy of the backend's out/video_timeline.json in frontend-ui/public/out/, as the beat fallback.
-    getVideoTimeline: () => call<VideoTimeline>("/out/video_timeline.json", undefined, "/out/video_timeline.json"),
+    getVideoTimeline: (name) => {
+      const file = `/out/video_timeline${name ? `_${name}` : ""}.json`;
+      return call<VideoTimeline>(file, undefined, file);
+    },
   };
 }
