@@ -35,7 +35,7 @@ A workplace chat app that looks like Teams at a glance: a left rail of channels 
 - **Replay** (`?beat=N`, 1 to 7): the UI shows exactly the state the backend's `out/beat_N.json` left. This is what the video records.
 - **Live** (no `?beat`): the same screens, but "Report fault" and the question buttons call the API, so a judge can click.
 
-Not a copy of Microsoft Teams: no logo, name or exact colours (trademark; `FRONTEND_PROMPT.md` 5.2 says the same). A generic chat look with the brand tokens is enough. Mikael decides if he wants it closer.
+**Look: an exact visual clone of Microsoft Teams (the current "new Teams" desktop app, dark theme).** Mikael's decision, 8 Nov. Section 3 describes the chrome. Draw every icon as inline SVG in the Fluent style; do not copy Microsoft image or font files into the repo (Segoe UI via the system font stack is fine, with "Segoe UI", system-ui fallback). The app title is "Microsoft Teams" in the title bar only; our own name appears nowhere in the UI.
 
 ## 2. What exists today (the data you integrate)
 
@@ -121,6 +121,19 @@ Map `date + time` to a timestamp (+02:00) and `role` to `field_engineer`/`expert
 - The stand-in model call behind `agent_text` is served from `.llm_cache/` when the request matches a demo input; an unseen input with `LLM_OFFLINE=1` falls back to a text built in code (same wording). Without the flag it costs one live call, a fraction of a cent.
 
 ## 3. Screens
+
+**Teams chrome, reproduced exactly (dark theme):**
+
+- **Window title bar** (32px, `#1F1F1F`): "Microsoft Teams" left, a search box centred ("Search (Ctrl+E)", 468px, `#292929`, radius 4px), avatar circle with initials top right.
+- **App bar** (68px wide, `#1F1F1F`): vertical stack of icons with 10px labels under each: Activity (bell), Chat (speech bubble), Teams (people group), Calendar, Calls, OneDrive, Apps ("..."). "Teams" is selected: icon and label in `#7F85F5`, a 3px rounded indicator on the left edge.
+- **Teams and channels rail** (320px, `#1F1F1F`, divider `#3B3B3B`): header "Teams" 20px semibold with a filter icon and a "+" button; one team "Network Operations" with a 32px square tile (initials "NO", `#5B5FC7`), its channels indented: General, Faults, Experts, Site access, Field chat. Selected channel row `#2B2B2B` with 4px radius; unread channels bold with a small dot; hover `#333333`.
+- **Channel header** (48px): "# Faults" 16px semibold, tabs underneath "Posts" (selected, underline `#7F85F5` 3px), "Files", "+". Right side: "Meet" button (`#5B5FC7`, white text, radius 4px) and "...".
+- **Posts area** (`#1A1A1A` background): each post is a card (`#292929`, radius 8px, 1px `#3B3B3B`) with a 32px round avatar (initials on a per-person colour from the Teams palette: `#5B5FC7`, `#E3008C`, `#CA5010`, `#0078D4`, `#038387`, `#C239B3`), name 14px semibold, time 12px `#ADADAD` to the right of the name, text 14px `#FFFFFF` line-height 20px. Replies are indented 44px under the post with a thin left line; a "Reply" link in `#7F85F5` at the bottom of each card. Reaction pill (👍 1) under Veikko's "Traffic is back" message, as in real Teams.
+- **Compose box** at the bottom: "Start a post" placeholder, toolbar icons (format, attach, emoji, gif, sticker), send arrow right. Disabled in replay mode, visible but inert.
+- **System posts from the Context layer** use the Teams "app" style: avatar is a 32px rounded square (not a circle) with a network icon on `#5B5FC7`, name "Context layer" with a small "APP" tag (10px, `#ADADAD` border). The question card is an Adaptive Card: title line, then one full-width button per option (`#2B2B2B`, border `#5B5FC7`, 36px tall, hover `#5B5FC7`); after the answer the card shows "Answered: <label>" with a check icon and the buttons go.
+- **Notification** to Erkki: a Teams activity-style line inside the thread ("Context layer mentioned you") with the `notification.text`, and a red count badge on the Activity icon in the app bar while unread.
+- **Faults channel conversations:** one post per incident (the technician's report), with the Context layer's STATUS and proposal as replies.
+
 
 1. **Rail** (left, 280px): "Faults" channel group with one channel per reported fault (TRN-087, TRN-101, TRN-105), "Experts" with thread-001, "Site access" with the barrier email and the update thread, then the seven filler chats under "Other". Unread dots only where a beat added something.
 2. **Thread** (centre, max 760px): messages as in `FRONTEND_PROMPT.md` 5.2. Add the agent as a participant called "Context layer" with a small network icon. It posts exactly three kinds of message, nothing else:
