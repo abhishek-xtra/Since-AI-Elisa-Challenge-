@@ -1,0 +1,715 @@
+{
+  "storyboard": true,
+  "approved": "2026-11-07T14:02:00Z",
+  "intent": null,
+  "angle": "A in chapters: Intro (the problem, on camera) → 01 Capture → 02 Bind → 03 Recall (incl. when it stops) → Mikael on how it decides → tally → lockup. Erkki's fix is the carrier throughout.",
+  "channel": "sinceai.app submission (MP4 / YouTube), 16:9",
+  "brand": "Elisa × Since AI 2026 — context layer",
+  "feature": {
+    "name": "The context layer",
+    "url": "https://github.com/abhishek-xtra/Since-AI-Elisa-Challenge-",
+    "shipped": "A layer that captures an expert's fix from normal chat and email, binds it to the network graph and recalls it for the next engineer",
+    "one_thing": "The expert's fix reaches the next engineer — sourced, scoped, and with no forms",
+    "viewer": "Elisa's network operations and AI leads, and hackathon voters",
+    "task": "Erkki's fix for TRN-042 travels to TRN-087 and TRN-105",
+    "before": "the fix lives in one expert's head; when he's away the team starts from zero",
+    "after": "the fix reaches the next engineer, sourced and scoped, with no forms",
+    "cta": "Capture. Bind. Recall."
+  },
+  "voice": "narrated by Abhishek and Mikael in their own voices (recordings to come)",
+  "duration": 121,
+  "ratio": "16:9",
+  "ground": "#1E1F22",
+  "ink": "#E4E7EC",
+  "accent": "#534AB7",
+  "accent2": "#FF3D7F",
+  "fonts": {
+    "display": "Inter (bundled)",
+    "body": "Inter (bundled; stands in for Segoe UI in the Teams clone)"
+  },
+  "brandReveal": "end",
+  "beats": [
+    {
+      "id": "hook",
+      "start": 0,
+      "end": 7,
+      "line": "Nothing written down",
+      "picture": "The real Experts thread fills the frame: Veikko asks 'Is this documented somewhere?' and Erkki answers 'Not that I know of 😄 We've just learned it over the years.'",
+      "vo": "Abhishek (voice): Have you had this one? The link is up, alarms are clear, and traffic is still dead.",
+      "ui": [],
+      "assets": [
+        {
+          "what": "Experts thread rebuilt from ui/ + thread-001.json",
+          "bucket": "build",
+          "have": true
+        }
+      ],
+      "shots": [
+        {
+          "at": 2.6,
+          "screen": "The real Teams window (#Experts), zoomed onto Veikko's 'Is this documented somewhere?', with 'Erkki Expert is typing'",
+          "motion": "opens wide on the whole Teams window, then the camera pushes in 2.4× onto the post; typing dots run 900 ms",
+          "sfx": []
+        },
+        {
+          "at": 5.2,
+          "screen": "Erkki's 'Not that I know of 😄 / We've just learned it over the years.' on the left, 'Nothing written down' landed on the right",
+          "motion": "Erkki's reply slides up 12 px (220 ms) as the question dims; the camera pulls back and slides the thread left; the title blurs in word by word and a pink underline draws",
+          "sfx": []
+        }
+      ],
+      "seam": "hard-cut",
+      "exit": {
+        "axis": "x",
+        "dir": -1
+      },
+      "entry": {
+        "axis": "z",
+        "dir": 1
+      },
+      "borrow": [
+        "M1634@1.90–2.03"
+      ],
+      "keep": [],
+      "moment": "M1634",
+      "port": "M1634:s01-reply",
+      "subject": "our Teams clone's Experts thread (Veikko and Erkki), not M1634's iMessage bubbles",
+      "mg": "The real Teams window from the repo's ui/ (title bar, app bar, channel list, posts, compose). Wide first, then a 2.4× push onto the message being read; reveal.ts timings for typing, enter and dim. OUT: hard cut, the frame pushes on and smears."
+    },
+    {
+      "id": "faces-a",
+      "start": 7,
+      "end": 17,
+      "line": "",
+      "picture": "Abhishek on camera, chest-up; 'Abhishek' rises out of a dashed baseline behind him, then his role lines step up beside a close-up",
+      "vo": "Abhishek (on camera): I'm Abhishek. The fix lives in one expert's head and nowhere else. When he's away, the network team starts from zero. So we built a layer that listens.",
+      "ui": [],
+      "assets": [
+        {
+          "what": "Abhishek on-camera recording, ~11 s, chest-up, 1080p+",
+          "bucket": "capture",
+          "have": false
+        }
+      ],
+      "shots": [
+        {
+          "at": 9,
+          "screen": "Abhishek's full-frame recording (placeholder); no name on screen",
+          "motion": "the recording lands out of a blur; guides sweep in; the frame drifts and steps left",
+          "sfx": []
+        },
+        {
+          "at": 14.5,
+          "screen": "close-up; 'Data · surfaces · video' stack beside him",
+          "motion": "hard cut to the close-up; role lines step up one frame at a time",
+          "sfx": []
+        }
+      ],
+      "seam": "morph",
+      "exit": {
+        "axis": "x",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "x",
+        "dir": 1
+      },
+      "borrow": [
+        "M1568@0.17–0.87",
+        "M1568@0.17–3.73",
+        "M1568@1.83–2.53",
+        "M1568@6.10–6.73"
+      ],
+      "keep": [],
+      "moment": "M1568",
+      "port": "M1568:s01-name-rise",
+      "subject": "Abhishek's own recording and name, not Richard Socher's footage",
+      "mg": "Abhishek on camera, no name shown: the recording lands out of a blur, then a hard cut to a close-up with the 'Data · surfaces · video' role stack stepping up."
+    },
+    {
+      "id": "ch-capture",
+      "start": 17,
+      "end": 19.5,
+      "line": "Capture",
+      "picture": "Chapter card on purple: 'Chapter 0x / 03', 'Capture' huge, 'From a normal conversation. No forms.', the Capture · Bind · Recall tracker with Capture lit",
+      "vo": null,
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 18.6,
+          "screen": "Chapter card: Capture — From a normal conversation. No forms.",
+          "motion": "purple panel wipes in from the right edge, decelerating; 'Capture' rises out of its dashed baseline; tracker pill for Capture fills dark with a pink underline; holds still 1 s",
+          "sfx": []
+        }
+      ],
+      "seam": "morph",
+      "exit": {
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "x",
+        "dir": -1
+      },
+      "borrow": [
+        "M1568@0.17–0.87",
+        "M1568@6.10–6.73"
+      ],
+      "keep": [],
+      "moment": "M1568",
+      "port": "M1568:s01-white-wipe",
+      "subject": "the chapter word 'Capture', not Richard Socher's name",
+      "carrier": "the lit tracker pill grows past the frame; its dark fill becomes the Teams thread",
+      "mg": "CHAPTER CARD (one template, used 3×): purple wipe from the right, decelerating; 'CHAPTER 01 / 03' ticks in; the word rises out of its dashed baseline; the subtitle blurs in word by word; the tracker pill for this chapter fills dark with a pink underline (it shows where we are in Capture → Bind → Recall). OUT: that pill grows past the frame in 0.65 s and its fill becomes the next world."
+    },
+    {
+      "id": "capture",
+      "start": 19.5,
+      "end": 31,
+      "line": "Saved as a tip",
+      "picture": "Veikko's 09:14 message at the site, then Erkki's 09:22 fix rises in and the context layer's 'Saved as a tip. Nothing for you to do.' lands under it",
+      "vo": "Abhishek: Veikko is at a site. He swapped an optical module, the link is up, and traffic is still dead. Erkki answers from experience: bounce the interface, don't reboot. The layer notes it. Nobody fills anything in.",
+      "ui": [
+        "Erkki's message posted → the capture line appears under it on the same frame"
+      ],
+      "assets": [],
+      "shots": [
+        {
+          "at": 20.0,
+          "screen": "The whole Teams window, #Experts, Veikko's 09:14 message about TRN-042",
+          "motion": "the window rises in out of a blur; then the camera pushes in on the message",
+          "sfx": []
+        },
+        {
+          "at": 26.5,
+          "screen": "Zoomed: Veikko's replies and Erkki's 09:22 fix, 'Disable the interface…' highlighted pink, 'Saved as a tip. Nothing for you to do.' under it",
+          "motion": "typing dots, each reply slides up as the older ones dim; the camera follows the thread down; the capture line drops in; the highlighter sweeps phrase by phrase",
+          "sfx": []
+        },
+        {
+          "at": 29.5,
+          "screen": "Zoomed out: the thread on the left, TRIGGER / ACTION / AVOID chips on the right",
+          "motion": "the camera pulls back to 1.5×; the chips step out one by one, 0.4 s apart",
+          "sfx": []
+        }
+      ],
+      "seam": "morph",
+      "exit": {
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "x",
+        "dir": -1
+      },
+      "borrow": [
+        "M1634@3.07–3.17",
+        "M1634@7.30–7.93",
+        "M1568@3.60–4.00",
+        "M1557@1.67–1.84"
+      ],
+      "keep": [],
+      "moment": "M1634",
+      "port": "M1634:s01-bro",
+      "subject": "Erkki's real 09:22 reply and the capture line from ui/, not M1634's 'bro' bubble and HA reaction",
+      "carrier": "the saved tip lifts out of the thread and becomes the orb",
+      "mg": "Inside the real Teams window: camera zooms in to read each message and back out when the extraction appears beside it. OUT (Lift): the chips lift toward the tree."
+    },
+    {
+      "id": "merge",
+      "start": 31,
+      "end": 39,
+      "line": "Same meaning. One tip",
+      "picture": "The team's knowledge tree: Erkki's fix sprouts as a tip on Faults › Optical module swaps, then his email flies in and merges as a second source",
+      "vo": "Abhishek: He says it again in an email, in different words. It's not a new tip: it merges as a second source. Same trigger, same action, one tip.",
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 33,
+          "screen": "the tree, Erkki's tip 'Bounce the port, don't reboot · Erkki' just sprouted on Optical module swaps; his words in the capture quote top left",
+          "motion": "LIFT from Teams: the 09:22 message lifts as a ghost card, Teams scales to 0.94 and fades, the tree fades up from 1.04; the card arcs to the branch and shrinks to a dot; the tip pops (300 ms overshoot) and its link draws",
+          "sfx": []
+        },
+        {
+          "at": 37.5,
+          "screen": "the email 'RE: TRN-042 traffic not recovering after SFP replacement' flying into the same tip; the tip now reads '2 sources · Teams, email'; cut words 'Same meaning. One tip.'",
+          "motion": "the email card slides in from the right and shrinks into the tip; a second source tag fades in under the label; cut words fade in 250 ms and hold",
+          "sfx": []
+        }
+      ],
+      "seam": "morph",
+      "exit": {
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "z",
+        "dir": 1
+      },
+      "borrow": [
+        "none: the product's own /tree motion, rebuilt from frontend-ui/src/tree (layout.ts geometry, words.ts labels, motion.ts timings: pop 300 ms with overshoot, links draw 300 ms, leaves 90 ms apart, pulse 900 ms, camera 420 ms ease-out)"
+      ],
+      "keep": [],
+      "carrier": "the orb becomes the tip node of the graph",
+      "mg": "LIFT transition (from the repo's handoff): ghost card of Erkki's message rises 12 px, Teams scales to 0.94 and fades while the tree fades in from 1.04, the card flies an arc (900 ms) to 'Optical module swaps' and shrinks to a dot, and the tip sprouts from it with the tree's own pop. The capture quote flies in top left and leaves after 2.2 s. Then the email card slides in from the right, shrinks into the same tip, and '2 sources · Teams, email' fades in under it. Cut words 'Same meaning. One tip.' OUT: purple wipe into the Bind chapter card."
+    },
+    {
+      "id": "ch-bind",
+      "start": 39,
+      "end": 41.5,
+      "line": "Bind",
+      "picture": "Chapter card on purple: 'Chapter 0x / 03', 'Bind' huge, 'Tied to the network, scoped honestly.', the Capture · Bind · Recall tracker with Bind lit",
+      "vo": null,
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 40.6,
+          "screen": "Chapter card: Bind — Tied to the network, scoped honestly.",
+          "motion": "purple panel wipes in from the right edge, decelerating; 'Bind' rises out of its dashed baseline; tracker pill for Bind fills dark with a pink underline; holds still 1 s",
+          "sfx": []
+        }
+      ],
+      "seam": "match-cut",
+      "exit": {
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "x",
+        "dir": -1
+      },
+      "borrow": [
+        "M1568@0.17–0.87",
+        "M1568@6.10–6.73"
+      ],
+      "keep": [],
+      "moment": "M1568",
+      "port": "M1568:s01-white-wipe",
+      "subject": "the chapter word 'Bind', not Richard Socher's name",
+      "carrier": "the lit tracker pill shrinks to the pink tip node of the graph",
+      "mg": "Same chapter-card template, Bind lit. OUT: the lit pill shrinks into the pink tip node: a match cut into the graph."
+    },
+    {
+      "id": "scopes",
+      "start": 41.5,
+      "end": 52,
+      "line": "Every scope it might be",
+      "picture": "Five scope leaves fan out from Erkki's tip: older units ↗ open, TX-200, firmware 4.1, Oulu 07, the north; then the camera eases out to the whole filing system",
+      "vo": "Abhishek: Nobody said exactly which units this applies to. So it doesn't guess: it files the tip under every scope it might be — this model, this firmware, this site, this region, and older units, with an open edge at 2019.",
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 44.5,
+          "screen": "the five leaves fanned out from the tip, 'older units ↗ open' first; cut words 'Every scope it might be'",
+          "motion": "leaves pop one after another, 90 ms apart, each link drawing in 300 ms; the camera holds",
+          "sfx": []
+        },
+        {
+          "at": 50,
+          "screen": "the whole wheel: What the team knows → Faults / Site access / Other and their branches (classified by type), Kalle's key tip dimmed in Keys and codes",
+          "motion": "one 600 ms ease-out camera move out to the whole wheel; branches unrelated to the tip stay dim",
+          "sfx": []
+        }
+      ],
+      "seam": "whip",
+      "exit": {
+        "axis": "x",
+        "dir": -1
+      },
+      "entry": {
+        "axis": "x",
+        "dir": -1
+      },
+      "borrow": [
+        "none: the product's own /tree motion, rebuilt from frontend-ui/src/tree (layout.ts geometry, words.ts labels, motion.ts timings: pop 300 ms with overshoot, links draw 300 ms, leaves 90 ms apart, pulse 900 ms, camera 420 ms ease-out)"
+      ],
+      "keep": [],
+      "mg": "The chapter card's lit pill shrinks into the pink tip node (match cut). Leaves pop out one by one, 90 ms apart, with a small overshoot, and each link draws from the tip; the amber '↗ open' tag on 'older units' flashes once. Cut words 'Every scope it might be'. Then one decisive 600 ms camera move out to the whole wheel, so the viewer sees the filing system: Faults / Site access / Other. OUT: plain transition (600 ms): the tree recedes and Teams arrives."
+    },
+    {
+      "id": "ask",
+      "start": 52,
+      "end": 60,
+      "line": "Asked Erkki once",
+      "picture": "TRN-087 at another site shows 'ambiguous' with the real reason, then Erkki's question card in his own thread and his one tap on 'All older units'",
+      "vo": "Abhishek: Six days later, same symptoms at a different site. The scope is unclear, so it asks Erkki once, in his own thread. One tap: all older units.",
+      "ui": [
+        "cursor clicks 'All older units' → the option fills and the card shows Answered on the same frame"
+      ],
+      "assets": [],
+      "shots": [
+        {
+          "at": 54.5,
+          "screen": "Zoomed on #Faults: Veikko's TRN-087 report with the status card 'ambiguous · Erkki's tip may apply · question sent to Erkki Expert' and its reason",
+          "motion": "whips in wide, pushes in 2.1×; the status expands (260 ms), its chip pops, the reason fades in",
+          "sfx": []
+        },
+        {
+          "at": 56.2,
+          "screen": "back on the tree: the pulse has run root → Faults → Optical module swaps → tip; Oulu 07 fails",
+          "motion": "zoom-through into the tree; the trail draws, leaves pop, 'Asked Erkki once' and 'Oulu 11 is a different site' land",
+          "sfx": []
+        },
+        {
+          "at": 58.2,
+          "screen": "Zoomed on #Experts: the Context layer question card with six options; the cursor on 'All older units'",
+          "motion": "the cursor glides 700 ms from the card's corner, presses 150 ms; the card collapses to '✓ Answered: All older units'",
+          "sfx": []
+        }
+      ],
+      "seam": "zoom-through",
+      "exit": {
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "z",
+        "dir": 1
+      },
+      "borrow": [
+        "M1634@1.90–2.03",
+        "M1634@7.30–7.93"
+      ],
+      "keep": [],
+      "moment": "M1634",
+      "port": "M1634:s01-reaction",
+      "subject": "the real question card and options from thread-001.json, not M1634's comment card",
+      "mg": "Two Teams channels and the tree between them; the card and cursor follow the repo's QuestionCard. OUT: zoom through the answer."
+    },
+    {
+      "id": "honed",
+      "start": 60,
+      "end": 64,
+      "line": "Honed by one answer",
+      "picture": "On the tree, the four unused leaves fall away and 'older units' stays",
+      "vo": "Abhishek: That answer becomes the source. The other scopes fall away.",
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 60.8,
+          "screen": "four leaves (TX-200, firmware 4.1, Oulu 07, the north) falling away below the tip",
+          "motion": "each unused leaf drops 90 px and fades in 300 ms (ease-in), staggered",
+          "sfx": []
+        },
+        {
+          "at": 63.2,
+          "screen": "only 'older units ↗ open' left on the tip; cut words 'Honed by one answer'",
+          "motion": "the camera holds; cut words fade in 250 ms and hold",
+          "sfx": []
+        }
+      ],
+      "seam": "morph",
+      "exit": {
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "z",
+        "dir": -1
+      },
+      "borrow": [
+        "none: the product's own /tree motion, rebuilt from frontend-ui/src/tree (layout.ts geometry, words.ts labels, motion.ts timings: pop 300 ms with overshoot, links draw 300 ms, leaves 90 ms apart, pulse 900 ms, camera 420 ms ease-out)"
+      ],
+      "keep": [],
+      "mg": "The tree's own 'fall' animation: the four unused leaves drop and fade one after another while 'older units' stays lit. Cut words 'Honed by one answer'. OUT: purple wipe into the Recall chapter card."
+    },
+    {
+      "id": "ch-recall",
+      "start": 64,
+      "end": 66.5,
+      "line": "Recall",
+      "picture": "Chapter card on purple: 'Chapter 0x / 03', 'Recall' huge, 'The right fix, for the next engineer.', the Capture · Bind · Recall tracker with Recall lit",
+      "vo": null,
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 65.6,
+          "screen": "Chapter card: Recall — The right fix, for the next engineer.",
+          "motion": "purple panel wipes in from the right edge, decelerating; 'Recall' rises out of its dashed baseline; tracker pill for Recall fills dark with a pink underline; holds still 1 s",
+          "sfx": []
+        }
+      ],
+      "seam": "morph",
+      "exit": {
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "x",
+        "dir": -1
+      },
+      "borrow": [
+        "M1568@0.17–0.87",
+        "M1568@6.10–6.73"
+      ],
+      "keep": [],
+      "moment": "M1568",
+      "port": "M1568:s01-white-wipe",
+      "subject": "the chapter word 'Recall', not Richard Socher's name",
+      "carrier": "the lit tracker pill grows past the frame into the Faults channel",
+      "mg": "Same chapter-card template, Recall lit. OUT: the lit pill grows past the frame into the Faults channel."
+    },
+    {
+      "id": "recall",
+      "start": 66.5,
+      "end": 77,
+      "line": "The fix travels, credited",
+      "picture": "Sami at TRN-105 in Helsinki, then the Context layer's reply citing Erkki, and Erkki's notice that his tip travelled",
+      "vo": "Abhishek: A day later, Sami in Helsinki — he's never spoken to Erkki. The layer walks the same path, cites Erkki, and relays the fix. Nobody is interrupted. Erkki just sees that his tip travelled.",
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 69.5,
+          "screen": "Zoomed on #Faults: Sami Korhonen 14:00, 'TRN-105 at HEL-02 not passing traffic… Thinking of swapping the SFP again.'",
+          "motion": "whips in wide, pushes in to read, then a second push",
+          "sfx": []
+        },
+        {
+          "at": 71.5,
+          "screen": "the tree: the path lights to 'older units', the tip glows, source tag 'Erkki · Teams, 1 Nov'",
+          "motion": "lift into the tree; the pulse runs 900 ms; the tag rises in",
+          "sfx": []
+        },
+        {
+          "at": 74.4,
+          "screen": "The whole Teams window: the Context layer's reply citing Erkki and the notice 'Context layer mentioned Erkki Expert'",
+          "motion": "back in Teams zoomed on the reply as it slides in; the camera pulls out to the full window; the notice drops in and the Activity badge bumps",
+          "sfx": []
+        },
+        {
+          "at": 76,
+          "screen": "Zoomed on the thread; 'The fix travels, credited' under it",
+          "motion": "the camera pushes back in to 1.6×; the line blurs up into place",
+          "sfx": []
+        }
+      ],
+      "seam": "whip",
+      "exit": {
+        "axis": "x",
+        "dir": -1
+      },
+      "entry": {
+        "axis": "x",
+        "dir": -1
+      },
+      "borrow": [
+        "M1634@3.07–3.17",
+        "M1634@1.90–2.03"
+      ],
+      "keep": [],
+      "moment": "M1634",
+      "port": "M1634:s01-bro",
+      "subject": "Sami's real thread and the context layer's real reply, not iMessage",
+      "mg": "Teams → tree → Teams, with the camera zooming in to read and out to show the whole app. OUT: whip right."
+    },
+    {
+      "id": "stay-true",
+      "start": 77,
+      "end": 90,
+      "line": "It knows when to stop",
+      "picture": "Three verbatim reasons in turn: a 2023 unit declined, a road closure that expired on its date as the dial rolls to 2026-11-20, a retracted tip under review",
+      "vo": "Mikael (voice): It also knows when to stop. A 2023 unit is beyond anything Erkki has seen, so it declines and asks where the edge is. A road closure expires on the date the engineer gave. And when Erkki takes a tip back, it goes under review, not deleted.",
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 79.5,
+          "screen": "'Declined' — 'install year 2023 is beyond the known edge 2019' (TRN-101)",
+          "motion": "words pop in right of their slot and decelerate left",
+          "sfx": []
+        },
+        {
+          "at": 85,
+          "screen": "dial: the date rolls to 2026-11-20 and 'expired' lands under it",
+          "motion": "dial swings in tilted and opens; date rolls one value per frame",
+          "sfx": []
+        },
+        {
+          "at": 89,
+          "screen": "'Under review' — 'Erkki took it back; the tip is under review, not deleted.'",
+          "motion": "dial bursts outward; words enter blurred and settle",
+          "sfx": []
+        }
+      ],
+      "seam": "hard-cut",
+      "exit": {
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "x",
+        "dir": 1
+      },
+      "borrow": [
+        "M936@2.56–2.84",
+        "M936@2.52–3.12",
+        "M936@1.00–2.64"
+      ],
+      "keep": [],
+      "moment": "M936",
+      "port": "M936:s01-dial",
+      "subject": "the real expiry date 2026-11-20 and the decline/retraction reasons, not M936's sales timer",
+      "mg": "Three reasons, three different moves: 'Declined' and its reason pop in right of their slot and decelerate left, then blur out in stages; the dial swings in tilted, opens and spins, the date rolls frame by frame to 2026-11-20 and 'expired' stamps in pink; the dial bursts outward and 'Under review' resolves out of blur. OUT: hard cut to Mikael."
+    },
+    {
+      "id": "faces-m",
+      "start": 90,
+      "end": 102,
+      "line": "",
+      "picture": "Mikael on camera; 'Mikael' rises out of a dashed baseline behind him, then his role lines beside a close-up",
+      "vo": "Mikael (on camera): I'm Mikael. The model only reads the language. The code decides scope and trust, every suggestion carries its source, its scope and the date it stops being true — and nothing touches the network.",
+      "ui": [],
+      "assets": [
+        {
+          "what": "Mikael on-camera recording, ~13 s, chest-up, 1080p+",
+          "bucket": "capture",
+          "have": false
+        }
+      ],
+      "shots": [
+        {
+          "at": 92,
+          "screen": "Mikael's full-frame recording (placeholder); no name on screen",
+          "motion": "the recording lands out of a blur; guides sweep in; the frame drifts and steps left",
+          "sfx": []
+        },
+        {
+          "at": 98.5,
+          "screen": "close-up; 'Pipeline · extraction · binding' stack",
+          "motion": "hard cut to the close-up; role lines step up",
+          "sfx": []
+        }
+      ],
+      "seam": "blur-cut",
+      "exit": {
+        "axis": "x",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "z",
+        "dir": 1
+      },
+      "borrow": [
+        "M1568@0.17–0.87",
+        "M1568@1.83–2.53",
+        "M1568@3.60–4.00"
+      ],
+      "keep": [],
+      "moment": "M1568",
+      "port": "M1568:s01-name-rise",
+      "subject": "Mikael's own recording and name, not Richard Socher's footage",
+      "mg": "Mikael on camera, no name shown: the recording lands out of a blur, then a hard cut to a close-up with the 'Pipeline · extraction · binding' role stack stepping up."
+    },
+    {
+      "id": "value",
+      "start": 102,
+      "end": 113,
+      "line": "0 forms",
+      "picture": "The test numbers from the demo land one after another, then collapse into a huge 0 forms",
+      "vo": "Abhishek: In the demo we read fourteen conversations, stored four tips from six sources, ran eleven incidents, and passed seventeen test scenarios and forty-nine break tests. And the engineers filled in zero forms.",
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 105,
+          "motion": "Numbers count up one value per frame (M936 stepText), staggered 0.25 s left to right, row by row; captions fade in 0.2 s behind each number; 17 and 49 land last in green on the beat",
+          "screen": "Purple wall: IN THE DEMO / We tested it hard. Ten numbers: 14 conversations read, 23 messages, 4 tips, 11 incidents, 2 engineers, 2 questions, 2 taps, 5 declines, 17 test scenarios (green), 49 break tests (green)",
+          "sfx": []
+        },
+        {
+          "at": 110.5,
+          "motion": "Every number flies to the centre and shrinks into the 0 (0.6 s, power3.in), the 0 punches in at 1.15 and settles to 1 (back.out); 'forms' slides in from the right; the pink underline draws left to right in 0.5 s; the line above fades in last. Then it holds dead still",
+          "screen": "'All of it, in the demo, needed' above a huge '0 forms' (470 px), pink underline, 'for the engineers to fill in'",
+          "sfx": []
+        }
+      ],
+      "seam": "morph",
+      "exit": {
+        "axis": "z",
+        "dir": -1
+      },
+      "entry": {
+        "axis": "z",
+        "dir": 1
+      },
+      "borrow": [
+        "M936@2.56–2.84"
+      ],
+      "keep": [],
+      "moment": "M936",
+      "port": "M936:s01-timer",
+      "subject": "the demo's real tally line, not M936's '6 weeks'",
+      "mg": "A stats wall headed 'In the demo · We tested it hard': ten numbers count up one value per frame (M936's rolling value), staggered 0.25 s left to right and row by row, each caption fading in 0.2 s behind its number; 17 test scenarios and 49 break tests land last, in green, on the beat. Then the turn: every number flies into the centre and shrinks into the '0' (0.6 s, power3.in), the '0' punches in at 1.15 and settles (back.out) with a one-frame pink flash, 'forms' slides in from the right, the pink underline draws left to right (500 ms), and 'All of it, in the demo, needed' fades in above. It holds dead still about 2.5 s, the longest hold in the film. OUT: the underline shrinks into the lockup's pink full stops."
+    },
+    {
+      "id": "end",
+      "start": 113,
+      "end": 121,
+      "line": "Capture. Bind. Recall",
+      "picture": "The three verbs land as the lockup on purple, with the challenge line under them",
+      "vo": null,
+      "ui": [],
+      "assets": [],
+      "shots": [
+        {
+          "at": 117,
+          "screen": "'Capture. Bind. Recall.' lockup centred, 'Elisa × Since AI 2026' under it",
+          "motion": "the pink underline shrinks into the three full stops; verbs blur in word by word; holds 3 s",
+          "sfx": []
+        }
+      ],
+      "seam": "hard-cut",
+      "exit": {
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "axis": "z",
+        "dir": 1
+      },
+      "borrow": [
+        "none: the type lockup is our own end card, built from the film's three verbs"
+      ],
+      "keep": [],
+      "mg": "'Capture. Bind. Recall.' blurs in word by word, each full stop dropping in pink; the line under it fades up; it holds 3 s, then a 2-frame dip to black."
+    }
+  ],
+  "notes": [
+    "Deck notes: highlight uncertainty (scopes, honed), dedup (merge), timed knowledge expiring (stay-true), fit 2 min.",
+    "Person picked storyline A, both narrate all of it in their own voices, placeholders for the on-camera recordings.",
+    "2026-11-07: restructured into chapters (Intro, 01 Capture, 02 Bind, 03 Recall) with one chapter-card template and a Capture·Bind·Recall tracker; added the extraction shot in Capture; each beat now lists its motion graphics and transitions (mg).",
+    "2026-11-07: Frame 26 note — '0 forms' made the hero of the tally (470 px). Graph sections rebuilt on the repo's new /tree (radial filing system, pops, link draw, leaf fan, pulse, leaf fall, source tag) with the Lift and Reply transitions from docs/VIDEO_HANDOFF.md; added the tree pulse shots in Ask and Recall.",
+    {
+      "from": "person",
+      "note": "Frame 28: show the test statistics from the two photos and how all of it leads to 0 forms",
+      "change": "value beat now 102-113 s: a stats wall of the ten demo counts (framed 'in the demo', per the repo's honest-framing note), then the numbers collapse into the huge '0 forms'. End moved to 113-121 s; film is about 2:01"
+    },
+    {
+      "from": "person",
+      "note": "Use the live animations from ui/src/reveal.ts and frontend-ui/src/tree/motion.ts",
+      "change": "Teams beats (hook, capture, ask, recall) take reveal.ts TIMING: typing dots 900 ms, message enter 220 ms (rise 12 px, ease cubic-bezier(0.1,0.9,0.2,1)), expand/collapse 260, cursor 700 (cubic-bezier(0.65,0,0.35,1)), press 150, badge 300, reaction pop 400 (scale .4→1.15→1), older messages dim to 70% over 600, scroll 500 keeping the newest in the lower third. Tree beats keep motion.ts numbers"
+    },
+    {
+      "from": "person",
+      "note": "Build the video",
+      "change": "Animated every scene from the approved stills; ask line set to the on-screen \"Asked Erkki once\"; library music in four passes"
+    },
+    {
+      "from": "person",
+      "note": "Music too basic; show the actual Teams window like the repo animation and zoom in and out of the text; no names on our face sections",
+      "change": "Teams scenes rebuilt as the full Teams window from ui/src (title bar, app bar, channel rail, posts, compose) with reveal.ts timings; camera starts wide and zooms into each message, then back out. Names removed from the face sections and the end card. Music swapped to a library product-launch track (17d6f1b5), other candidates left in assets."
+    }
+  ],
+  "sound": {
+    "clock": "music only until Abhishek and Mikael send their recordings",
+    "music": "assets/Astral Generated Music 17d6f1b5.wav",
+    "note": "Generated music was refused (no HyperFrames plan), so a HeyGen library track is laid in four passes joined at the chapter cards"
+  }
+}

@@ -1,0 +1,34 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: transparent; font-family: "Inter", sans-serif; }
+    #ch-capture-card { position: absolute; inset: 0; background: #F5F5F5; }
+    #ch-capture-word { position: absolute; left: 0; right: 0; top: 232px; text-align: center; font: 800 350px/1 "Inter", sans-serif; letter-spacing: -0.045em;
+      background: linear-gradient(90deg, #FF4A80, #FF9A48); -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 40px 60px; }
+    #ch-capture-sub { position: absolute; left: 0; right: 0; top: 646px; text-align: center; font: 500 44px/1.2 "Inter", sans-serif; letter-spacing: -0.01em; color: #6E6E73; }
+    #ch-capture-bar { position: absolute; left: 510px; top: 914px; width: 900px; height: 4px; border-radius: 2px; background: #DEDEE3; }
+    #ch-capture-fill { position: absolute; left: 0; top: 0; height: 4px; width: 900px; border-radius: 2px; background: linear-gradient(90deg,#FF3D7F,#FF5A8A); box-shadow: 0 0 12px rgba(255,61,127,.55); transform-origin: 0 50%; }
+    #ch-capture-steps { position: absolute; left: 510px; top: 942px; width: 900px; display: flex; justify-content: space-between; font: 600 28px/1 "Inter", sans-serif; color: #8E8E93; }
+    #ch-capture-steps .on { color: #1F1F1F; }
+  </style>
+  <div data-hf-id="hf-xb3j" id="root" data-composition-id="ch-capture" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-ktcg" id="ch-capture-card">
+      <div data-hf-id="hf-nfaq" id="ch-capture-word" data-var-text="ch-capture-word">Capture</div>
+      <div data-hf-id="hf-itrn" id="ch-capture-sub" data-var-text="ch-capture-sub">From the conversations you're already having.</div>
+      <div data-hf-id="hf-1fdt" id="ch-capture-bar"><div data-hf-id="hf-de4d" id="ch-capture-fill"></div></div>
+      <div data-hf-id="hf-qlxf" id="ch-capture-steps"><span data-hf-id="hf-8eq4" class="on">Capture</span><span data-hf-id="hf-ztj2" class="">Bind</span><span data-hf-id="hf-dpb4" class="">Recall</span></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const blur = (p) => `blur(${p}px)`;
+    const card = "#ch-capture-card";
+    // Dissolves in over the outgoing scene, drifts closer, then dissolves into the next scene
+    tl.fromTo(card, { opacity: 0, scale: 1.05, filter: blur(24) }, { opacity: 1, scale: 1.0, filter: blur(0), duration: 0.9, ease: "power2.out" }, 0);
+    tl.fromTo(card, { scale: 1.0 }, { scale: 1.025, duration: 2.1, ease: "none", immediateRender: false }, 0.9);
+    // The progress line fills on from the previous chapter to this one
+    tl.fromTo("#ch-capture-fill", { scaleX: 0 }, { scaleX: 0.16, duration: 0.9, ease: "power3.inOut" }, 0.5);
+    tl.to(card, { opacity: 0, scale: 1.06, filter: blur(20), duration: 0.7, ease: "power2.inOut" }, 3.0);
+    tl.set({}, {}, 3.7);
+    window.__timelines["ch-capture"] = tl;
+  </script>
+</template>

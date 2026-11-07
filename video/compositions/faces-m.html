@@ -1,0 +1,66 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; --f: "Inter", sans-serif; font-family: var(--f); background: #F5F5F5; }
+    .fc-plate { position: absolute; inset: 0; background: radial-gradient(1200px 800px at 60% 40%, #FFFFFF 0%, #ECECF0 70%); }
+    .fc-slot { position: absolute; }
+    .fc-vid { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+    .fc-name { position: absolute; left: 140px; color: #1F1F1F; font: 400 260px/260px var(--f); letter-spacing: 2px; white-space: nowrap; }
+    .rule-h { position: absolute; left: 0; height: 1px; width: 1920px; opacity: .3; background: repeating-linear-gradient(90deg, #242424 0 6px, transparent 6px 12px); }
+    .rule-v { position: absolute; top: 0; width: 1px; height: 1080px; opacity: .3; background: repeating-linear-gradient(180deg, #242424 0 6px, transparent 6px 12px); }
+    .fc-role { position: absolute; left: 1010px; font: 800 110px/120px var(--f); letter-spacing: -0.045em; white-space: nowrap; padding-bottom: 10px; background: linear-gradient(90deg, #8C6CF6, #4CA8F6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .fc-role.sub { background: none; color: #8E8E93; font-weight: 600; letter-spacing: -0.02em; }
+  </style>
+  <div data-hf-id="hf-6bgx" id="root" data-composition-id="faces-m" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-358o" id="faces-m-wide" class="fc-shot">
+      <div data-hf-id="hf-s54e" class="fc-plate"></div>
+      <i data-hf-id="hf-2ap1" class="rule-h" style="top:520px"></i><i data-hf-id="hf-l9ux" class="rule-v" style="left:1730px"></i>
+      <div data-hf-id="hf-fdxs" class="fc-slot" style="left:640px;top:150px;width:640px;height:930px">
+        <video data-hf-id="hf-vfrn" id="fm-v1" class="clip fc-vid" src="assets/Mikael takes cutout.webm" muted playsinline data-start="0" data-duration="2.78" data-media-start="0" data-track-index="1" style="object-position:47% 38%;transform-origin:47% 38%;transform:scale(1)"></video>
+        <video data-hf-id="hf-n1bq" id="fm-v2" class="clip fc-vid" src="assets/Mikael takes cutout.webm" muted playsinline data-start="2.78" data-duration="2.12" data-media-start="2.767" data-track-index="1" style="object-position:47% 38%;transform-origin:47% 38%;transform:scale(1.1)"></video>
+      </div>
+    </div>
+    <div data-hf-id="hf-mjk7" id="faces-m-close" class="fc-shot">
+      <div data-hf-id="hf-ytx7" class="fc-plate" style="background: radial-gradient(1100px 900px at 30% 45%, #FFFFFF 0%, #ECECF0 72%)"></div>
+      <div data-hf-id="hf-imu3" class="fc-slot" style="left:80px;top:60px;width:820px;height:1020px">
+        <video data-hf-id="hf-e0zz" id="fm-v3" class="clip fc-vid" src="assets/Mikael takes cutout.webm" muted playsinline data-start="4.9" data-duration="3.59" data-media-start="4.9" data-track-index="2" style="object-position:47% 36%;transform-origin:47% 36%;transform:scale(1.35)"></video>
+        <video data-hf-id="hf-sjdn" id="fm-v4" class="clip fc-vid" src="assets/Mikael takes cutout.webm" muted playsinline data-start="8.49" data-duration="3.51" data-media-start="8.49" data-track-index="2" style="object-position:47% 36%;transform-origin:47% 36%;transform:scale(1.5)"></video>
+      </div>
+      <div data-hf-id="hf-uf87" class="fc-role" style="top:330px">Pipeline,</div>
+      <div data-hf-id="hf-ztef" class="fc-role" style="top:450px">extraction</div>
+      <div data-hf-id="hf-skhx" class="fc-role sub" style="top:570px">& binding</div>
+      <i data-hf-id="hf-kr86" class="rule-h" style="top:690px;left:1000px;width:920px"></i><i data-hf-id="hf-v1j1" class="rule-v" style="left:980px"></i>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const blur = (p) => `blur(${p}px)`;
+
+    // Wide: the slot lands out of a blur, the name rises behind it, the guides sweep in
+    tl.set("#faces-m-close", { opacity: 0 }, 0);
+    tl.fromTo("#faces-m-wide .fc-slot", { scale: 1.1, filter: blur(14) }, { scale: 1, filter: blur(0), duration: 0.7, ease: "expo.out" }, 0);
+    tl.fromTo("#faces-m-wide .rule-h", { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.7, ease: "power3.out" }, 0.5);
+    tl.fromTo("#faces-m-wide .rule-v", { scaleY: 0, transformOrigin: "50% 0" }, { scaleY: 1, duration: 0.7, ease: "power3.out" }, 0.7);
+    tl.to("#faces-m-wide .rule-h", { y: 60, duration: 0.5, ease: "power3.inOut" }, 2.4);
+    tl.fromTo("#faces-m-wide .fc-slot", { x: 0 }, { x: -40, duration: 1.6, ease: "none", immediateRender: false }, 0.7);
+    tl.to("#faces-m-wide .fc-slot", { x: -140, duration: 0.6, ease: "power3.inOut" }, 2.3);
+    tl.to("#faces-m-wide .fc-slot", { x: -60, duration: 0.5, ease: "power3.inOut" }, 3.5);
+    tl.to("#faces-m-wide .fc-slot", { x: -180, duration: 0.6, ease: "power3.inOut" }, 4.0);
+    tl.to("#faces-m-wide .rule-v", { x: -80, duration: 0.5, ease: "power3.inOut" }, 3.4);
+    tl.to("#faces-m-wide .fc-slot", { scale: 1.06, duration: 0.35, ease: "power2.in" }, 4.55);
+    // Hard cut to the close-up; the role stack steps up line by line
+    tl.set("#faces-m-wide", { opacity: 0 }, 4.9);
+    tl.set("#faces-m-close", { opacity: 1 }, 4.9);
+    tl.fromTo("#faces-m-close .fc-slot", { scale: 1.08 }, { scale: 1, duration: 0.6, ease: "expo.out", immediateRender: false }, 4.9);
+    tl.set("#faces-m-close .fc-role", { opacity: 0, y: 70, filter: blur(10) }, 0);
+    tl.to("#faces-m-close .fc-role", { opacity: 1, y: 0, filter: blur(0), duration: 0.55, ease: "expo.out", stagger: 0.25 }, 5.1);
+    tl.fromTo("#faces-m-close .rule-h", { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.6, ease: "power3.out", immediateRender: false }, 5.8);
+    tl.fromTo("#faces-m-close .fc-slot", { x: 0 }, { x: -40, duration: 2.6, ease: "none", immediateRender: false }, 5.5);
+    tl.to("#faces-m-close .fc-role", { y: -40, duration: 0.5, ease: "power3.inOut" }, 6.9);
+    tl.to("#faces-m-close .fc-slot", { x: -110, duration: 0.5, ease: "power3.inOut" }, 8.3);
+    tl.to("#faces-m-close .fc-role", { x: 40, duration: 0.5, ease: "power3.inOut" }, 9.2);
+    // Exit: the frame slides off and smears
+    tl.to("#faces-m-close", { x: -220, filter: blur(12), duration: 0.4, ease: "power2.in" }, 11.60);
+    tl.set({}, {}, 12);
+    window.__timelines["faces-m"] = tl;
+  </script>
+</template>

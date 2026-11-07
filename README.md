@@ -4,7 +4,13 @@ Veikko swaps an optical module, the link comes up, the alarms clear, and traffic
 
 This is a context layer for that knowledge. It reads the conversations people already have (a Teams thread, an email), stores each reusable operational rule as a **context assertion** bound to the network graph (a trigger, candidate scopes over topology attributes, an action, an avoid list, verbatim evidence, trust, validity), and hands it back when the same situation comes up on another unit. When nobody said exactly which units a tip applies to, it stores every reading, lets later cases narrow them, and asks the expert one question, once. It is advisory: it never acts on the network, never writes to the topology, and uses no numeric confidence anywhere.
 
-Team: Mikael Salomaa and Abhishek, Since AI 2026. **Demo video:** link added at submission; script and the source of every claim in it: `docs/VIDEO.md`. It was made in HyperFrames; its Teams and tree scenes are animated rebuilds of the two front-ends below, with every line taken from `out/`. The video shows the solution working; this file and the code carry the technical decisions.
+Team: Mikael Salomaa and Abhishek, Since AI 2026.
+
+## The demo video
+
+[![Watch the demo video, 2:03](video/poster.jpg)](video/elisa_demo.mp4)
+
+**[Watch the demo video (2:03, mp4)](video/elisa_demo.mp4)**, or open `video/elisa_demo.mp4` from a clone. The script, what each scene draws on, and the numbers screen checked against the repo are in `docs/VIDEO.md`; the HyperFrames project that renders it is in `video/`. The Teams and tree scenes are animated rebuilds of the two front-ends below, with every line taken from `out/`. The video shows the solution working; this file and the code carry the technical decisions.
 
 ## See it in five minutes
 
@@ -89,6 +95,7 @@ The model never decides scope, outcome, trust, supersession, expiry, or whether 
 | `ui/` | The Teams clone (Vite, React, TypeScript) |
 | `frontend-ui/` | The context map, the Finland view and the growing tree |
 | `scripts/` | Scenario generation, the video timeline, the model check |
+| `video/` | The final video (`elisa_demo.mp4`) and the HyperFrames project that renders it |
 | `challenge/` | Elisa's brief, example material and briefing deck, as given |
 | `docs/` | `DEMO.md`, `DEMO_CHAT.md`, `DECISIONS.md`, `BREAK_TESTS.md`, `VIDEO.md`; `docs/process/` is how the build was run (plans, prompts, reviews, gates, briefing transcript) |
 

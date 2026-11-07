@@ -1,0 +1,41 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; --f: "Inter", sans-serif; font-family: var(--f); background: #F5F5F5; color: #1F1F1F; }
+    #en-lockup { position: absolute; left: 0; width: 1920px; top: 420px; text-align: center; font: 800 150px/1 var(--f); letter-spacing: -5px; white-space: nowrap; }
+    #en-lockup .dot { color: #FF3D7F; display: inline-block; }
+    .en-w { display: inline-block; margin: 0 10px; }
+    .en-t { padding-bottom: 14px; -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .en-w:nth-of-type(1) .en-t { background-image: linear-gradient(90deg, #FF4A80, #FF9A48); }
+    .en-w:nth-of-type(2) .en-t { background-image: linear-gradient(90deg, #EC4699, #B850DA); }
+    .en-w:nth-of-type(3) .en-t { background-image: linear-gradient(90deg, #8C6CF6, #4CA8F6); }
+    #en-rule { position: absolute; left: 810px; width: 300px; top: 710px; height: 6px; border-radius: 3px; background: #FF3D7F; }
+    #en-glow { position: absolute; left: 360px; top: -100px; width: 1200px; height: 1200px; border-radius: 50%; background: radial-gradient(closest-side, rgba(140,108,246,.10), rgba(140,108,246,0)); }
+    #en-sub { position: absolute; left: 0; width: 1920px; top: 640px; text-align: center; font: 500 34px/1 var(--f); color: #6E6E73; letter-spacing: 1px; }
+  </style>
+  <div data-hf-id="hf-gwfo" id="root" data-composition-id="end" data-width="1920" data-height="1080">
+    <i data-hf-id="hf-tvze" id="en-glow"></i>
+    <div data-hf-id="hf-343e" id="en-lockup" data-brand-mark><span data-hf-id="hf-bf82" class="en-w"><span data-hf-id="hf-jc1v" class="en-t">Capture</span><span data-hf-id="hf-6jgg" class="dot">.</span></span> <span data-hf-id="hf-lxtz" class="en-w"><span data-hf-id="hf-q6tg" class="en-t">Bind</span><span data-hf-id="hf-3zzs" class="dot">.</span></span> <span data-hf-id="hf-ys59" class="en-w"><span data-hf-id="hf-qbam" class="en-t">Recall</span><span data-hf-id="hf-2t2p" class="dot">.</span></span></div>
+    <div data-hf-id="hf-ln32" id="en-sub" data-var-text="end-sub">Elisa × Since AI 2026</div>
+    <i data-hf-id="hf-qs67" id="en-rule"></i>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const blur = (p) => `blur(${p}px)`;
+
+    // The lockup: verbs blur in word by word, each full stop drops in pink
+    tl.set(".en-w", { opacity: 0, y: 50, filter: blur(14) }, 0);
+    tl.set(".en-w .dot", { y: -60, opacity: 0 }, 0);
+    tl.set("#en-sub", { opacity: 0, y: 20 }, 0);
+    tl.set("#en-rule", { scaleX: 0 }, 0);
+    tl.to(".en-w", { opacity: 1, y: 0, filter: blur(0), duration: 0.55, ease: "expo.out", stagger: 0.3 }, 0.0);
+    tl.to(".en-w .dot", { y: 0, opacity: 1, duration: 0.4, ease: "back.out(2.2)", stagger: 0.3 }, 0.35);
+    tl.to("#en-sub", { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 1.5);
+    tl.to("#en-rule", { scaleX: 1, duration: 0.5, ease: "power3.out" }, 2.9);
+    tl.fromTo(".en-w .dot", { scale: 1 }, { keyframes: [{ scale: 1.3, duration: 0.2, ease: "power2.out" }, { scale: 1, duration: 0.3, ease: "power2.inOut" }], transformOrigin: "50% 80%", stagger: 0.12, immediateRender: false }, 4.3);
+    // Out: the lockup softly fades away as the music ends
+    tl.to(["#en-lockup", "#en-sub", "#en-rule"], { opacity: 0, y: -12, filter: blur(8), duration: 0.7, ease: "power2.in" }, 7.2);
+    tl.fromTo("#en-glow", { x: -200 }, { x: 160, duration: 5.0, ease: "none" }, 0);
+    tl.set({}, {}, 8);
+    window.__timelines["end"] = tl;
+  </script>
+</template>

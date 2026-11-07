@@ -1,0 +1,80 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter", sans-serif; }
+
+    .tr-stage { position: absolute; inset: 0; background: #F5F5F5; overflow: hidden; color: #242424; font-family: "Inter", sans-serif; }
+    .tr-canvas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .tr-canvas svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .tr-link { fill: none; stroke: #A0A8B3; stroke-width: 2.5; opacity: .3; }
+    .tr-link.tip { stroke: #FF3D7F; opacity: .85; }
+    .tr-link.leaf { stroke: #C2185B; opacity: .55; stroke-width: 2; }
+    .tr-link.trail { stroke: #FF3D7F; stroke-width: 5; opacity: .9; filter: drop-shadow(0 0 10px rgba(255,61,127,.9)); }
+    .tr-node { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+    .tr-dot { position: absolute; width: 14px; height: 14px; left: -7px; top: -7px; border-radius: 50%; background: #A0A8B3; }
+    .tr-name { position: absolute; left: 0; bottom: 12px; transform: translateX(-50%); white-space: nowrap; font-weight: 600; font-size: 22px; text-shadow: 0 0 4px #F5F5F5, 0 0 2px #F5F5F5; }
+    .tr-cap { position: absolute; left: 0; top: 12px; transform: translateX(-50%); white-space: nowrap; font-size: 16px; color: #616161; text-shadow: 0 0 4px #F5F5F5; }
+    .tr-root .tr-dot { width: 26px; height: 26px; left: -13px; top: -13px; background: #FF3D7F; box-shadow: 0 0 22px 8px rgba(255,61,127,.5); }
+    .tr-root .tr-name { font-size: 30px; width: 190px; white-space: normal; text-align: center; line-height: 1.1; bottom: 28px; }
+    .tr-top .tr-name { font-size: 26px; }
+    .tr-empty { opacity: .35; }
+    .tr-tip .tr-dot { width: 20px; height: 20px; left: -10px; top: -10px; background: #FF3D7F; box-shadow: 0 0 22px 8px rgba(255,61,127,.5); }
+    .tr-tip .tr-tname { position: absolute; left: 0; width: 260px; transform: translateX(-50%); text-align: center; font-size: 22px; font-weight: 600; line-height: 1.15; color: #C2185B; text-shadow: 0 0 4px #F5F5F5; }
+    .tr-tip.up .tr-tname { bottom: 16px; } .tr-tip.down .tr-tname { top: 16px; }
+    .tr-ev { display: block; margin-top: 2px; font-size: 16px; font-weight: 400; color: #616161; white-space: nowrap; }
+    .tr-tag { display: table; margin: 6px auto 0; white-space: nowrap; font-size: 16px; font-weight: 400; color: #C2185B; border: 2px solid #FF3D7F; border-radius: 999px; padding: 0 14px; }
+    .tr-tip.gone { opacity: .55; } .tr-tip.gone .tr-dot { background: #8E9BAA; box-shadow: none; } .tr-tip.gone .tr-tname { color: #616161; }
+    .tr-leaf .tr-dot { width: 10px; height: 10px; left: -5px; top: -5px; background: #C2185B; }
+    .tr-leaf .tr-label { position: absolute; left: 12px; top: -12px; white-space: nowrap; font-size: 18px; color: #242424; }
+    .tr-open { color: #C77D0A; font-size: 16px; margin-left: 6px; }
+    .tr-leaf.holds .tr-dot { background: #1E9E6A; box-shadow: 0 0 22px 8px rgba(30,158,106,.35); } .tr-leaf.holds .tr-label { color: #1E9E6A; }
+    .tr-leaf.fails .tr-dot { background: #D13C47; box-shadow: 0 0 22px 8px rgba(224,98,107,.55); } .tr-leaf.fails .tr-label { color: #D13C47; }
+    .tr-reason { position: absolute; left: 12px; top: 12px; white-space: nowrap; font-size: 18px; color: #242424; }
+    .tr-pulse { position: absolute; left: 0; top: 0; width: 20px; height: 20px; margin: -10px 0 0 -10px; border-radius: 50%; background: #fff; box-shadow: 0 0 30px 14px #FF3D7F; }
+    .tr-quote { position: absolute; left: 60px; top: 60px; max-width: 640px; padding: 18px 24px; background: #FFFFFF; box-shadow: 0 8px 30px rgba(0,0,0,.08); border-left: 4px solid #FF3D7F; border-radius: 14px; }
+    .tr-quote p { margin: 0; font-size: 30px; line-height: 1.3; font-style: italic; color: #242424; }
+    .tr-quote cite { display: block; margin-top: 8px; font-size: 24px; font-style: normal; color: #C2185B; }
+    .tr-cut { position: absolute; left: 0; right: 0; top: 880px; text-align: center; font: 700 72px/1 "Inter", sans-serif; color: #1F1F1F; letter-spacing: -1.5px; text-shadow: 0 0 24px #F5F5F5, 0 0 8px #F5F5F5; }
+    .mg-mail { position: absolute; left: 1240px; top: 470px; width: 520px; padding: 16px 22px; background: #FFFFFF; border: 1.5px solid #E0E0E0; border-left: 4px solid #C2185B; border-radius: 10px; font-size: 24px; line-height: 1.3; color: #242424; box-shadow: 0 20px 50px rgba(0,0,0,.12); }
+    .mg-mail .k { display: block; font-size: 16px; font-weight: 700; letter-spacing: 3px; color: #C2185B; margin-bottom: 6px; }
+
+  </style>
+  <div data-hf-id="hf-k4u9" id="root" data-composition-id="merge" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-k2sn" class="tr-stage">
+      <div data-hf-id="hf-rmzu" id="mg-canvas" class="tr-canvas"><svg data-hf-id="hf-ff52" viewBox="0 0 1920 1080"><path data-hf-id="hf-da2t" class="tr-link "  d="M 900.0 470.0 Q 962.5 430.0 1150.0 430.0"/><path data-hf-id="hf-anm9" class="tr-link "  d="M 900.0 470.0 Q 847.5 640.0 690.0 640.0"/><path data-hf-id="hf-sac6" class="tr-link "  d="M 900.0 470.0 Q 900.0 290.0 900.0 290.0"/><path data-hf-id="hf-at0l" class="tr-link "  d="M 1150.0 430.0 Q 1185.0 300.0 1290.0 300.0"/><path data-hf-id="hf-knsh" class="tr-link "  d="M 1150.0 430.0 Q 1220.0 520.0 1430.0 520.0"/><path data-hf-id="hf-nk45" class="tr-link "  d="M 1150.0 430.0 Q 1185.0 720.0 1290.0 720.0"/><path data-hf-id="hf-z9jf" class="tr-link "  d="M 690.0 640.0 Q 662.5 770.0 580.0 770.0"/><path data-hf-id="hf-j4os" class="tr-link "  d="M 690.0 640.0 Q 637.5 520.0 480.0 520.0"/><path data-hf-id="hf-kffu" class="tr-link "  d="M 900.0 290.0 Q 900.0 130.0 900.0 130.0"/><path data-hf-id="hf-oip4" class="tr-link tip" id="mg-ltip" d="M 1290.0 300.0 Q 1350.4 235.3 1531.5 235.3"/><path data-hf-id="hf-5l51" class="tr-link tip" style="opacity:.5" d="M 580.0 770.0 Q 527.7 788.3 370.8 788.3"/></svg><div data-hf-id="hf-eu0j" class="tr-node tr-root" style="left:900px;top:470px"><i data-hf-id="hf-4yvo" class="tr-dot"></i><div data-hf-id="hf-o0hc" class="tr-name">What the team knows</div></div><div data-hf-id="hf-0zbw" class="tr-node tr-top" style="left:1150px;top:430px"><i data-hf-id="hf-6awc" class="tr-dot"></i><div data-hf-id="hf-t3u7" class="tr-name">Faults</div><div data-hf-id="hf-zxef" class="tr-cap">when something breaks</div></div><div data-hf-id="hf-kowz" class="tr-node tr-top" style="left:690px;top:640px"><i data-hf-id="hf-53z9" class="tr-dot"></i><div data-hf-id="hf-7v9t" class="tr-name">Site access</div><div data-hf-id="hf-9vf3" class="tr-cap">getting on site</div></div><div data-hf-id="hf-46rw" class="tr-node tr-top" style="left:900px;top:290px"><i data-hf-id="hf-5iaa" class="tr-dot"></i><div data-hf-id="hf-1hso" class="tr-name">Other</div><div data-hf-id="hf-ar55" class="tr-cap">fits nowhere yet</div></div><div data-hf-id="hf-b4oi" class="tr-node tr-sub" style="left:1290px;top:300px"><i data-hf-id="hf-7htf" class="tr-dot"></i><div data-hf-id="hf-c3s6" class="tr-name">Optical module swaps</div><div data-hf-id="hf-5rdz" class="tr-cap">fixes that worked</div></div><div data-hf-id="hf-244c" class="tr-node tr-sub tr-empty" style="left:1430px;top:520px"><i data-hf-id="hf-7w4g" class="tr-dot"></i><div data-hf-id="hf-tu24" class="tr-name">Alarms</div><div data-hf-id="hf-iuix" class="tr-cap">what an alarm means</div></div><div data-hf-id="hf-1jmu" class="tr-node tr-sub tr-empty" style="left:1290px;top:720px"><i data-hf-id="hf-6p7d" class="tr-dot"></i><div data-hf-id="hf-a5gd" class="tr-name">Other faults</div><div data-hf-id="hf-w0rj" class="tr-cap">any other fault</div></div><div data-hf-id="hf-na9e" class="tr-node tr-sub" style="left:580px;top:770px"><i data-hf-id="hf-73ie" class="tr-dot"></i><div data-hf-id="hf-3g8p" class="tr-name">Keys and codes</div><div data-hf-id="hf-pk44" class="tr-cap">where the key is</div></div><div data-hf-id="hf-yauk" class="tr-node tr-sub tr-empty" style="left:480px;top:520px"><i data-hf-id="hf-2q53" class="tr-dot"></i><div data-hf-id="hf-sva8" class="tr-name">Getting there</div><div data-hf-id="hf-ocwx" class="tr-cap">how to reach the site</div></div><div data-hf-id="hf-6voi" class="tr-node tr-sub tr-empty" style="left:900px;top:130px"><i data-hf-id="hf-34g4" class="tr-dot"></i><div data-hf-id="hf-5nr0" class="tr-name">Unsorted</div><div data-hf-id="hf-lbua" class="tr-cap">no branch fits</div></div><div data-hf-id="hf-n5lf" class="tr-node tr-tip down" style="left:371px;top:788px;opacity:.5"><i data-hf-id="hf-li1g" class="tr-dot"></i><div data-hf-id="hf-30cu" class="tr-tname">Key at the neighbouring farm · Kalle</div></div><div data-hf-id="hf-6hjx" id="mg-tip" class="tr-node tr-tip up" style="left:1531px;top:235px"><i data-hf-id="hf-l3qf" class="tr-dot"></i><div data-hf-id="hf-7gg4" class="tr-tname">Bounce the port, don't reboot · Erkki<span data-hf-id="hf-ial8" id="mg-ev" class="tr-ev">2 sources · Teams, email</span></div></div></div>
+      <div data-hf-id="hf-goks" id="mg-quote" class="tr-quote"><p data-hf-id="hf-glqq">“Disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.”</p><cite data-hf-id="hf-w8vd">Erkki Expert · Teams</cite></div>
+      <div data-hf-id="hf-85o9" id="mg-mail" class="mg-mail"><span data-hf-id="hf-s8q4" class="k">EMAIL</span>RE: TRN-042 traffic not recovering after SFP replacement</div>
+      <div data-hf-id="hf-ttfi" id="mg-cut" class="tr-cut">Same meaning. One tip.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const blur = (p) => `blur(${p}px)`;
+
+    // Tree camera (motion.ts camera 420 ms) lands on Erkki's tip
+    tl.fromTo("#mg-canvas", { x: -640, y: 60, scale: 1.2, transformOrigin: "0 0", filter: blur(10) }, { x: -795, y: 94, scale: 1.35, filter: blur(0), duration: 0.55, ease: "power3.out" }, 0);
+
+    tl.set(["#mg-ev", "#mg-cut"], { opacity: 0 }, 0);
+    tl.set("#mg-mail", { opacity: 0, x: 760, y: 40, scale: 0.9, transformOrigin: "0 0", filter: blur(12) }, 0);
+    tl.set("#mg-quote cite", { opacity: 0 }, 0);
+    // The tip pops on its branch (pop 300 ms with overshoot, link draw 300 ms)
+    tl.fromTo("#mg-ltip", { strokeDasharray: 400, strokeDashoffset: 400 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 0.3);
+    tl.fromTo("#mg-tip", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(2)" }, 0.5);
+    tl.fromTo("#mg-quote", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 0.4);
+    tl.to("#mg-quote cite", { opacity: 1, duration: 0.3 }, 1.4);
+    tl.to("#mg-canvas", { x: -830, duration: 2.0, ease: "none" }, 0.6);
+    // The email arrives and lands as a second source
+    tl.to("#mg-mail", { opacity: 1, x: 160, filter: blur(0), duration: 0.6, ease: "expo.out" }, 2.6);
+    tl.to("#mg-quote", { opacity: 0, y: -20, duration: 0.4, ease: "power2.in" }, 3.4);
+    tl.to("#mg-canvas", { x: -795, duration: 1.2, ease: "power2.inOut" }, 3.0);
+    tl.fromTo("#mg-ev", { y: -10 }, { y: 0, opacity: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 4.0);
+    tl.fromTo("#mg-tip .tr-dot", { scale: 1 }, { keyframes: [{ scale: 1.8, duration: 0.3, ease: "power2.out" }, { scale: 1, duration: 0.6, ease: "power2.inOut" }], immediateRender: false }, 4.0);
+    tl.fromTo("#mg-cut", { y: 40, filter: blur(10) }, { y: 0, opacity: 1, filter: blur(0), duration: 0.5, ease: "expo.out", immediateRender: false }, 4.4);
+    tl.to("#mg-canvas", { x: -760, duration: 2.6, ease: "none" }, 4.9);
+    tl.to("#mg-mail", { x: 60, y: 0, duration: 0.5, ease: "power2.inOut" }, 5.9);
+    // Exit: push into the tip and smear
+    tl.to("#mg-canvas", { scale: 1.6, x: -1150, y: 40, filter: blur(10), duration: 0.4, ease: "power2.in" }, 7.6);
+    tl.to(["#mg-mail", "#mg-cut"], { opacity: 0, filter: blur(10), duration: 0.4, ease: "power2.in" }, 7.6);
+    tl.set({}, {}, 8);
+    window.__timelines["merge"] = tl;
+  </script>
+</template>

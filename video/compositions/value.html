@@ -1,0 +1,92 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; --f: "Inter", sans-serif; font-family: var(--f); background: #F5F5F5; color: #1F1F1F; }
+    #vl-stats { position: absolute; inset: 0; }
+    #vl-glow { position: absolute; left: 360px; top: -200px; width: 1200px; height: 1200px; border-radius: 50%; background: radial-gradient(closest-side, rgba(140,108,246,.10), rgba(140,108,246,0)); }
+    #vl-head { position: absolute; left: 120px; top: 110px; font: 600 30px/1 var(--f); letter-spacing: 6px; color: #8E8E93; }
+    #vl-title { position: absolute; left: 116px; top: 160px; font: 800 84px/1 var(--f); letter-spacing: -2.5px; }
+    #vl-grid { position: absolute; left: 120px; top: 310px; width: 1700px; display: grid; grid-template-columns: repeat(5, 1fr); row-gap: 60px; column-gap: 30px; }
+    .st b { display: block; font: 800 150px/1 var(--f); letter-spacing: -5px; font-variant-numeric: tabular-nums; }
+    .st span { display: block; margin-top: 12px; font: 600 34px/1.15 var(--f); color: #1F1F1F; }
+    .st em { display: block; margin-top: 6px; font: 400 26px/1.25 var(--f); font-style: normal; color: #8E8E93; }
+    .st.ok b { color: #1E9E6A; }
+    #vl-foot { position: absolute; left: 120px; top: 985px; font: 400 22px/1 "JetBrains Mono", monospace; color: #8E8E93; }
+    #vl-hero-w { position: absolute; inset: 0; }
+    #vl-row { position: absolute; left: 0; width: 1920px; top: 150px; text-align: center; font: 600 64px/1 var(--f); letter-spacing: -1px; color: #6E6E73; white-space: nowrap; }
+    #vl-row .dot { color: #FF3D7F; margin: 0 14px; }
+    #vl-hero { position: absolute; left: 0; width: 1920px; top: 260px; text-align: center; white-space: nowrap; font: 800 470px/1 var(--f); letter-spacing: -18px; }
+    #vl-under { position: absolute; left: 270px; width: 1380px; top: 780px; height: 14px; border-radius: 7px; background: #FF3D7F; transform-origin: 0 50%; }
+    #vl-sub { position: absolute; left: 0; width: 1920px; top: 850px; text-align: center; font: 500 40px/1.2 var(--f); color: #6E6E73; }
+  </style>
+  <div data-hf-id="hf-l1o4" id="root" data-composition-id="value" data-width="1920" data-height="1080">
+    <i data-hf-id="hf-6ju7" id="vl-glow"></i>
+    <div data-hf-id="hf-67e9" id="vl-stats">
+      <div data-hf-id="hf-64zx" id="vl-head">IN THE DEMO</div>
+      <div data-hf-id="hf-60kh" id="vl-title">We tested it hard</div>
+      <div data-hf-id="hf-enbk" id="vl-grid">
+        <div data-hf-id="hf-fs85" class="st"><b data-hf-id="hf-ljq0">14</b><span data-hf-id="hf-o90h">conversations read</span><em data-hf-id="hf-6kp2">7 ordinary chats correctly ignored</em></div>
+        <div data-hf-id="hf-v6k9" class="st"><b data-hf-id="hf-jprm">23</b><span data-hf-id="hf-7g1d">messages</span><em data-hf-id="hf-j1xw">12 from Elisa's real chat</em></div>
+        <div data-hf-id="hf-wdhc" class="st"><b data-hf-id="hf-ubk3">4</b><span data-hf-id="hf-s6o6">tips stored</span><em data-hf-id="hf-c2bv">from 6 sources</em></div>
+        <div data-hf-id="hf-vz6b" class="st"><b data-hf-id="hf-jk6v">11</b><span data-hf-id="hf-lirg">incidents &amp; dispatches</span><em data-hf-id="hf-d4vv">across nine beats</em></div>
+        <div data-hf-id="hf-tzn6" class="st"><b data-hf-id="hf-rxpx">2</b><span data-hf-id="hf-x64d">engineers helped</span><em data-hf-id="hf-o09v">3 devices, 2 sites</em></div>
+        <div data-hf-id="hf-tlc5" class="st"><b data-hf-id="hf-mt2h">2</b><span data-hf-id="hf-sqcu">questions to an expert</span><em data-hf-id="hf-b6af">never repeated</em></div>
+        <div data-hf-id="hf-us98" class="st"><b data-hf-id="hf-nzzk">2</b><span data-hf-id="hf-xrc8">taps by Erkki</span><em data-hf-id="hf-f6x8">the only input asked</em></div>
+        <div data-hf-id="hf-udy7" class="st"><b data-hf-id="hf-upv4">5</b><span data-hf-id="hf-58ma">declines</span><em data-hf-id="hf-sax0">each with a stated reason</em></div>
+        <div data-hf-id="hf-ikf1" class="st ok"><b data-hf-id="hf-kcsx">17</b><span data-hf-id="hf-2oye">test scenarios</span><em data-hf-id="hf-xgxd">all passing</em></div>
+        <div data-hf-id="hf-x0xd" class="st ok"><b data-hf-id="hf-evda">49</b><span data-hf-id="hf-3w4h">break tests</span><em data-hf-id="hf-v2us">run against it</em></div>
+      </div>
+      <div data-hf-id="hf-m5fu" id="vl-foot">docs/CASE_TABLE.md · docs/BREAK_TESTS.md · out/beat_*.json</div>
+    </div>
+    <div data-hf-id="hf-tpgw" id="vl-hero-w">
+      <div data-hf-id="hf-oyqt" id="vl-row">All of it, in the demo, needed</div>
+      <div data-hf-id="hf-h5v3" id="vl-hero"><span data-hf-id="hf-z0ti" id="vl-zero" style="display:inline-block;margin-right:110px">0</span> <span data-hf-id="hf-h3hc" id="vl-forms" style="display:inline-block">forms</span></div>
+      <i data-hf-id="hf-3cc6" id="vl-under"></i>
+      <div data-hf-id="hf-0ux8" id="vl-sub" data-var-text="value-sub">for the engineers to fill in</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const blur = (p) => `blur(${p}px)`;
+
+    // Stats wall: each number rolls up one value per frame (M936 stepText), left to right, row by row
+    const nums = Array.from(document.querySelectorAll("#vl-grid .st b"));
+    const cols = [216, 555, 850, 1231, 1530], rows = [450, 726];
+    tl.set("#vl-hero-w", { opacity: 0 }, 0);
+    tl.set(["#vl-zero", "#vl-forms", "#vl-row", "#vl-sub"], { opacity: 0 }, 0);
+    tl.set("#vl-under", { scaleX: 0 }, 0);
+    tl.fromTo("#vl-head", { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "expo.out" }, 0);
+    tl.fromTo("#vl-title", { y: 60, filter: blur(12) }, { y: 0, filter: blur(0), duration: 0.55, ease: "expo.out" }, 0.05);
+    nums.forEach((b, i) => {
+      const end = parseInt(b.textContent, 10), steps = Math.min(end, 18), t = 0.35 + i * 0.18;
+      const st = b.parentElement, p = { v: 0 };
+      tl.fromTo(st, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out" }, t);
+      tl.fromTo(st.querySelectorAll("span, em"), { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, t + 0.2);
+      tl.fromTo(p, { v: 0 }, { v: steps, duration: steps / 30, ease: "none",
+        onUpdate: () => { b.textContent = String(Math.round(Math.round(p.v) * end / steps)); } }, t);
+      // the turn: every number flies into the 0 of "0 forms"
+      const dx = 285 - cols[i % 5], dy = 512 - rows[Math.floor(i / 5)];
+      tl.to(b, { x: dx, y: dy, scale: 0.3, opacity: 0, duration: 0.5, ease: "power3.in" }, 4.55 + i * 0.02);
+    });
+    tl.fromTo("#vl-grid", { x: 0 }, { x: -24, duration: 2.0, ease: "none", immediateRender: false }, 2.6);
+    tl.to(["#vl-head", "#vl-title", "#vl-foot", "#vl-grid .st span", "#vl-grid .st em"], { opacity: 0, filter: blur(10), duration: 0.35, ease: "power2.in" }, 4.6);
+    // "0" punches in (1.15 then settles, one-frame pink flash), "forms" slides in, the underline draws
+    tl.set("#vl-hero-w", { opacity: 1 }, 5.3);
+    tl.set("#vl-stats", { opacity: 0 }, 5.3);
+    tl.fromTo("#vl-zero", { scale: 1.6, filter: blur(14), color: "#FF3D7F" }, { scale: 1, opacity: 1, filter: blur(0), duration: 0.5, ease: "back.out(1.6)", immediateRender: false }, 5.3);
+    tl.set("#vl-zero", { color: "#1F1F1F" }, 5.34);
+    tl.fromTo("#vl-forms", { x: 160, filter: blur(10) }, { x: 0, opacity: 1, filter: blur(0), duration: 0.5, ease: "expo.out", immediateRender: false }, 5.45);
+    tl.to("#vl-under", { scaleX: 1, duration: 0.5, ease: "power3.out" }, 5.85);
+    tl.fromTo("#vl-row", { y: -20 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, 6.2);
+    tl.fromTo("#vl-sub", { y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, 6.5);
+    // the light behind it drifts; it brightens once on the beat
+    tl.fromTo("#vl-glow", { x: -260 }, { x: 260, duration: 11, ease: "none" }, 0);
+    tl.fromTo("#vl-glow", { opacity: 0.35 }, { opacity: 0.85, duration: 0.35, ease: "power2.out", immediateRender: false }, 8.4);
+    tl.fromTo("#vl-zero", { scale: 1 }, { keyframes: [{ scale: 1.08, duration: 0.18, ease: "power2.out" }, { scale: 1, duration: 0.35, ease: "power2.inOut" }], immediateRender: false }, 8.4);
+    tl.fromTo("#vl-hero-w", { y: 0 }, { y: -36, duration: 3.7, ease: "none", immediateRender: false }, 6.9);
+    // Exit: the underline shrinks toward the lockup's full stops
+    tl.to("#vl-under", { scaleX: 0, transformOrigin: "50% 50%", duration: 0.4, ease: "power2.in" }, 10.6);
+    tl.to(["#vl-hero", "#vl-row", "#vl-sub"], { y: -40, filter: blur(12), opacity: 0, duration: 0.4, ease: "power2.in" }, 10.6);
+    tl.set({}, {}, 11);
+    window.__timelines["value"] = tl;
+  </script>
+</template>

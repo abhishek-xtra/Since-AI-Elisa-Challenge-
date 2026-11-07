@@ -1,0 +1,34 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: transparent; font-family: "Inter", sans-serif; }
+    #ch-recall-card { position: absolute; inset: 0; background: #F5F5F5; }
+    #ch-recall-word { position: absolute; left: 0; right: 0; top: 232px; text-align: center; font: 800 350px/1 "Inter", sans-serif; letter-spacing: -0.045em;
+      background: linear-gradient(90deg, #8C6CF6, #4CA8F6); -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 40px 60px; }
+    #ch-recall-sub { position: absolute; left: 0; right: 0; top: 646px; text-align: center; font: 500 44px/1.2 "Inter", sans-serif; letter-spacing: -0.01em; color: #6E6E73; }
+    #ch-recall-bar { position: absolute; left: 510px; top: 914px; width: 900px; height: 4px; border-radius: 2px; background: #DEDEE3; }
+    #ch-recall-fill { position: absolute; left: 0; top: 0; height: 4px; width: 900px; border-radius: 2px; background: linear-gradient(90deg,#FF3D7F,#A06CF0 50%,#4CB0F6); box-shadow: 0 0 12px rgba(255,61,127,.55); transform-origin: 0 50%; }
+    #ch-recall-steps { position: absolute; left: 510px; top: 942px; width: 900px; display: flex; justify-content: space-between; font: 600 28px/1 "Inter", sans-serif; color: #8E8E93; }
+    #ch-recall-steps .on { color: #1F1F1F; }
+  </style>
+  <div data-hf-id="hf-kpm6" id="root" data-composition-id="ch-recall" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-kamx" id="ch-recall-card">
+      <div data-hf-id="hf-h61f" id="ch-recall-word" data-var-text="ch-recall-word">Recall</div>
+      <div data-hf-id="hf-cmw0" id="ch-recall-sub" data-var-text="ch-recall-sub">The moment the same fault comes back.</div>
+      <div data-hf-id="hf-x74i" id="ch-recall-bar"><div data-hf-id="hf-jqn0" id="ch-recall-fill"></div></div>
+      <div data-hf-id="hf-bajc" id="ch-recall-steps"><span data-hf-id="hf-2q9d" class="">Capture</span><span data-hf-id="hf-ztj2" class="">Bind</span><span data-hf-id="hf-loxf" class="on">Recall</span></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const blur = (p) => `blur(${p}px)`;
+    const card = "#ch-recall-card";
+    // Dissolves in over the outgoing scene, drifts closer, then dissolves into the next scene
+    tl.fromTo(card, { opacity: 0, scale: 1.05, filter: blur(24) }, { opacity: 1, scale: 1.0, filter: blur(0), duration: 0.9, ease: "power2.out" }, 0);
+    tl.fromTo(card, { scale: 1.0 }, { scale: 1.025, duration: 2.1, ease: "none", immediateRender: false }, 0.9);
+    // The progress line fills on from the previous chapter to this one
+    tl.fromTo("#ch-recall-fill", { scaleX: 0.5 }, { scaleX: 0.84, duration: 0.9, ease: "power3.inOut" }, 0.5);
+    tl.to(card, { opacity: 0, scale: 1.06, filter: blur(20), duration: 0.7, ease: "power2.inOut" }, 3.0);
+    tl.set({}, {}, 3.7);
+    window.__timelines["ch-recall"] = tl;
+  </script>
+</template>

@@ -1,0 +1,10 @@
+{
+  "name": "Untitled 2",
+  "createdAt": "2026-11-07T13:05:27.501Z",
+  "createdBy": "hyperframes-desktop",
+  "skillVersions": {
+    "media-use": "b4cc674f7f312e77ded32e0b53006cc0bad6723b",
+    "hyperframes-core": "6f90ca15a7fc937d9d6cf3ec289f2a26eca3724f",
+    "hyperframes-studio": "6f90ca15a7fc937d9d6cf3ec289f2a26eca3724f"
+  }
+}
