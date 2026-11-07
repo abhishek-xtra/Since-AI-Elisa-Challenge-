@@ -1,9 +1,0 @@
-*.mp4
-*.wav
-node_modules/
-.venv/
-.cache/
-models/
-renders/
-snapshots/
-.hyperframes/

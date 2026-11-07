@@ -4,7 +4,7 @@ Veikko swaps an optical module, the link comes up, the alarms clear, and traffic
 
 This is a context layer for that knowledge. It reads the conversations people already have (a Teams thread, an email), stores each reusable operational rule as a **context assertion** bound to the network graph (a trigger, candidate scopes over topology attributes, an action, an avoid list, verbatim evidence, trust, validity), and hands it back when the same situation comes up on another unit. When nobody said exactly which units a tip applies to, it stores every reading, lets later cases narrow them, and asks the expert one question, once. It is advisory: it never acts on the network, never writes to the topology, and uses no numeric confidence anywhere.
 
-Team: Mikael Salomaa and Abhishek, Since AI 2026. **Demo video:** link added at submission. The video shows the solution working; this file and the code carry the technical decisions.
+Team: Mikael Salomaa and Abhishek, Since AI 2026. **Demo video:** link added at submission; script and the source of every claim in it: `docs/VIDEO.md`. It is built with HyperFrames from real-time screen recordings of the two front-ends below. The video shows the solution working; this file and the code carry the technical decisions.
 
 ## See it in five minutes
 
@@ -90,8 +90,7 @@ The model never decides scope, outcome, trust, supersession, expiry, or whether 
 | `frontend-ui/` | The context map, the Finland view and the growing tree |
 | `scripts/` | Scenario generation, the video timeline, the model check |
 | `challenge/` | Elisa's brief, example material and briefing deck, as given |
-| `docs/` | `DEMO.md`, `DEMO_CHAT.md`, `DECISIONS.md`, `BREAK_TESTS.md`, `VIDEO_SCRIPT.md`, `VIDEO_HANDOFF.md`; `docs/process/` is how the build was run (plans, prompts, reviews, gates, briefing transcript) |
-| `ABHISHEK_HANDOFF.md` | Abhishek's original plan, kept as written |
+| `docs/` | `DEMO.md`, `DEMO_CHAT.md`, `DECISIONS.md`, `BREAK_TESTS.md`, `VIDEO.md`; `docs/process/` is how the build was run (plans, prompts, reviews, gates, briefing transcript) |
 
 `POST /incident` returns `{results, agent_text, prior_knowledge}`; `prior_knowledge` is `"none"` when no assertion matched the trigger and `"found"` otherwise, even if every match was declined (each decline carries its reason).
 
