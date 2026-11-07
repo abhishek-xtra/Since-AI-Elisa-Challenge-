@@ -99,7 +99,7 @@ The model never decides scope, outcome, trust, supersession, expiry, or whether 
 | `scripts/` | Scenario generation, the video timeline, the model check |
 | `video/` | The final video (`elisa_demo.mp4`) and the HyperFrames project that renders it |
 | `challenge/` | Elisa's brief, example material and briefing deck, as given |
-| `docs/` | `DEMO.md`, `DEMO_CHAT.md`, `DECISIONS.md`, `BREAK_TESTS.md`, `VIDEO.md`; `docs/process/` is how the build was run (plans, prompts, reviews, gates, briefing transcript) |
+| `docs/` | `DEMO.md`, `DEMO_CHAT.md`, `DECISIONS.md`, `BREAK_TESTS.md`, `VIDEO.md`, `PILOT_PLAN.md`; `docs/process/` is how the build was run (plans, prompts, reviews, gates, briefing transcript) |
 
 `POST /incident` returns `{results, agent_text, prior_knowledge}`; `prior_knowledge` is `"none"` when no assertion matched the trigger and `"found"` otherwise, even if every match was declined (each decline carries its reason).
 
@@ -116,6 +116,10 @@ Elisa's challenge owner answered our five questions:
 3. Silence is right, wrong context is worse than none; a bonus would be an explicit no-prior-knowledge signal. Added `prior_knowledge` to `POST /incident` and beats 1 and 7.
 4. A question belongs to the team that owns the domain, anyone on it can answer, and until then the rule stays usable but marked ambiguous in scope; it should not depend on one named person. Added `team` to the question (the speaker is still named). Divergence: an unanswered rule is not proposed (`docs/DECISIONS.md`).
 5. Keeping secrets verbatim is acceptable for the prototype; production would treat them as sensitive. Keys and codes stay verbatim here (see [Data](#data)).
+
+## What comes next: a pilot, and a security layer
+
+`docs/PILOT_PLAN.md` (also `docs/PILOT_PLAN.pdf`) is the continuation plan: a twelve-week pilot on one Elisa team, read-only capture first, recall for people second, recall for the agent last, each step with what is measured and who decides. It includes the **security layer** the prototype does not have: a capture gate (credentials never enter the store, "don't write this down" is honoured, access details are flagged sensitive and reviewed before use) and a recall gate (a sensitive detail goes only to the engineer dispatched to that site, in that incident, with every disclosure logged). We considered it from the start, Elisa confirmed that verbatim storage is acceptable for the prototype only, and the plan says how it is built.
 
 ## Limits
 
