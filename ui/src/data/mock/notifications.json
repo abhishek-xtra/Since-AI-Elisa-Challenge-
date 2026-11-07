@@ -1,0 +1,18 @@
+[
+  {
+    "thread_id": "thread-001",
+    "item": {
+      "type": "notification",
+      "to": "Erkki",
+      "text": "Your tip from 1 Nov was used on TRN-087 today.",
+      "assertion_id": "CA-0001",
+      "entity_id": "TRN-087",
+      "at": "2026-11-07T10:40:00Z",
+      "result": {
+        "assertion": "CA-0001",
+        "outcome": "proposed",
+        "reason": "decided: install_year <= 2019 holds for TRN-087"
+      }
+    }
+  }
+]

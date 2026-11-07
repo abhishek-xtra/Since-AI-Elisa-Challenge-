@@ -1,0 +1,39 @@
+{
+  "thread_id": "thread-002",
+  "participants": [
+    "Aino Aaltonen",
+    "Veikko Vikkelä"
+  ],
+  "items": [
+    {
+      "type": "message",
+      "id": "thread-002-m01",
+      "author": "Aino Aaltonen",
+      "role": "expert",
+      "timestamp": "2026-11-07T08:31:00Z",
+      "channel": "teams",
+      "thread_id": "thread-002",
+      "text": "Has anyone been out to OULU-03 lately? There's a dispatch going there tomorrow."
+    },
+    {
+      "type": "message",
+      "id": "thread-002-m02",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "timestamp": "2026-11-07T08:40:00Z",
+      "channel": "teams",
+      "thread_id": "thread-002",
+      "text": "Yes, this morning. The key moved, it's in the site cabinet now. The old spot is empty."
+    },
+    {
+      "type": "message",
+      "id": "thread-002-m03",
+      "author": "Aino Aaltonen",
+      "role": "expert",
+      "timestamp": "2026-11-07T08:41:00Z",
+      "channel": "teams",
+      "thread_id": "thread-002",
+      "text": "Good to know, thanks 👍"
+    }
+  ]
+}
