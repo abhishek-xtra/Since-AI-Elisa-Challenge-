@@ -45,6 +45,8 @@ describe("tree label templates", () => {
     };
     const idx = (p: (e: TimelineEvent) => boolean) => events.findIndex(p);
     expect(at(idx((e) => e.kind === "capture" && e.how === "new_source"))).toBe("Same fix, said twice: one tip");
+    expect(at(idx((e) => e.kind === "capture" && e.how === "new" && e.candidates.length > 1))).toBe("Filed under every scope it might be");
+    expect(at(idx((e) => e.kind === "incident" && e.entity === "TRN-087" && e.results[0]?.outcome === "proposed"))).toBe("Found it: Erkki's tip, 1 Nov");
     expect(at(idx((e) => e.kind === "incident" && e.results.some((r) => !!r.question)))).toBe("Asked Erkki once");
     expect(at(idx((e) => e.kind === "incident" && e.entity === "TRN-105"))).toBe("Reused in Helsinki, nobody asked");
     expect(at(idx((e) => e.kind === "incident" && e.entity === "TRN-101" && e.results[0].outcome === "declined"))).toBe("Doesn't apply here: too new");

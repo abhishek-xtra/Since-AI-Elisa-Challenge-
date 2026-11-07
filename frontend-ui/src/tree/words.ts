@@ -71,6 +71,13 @@ export function tipWords(t: Pick<Tip, "action" | "action_text" | "avoid" | "said
   return `${what}${avoid && AVOID[avoid] ? `, ${AVOID[avoid]}` : ""} · ${first(t.said_by)}`;
 }
 
+const CHANNEL: Record<string, string> = { teams: "Teams", email: "Email", agent_thread: "Agent" };
+/** The source tag cited on a proposed tip: "Erkki · Teams, 1 Nov". */
+export function sourceTag(t: Pick<Tip, "said_by" | "sources" | "valid_from">): string {
+  const ch = t.sources[0]?.split(":")[0] ?? "";
+  return `${first(t.said_by)} · ${CHANNEL[ch] ?? ch}, ${day(t.valid_from)}`;
+}
+
 /** One short reason line for a decline, in words. */
 export function reasonWords(r: Result, tip: Pick<Tip, "said_by" | "valid_to">, inc: Pick<IncidentEv, "entity_site">): string {
   if (r.reason.startsWith("expired")) return `expired ${tip.valid_to ? day(tip.valid_to) : r.reason.slice(8)}`;
@@ -99,7 +106,8 @@ export function caption(e: TimelineEvent | undefined, events: TimelineEvent[], t
     case "message": return e.channel === "email" ? "Reading an email" : "Reading the team chat";
     case "no_capture": return "Just chat: nothing saved";
     case "capture":
-      return e.how === "new" ? `${first(e.said_by)}'s tip, saved` : e.how === "new_source" ? "Same fix, said twice: one tip" : "Seen again: one more case";
+      if (e.how === "new") return e.candidates.length > 1 ? "Filed under every scope it might be" : `${first(e.said_by)}'s tip, filed`;
+      return e.how === "new_source" ? "Same fix, said twice: one tip" : "Seen again: one more case";
     case "answer": return `${first(e.to)} tapped: ${e.option_label}`;
     case "notification": return `${first(e.to)} hears the tip was used`;
     case "supersede": return "Key moved: old fact replaced";
@@ -119,8 +127,7 @@ export function caption(e: TimelineEvent | undefined, events: TimelineEvent[], t
         if (tip?.trigger.kind === "workflow") return tip.action === "site.access_key" ? "Where the key is, before the drive" : "Heads-up before the drive";
         const home = tip?.candidates.find((c) => c.predicate.startsWith("site =="))?.predicate.match(/'([^']+)'/)?.[1];
         if (home && city(home) !== city(e.entity_site)) return `Reused in ${city(e.entity_site)}, nobody asked`;
-        const prev = events.slice(0, e.index).reverse().find((x) => x.kind !== "notification");
-        return prev?.kind === "answer" ? `Proposed, with ${who}'s answer` : `Reused on ${e.entity}, nobody asked`;
+        return `Found it: ${who}'s tip, ${day(tip!.valid_from)}`;
       }
       if (r.reason.startsWith("expired")) return "Expired on its own";
       if (r.reason === "under review") return "Taken back: not used";

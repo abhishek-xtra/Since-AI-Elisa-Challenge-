@@ -1,170 +1,189 @@
-// /tree: the minimal view for the video. Only the filing system and what lands in it, one change per event, in plain
-// words built by src/tree/words.ts from the backend fields. A picture for the video; the system itself has no tree.
+// /tree: the minimal view for the video. A radial filing system with the root in the centre, fixed named sectors
+// drawn dim from the first frame, tips growing outward in their sector and a fan of scope leaves at each tip. One
+// change per event, plain words from src/tree/words.ts built from backend fields. The system itself has no tree.
 import { useMemo } from "react";
 import { usePlayback } from "../grow/usePlayback";
 import { fold, type Candidate, type Tip, type TimelineEvent } from "../grow/timeline";
 import { activeIncident } from "./GrowPage";
 import { useScale } from "./TitleCard";
-import { ROOT, SUB, TOP, branchOf, caption, day, leafWords, primary, reasonWords, tipWords } from "../tree/words";
+import { ROOT, SUB, TOP, branchOf, caption, day, leafWords, primary, reasonWords, sourceTag, tipWords } from "../tree/words";
 import "../tree/tree.css";
 
 const W = 1920;
 const H = 1080;
-const X = { root: 40, top: 380, sub: 740, tip: 1080, leaf: 1600 };
-const TIP_OUT = 425; // leaf links start after the tip label, never through it
-const AVAIL = H - 150; // above the caption band
-const LEAF = 62;
+const C = { x: 880, y: 470 };
+const DEG = Math.PI / 180;
+// The wheel, placed by hand so no label meets another at 1920x1080: the centre, three named sectors around it (Faults
+// right, Site access lower left, Other on top) and their sub-branches. Tips grow out of a sub-branch along its
+// direction (degrees, 0 = right, 90 = down); scope leaves fan out beyond the tip. The upper left stays free for the
+// capture quote.
+const SKELETON: Record<string, { x: number; y: number; dir?: number; label?: "lab-u" | "lab-d" }> = {
+  root: C,
+  faults: { x: 1080, y: 430 }, access: { x: 720, y: 640 }, other: { x: 880, y: 300 },
+  sfp_replaced: { x: 1180, y: 300, dir: -20, label: "lab-u" },
+  alarm_raised: { x: 1310, y: 470, dir: 5, label: "lab-u" },
+  fault_other: { x: 1200, y: 640, dir: 20, label: "lab-d" },
+  keys: { x: 600, y: 790, dir: 170, label: "lab-d" },
+  route: { x: 500, y: 500, dir: 185, label: "lab-u" },
+  unsorted: { x: 880, y: 150, dir: -90, label: "lab-u" },
+};
+const TIP_DIST: Record<string, number> = { sfp_replaced: 230, alarm_raised: 230, fault_other: 230, keys: 200, route: 200, unsorted: 200 };
+const LEAF_DIST: Record<string, number> = { sfp_replaced: 190, alarm_raised: 190, fault_other: 190, keys: 150, route: 150, unsorted: 150 };
+const LEAF_STEP = 14;
+const TIP_SPREAD = 150; // two tips in one sub-branch sit side by side across its direction
 const FOOTER = "Visualisation for the video. The tree is drawn from the stored assertions; the system itself has no tree.";
-const step = (e: TimelineEvent) => (e.kind === "message" ? 900 : e.kind === "notification" ? 1800 : 3200);
+const step = (e: TimelineEvent) => (e.kind === "message" ? 900 : e.kind === "notification" ? 1800 : 3400);
 
-interface Pos { id: string; x: number; y: number; parent?: string }
-interface Leaf extends Pos { c: Candidate; fall: boolean; tip: string }
+interface Pos { id: string; x: number; y: number; a: number; parent?: string; label?: string }
+interface Leaf extends Pos { c: Candidate; fall: boolean; tip: string; i: number }
+
+const toward = (from: { x: number; y: number }, a: number, d: number) => ({ x: from.x + d * Math.cos(a * DEG), y: from.y + d * Math.sin(a * DEG) });
+const side = (p: Pos) => (Math.cos(p.a * DEG) >= -0.05 ? "right" : "left");
 
 /** Tips on screen: superseded ones only at the moment they are replaced. Leaves: the decided one once a tap decided. */
-function placeAll(tips: Tip[], at: number, events: TimelineEvent[]) {
-  const cur = events[at];
-  const shown = tips.filter((t) => !t.superseded_by || (cur?.kind === "supersede" && cur.assertion_id === t.assertion_id));
-  const pos: Pos[] = [];
+function placeAll(tips: Tip[], t: number, events: TimelineEvent[]) {
+  const cur = events[t];
+  const shown = tips.filter((x) => !x.superseded_by || (cur?.kind === "supersede" && cur.assertion_id === x.assertion_id));
+  const pos: Pos[] = [{ id: "root", a: 0, ...C }];
   const leaves: Leaf[] = [];
-  let y = 150; // room for the capture quote top-left
-  const tops: Record<string, number[]> = {};
-  for (const top of TOP) {
-    const subYs: number[] = [];
-    for (const sub of SUB.filter((s) => s.parent === top.id)) {
-      const mine = shown.filter((t) => branchOf(t) === sub.id).sort((a, b) => a.bornAt - b.bornAt);
-      if (!mine.length) {
-        subYs.push(y + 55);
-        pos.push({ id: sub.id, x: X.sub, y: y + 55, parent: top.id });
-        y += 130;
-        continue;
-      }
-      const tipYs: number[] = [];
-      for (const t of mine) {
-        const tapped = cur?.kind === "answer" && cur.assertion_id === t.assertion_id;
-        const live = t.candidates.filter((c) => c.against === 0);
-        const list = t.decided && !tapped ? live.filter((c) => c.predicate === t.decided!.predicate) : live;
-        const block = Math.max(list.length * LEAF, 140);
-        const top0 = y + (block - list.length * LEAF) / 2;
-        list.forEach((c, i) =>
-          leaves.push({ id: `${t.assertion_id}:${c.predicate}`, x: X.leaf, y: top0 + i * LEAF + LEAF / 2, parent: t.assertion_id, c, tip: t.assertion_id,
-            fall: tapped && !!t.decided && c.predicate !== t.decided.predicate }),
-        );
-        const ty = y + block / 2 + 10;
-        tipYs.push(ty);
-        pos.push({ id: t.assertion_id, x: X.tip, y: ty, parent: sub.id });
-        y += block + 20;
-      }
-      const sy = (Math.min(...tipYs) + Math.max(...tipYs)) / 2;
-      subYs.push(sy);
-      pos.push({ id: sub.id, x: X.sub, y: sy, parent: top.id });
-      y += 10;
-    }
-    tops[top.id] = subYs;
-    const ty = (Math.min(...subYs) + Math.max(...subYs)) / 2;
-    pos.push({ id: top.id, x: X.top, y: ty, parent: "root" });
-    y += 30;
+  for (const top of TOP) pos.push({ id: top.id, a: 0, parent: "root", ...SKELETON[top.id] });
+  for (const sub of SUB) {
+    const s = SKELETON[sub.id];
+    pos.push({ id: sub.id, a: s.dir!, parent: sub.parent, x: s.x, y: s.y });
+    const mine = shown.filter((x) => branchOf(x) === sub.id).sort((a, b) => a.bornAt - b.bornAt);
+    mine.forEach((tip, k) => {
+      const base = toward(s, s.dir!, TIP_DIST[sub.id]);
+      const tp = toward(base, s.dir! + 90, (k - (mine.length - 1) / 2) * TIP_SPREAD);
+      pos.push({ id: tip.assertion_id, a: s.dir!, parent: sub.id, label: s.label, ...tp });
+      const tapped = cur?.kind === "answer" && cur.assertion_id === tip.assertion_id;
+      const live = tip.candidates.filter((c) => c.against === 0);
+      const list = tip.decided && !tapped ? live.filter((c) => c.predicate === tip.decided!.predicate) : live;
+      list.forEach((c, i) => {
+        const la = s.dir! + (i - (list.length - 1) / 2) * LEAF_STEP;
+        leaves.push({ id: `${tip.assertion_id}:${c.predicate}`, a: la, parent: tip.assertion_id, ...toward(tp, la, LEAF_DIST[sub.id]), c,
+          tip: tip.assertion_id, i, fall: tapped && !!tip.decided && c.predicate !== tip.decided.predicate });
+      });
+    });
   }
-  const tys = TOP.map((t) => pos.find((p) => p.id === t.id)!.y);
-  pos.push({ id: "root", x: X.root, y: (Math.min(...tys) + Math.max(...tys)) / 2 });
-  return { shown, pos, leaves, height: y };
+  return { shown, pos, leaves };
 }
 
-const curve = (a: { x: number; y: number }, b: { x: number; y: number }) => {
-  const mx = (a.x + b.x) / 2;
-  return `C ${mx} ${a.y}, ${mx} ${b.y}, ${b.x} ${b.y}`;
-};
+/** A curved link from parent to child, bending out of the parent's side like a radial dendrogram. */
+function link(p: Pos, c: Pos) {
+  const k = { x: p.x + (c.x - p.x) * 0.25, y: c.y };
+  return `M ${p.x} ${p.y} Q ${k.x} ${k.y} ${c.x} ${c.y}`;
+}
 
 export function TreePage() {
   const scale = useScale();
-  const { state, events, at, last, clean, q } = usePlayback(step);
-  const view = useMemo(() => fold(events, at), [events, at]);
-  const laid = useMemo(() => placeAll(view.tips, at, events), [view.tips, at, events]);
+  const { state, events, at: t, last, clean, q } = usePlayback(step);
+  const view = useMemo(() => fold(events, t), [events, t]);
+  const laid = useMemo(() => placeAll(view.tips, t, events), [view.tips, t, events]);
   if (state.status === "error") return <main className="thread-page"><p>Could not load the video timeline: {state.error.message}</p></main>;
   if (state.status === "loading") return <main className="t-stage" />;
 
-  const { shown, pos, leaves, height } = laid;
+  const { shown, pos, leaves } = laid;
   const byId = new Map<string, Pos>([...pos, ...leaves].map((p) => [p.id, p]));
-  const tips = new Map(shown.map((t) => [t.assertion_id, t]));
+  const tips = new Map(shown.map((x) => [x.assertion_id, x]));
   const cur = view.current;
-  const retracted = new Set(events.slice(0, at + 1).filter((e) => e.kind === "retract").map((e) => (e as { assertion_id: string }).assertion_id));
-  const filled = new Set(shown.flatMap((t) => [branchOf(t), SUB.find((s) => s.id === branchOf(t))!.parent, "root"]));
+  const retracted = new Set(events.slice(0, t + 1).filter((e) => e.kind === "retract").map((e) => (e as { assertion_id: string }).assertion_id));
+  const filled = new Set(shown.flatMap((x) => [branchOf(x), SUB.find((s) => s.id === branchOf(x))!.parent, "root"]));
 
-  // the incident the view follows, its one result and the path its pulse takes
-  const inc = activeIncident(events, at);
+  // the incident the view follows, its one result and the path its pulse takes: centre -> sector -> tip -> leaf
+  const inc = activeIncident(events, t);
   const r = inc ? primary(inc, new Set(tips.keys())) : undefined;
   const target = r && tips.get(r.assertion_id);
   const results = r ? r.candidates : {};
   const stopLeaf = r && leaves.find((l) => l.tip === r.assertion_id && !l.fall &&
     (r.outcome === "declined" ? ["fails", "missing"].includes(results[l.c.predicate]) : r.outcome === "proposed" && results[l.c.predicate] === "holds"));
-  const path = new Set<string>();
+  const chain: Pos[] = [];
   if (target) {
-    path.add("root").add(branchOf(target)).add(SUB.find((s) => s.id === branchOf(target))!.parent).add(target.assertion_id);
-    if (stopLeaf) path.add(stopLeaf.id);
+    const sub = branchOf(target);
+    for (const id of ["root", SUB.find((s) => s.id === sub)!.parent, sub, target.assertion_id]) chain.push(byId.get(id)!);
+    if (stopLeaf) chain.push(stopLeaf);
   }
-  const chain = [...path].map((id) => byId.get(id)!).sort((a, b) => a.x - b.x);
-  const pulse = chain.length > 1 ? chain.slice(1).reduce((d, p, i) => `${d} ${curve(chain[i], p)}`, `M ${chain[0].x} ${chain[0].y}`) : "";
-  const dim = (id: string) => (inc && target && !path.has(id) ? " dim" : "");
+  const path = new Set(chain.map((p) => p.id));
+  const pulse = chain.slice(1).map((p, i) => link(chain[i], p).replace(/^M [^ ]+ [^ ]+ /, "")).reduce((d, s) => `${d} ${s}`, chain.length ? `M ${chain[0].x} ${chain[0].y}` : "");
+  const dim = (id: string) => (target && !path.has(id) ? " dim" : "");
   const reason = r && r.outcome === "declined" && target ? reasonWords(r, target, inc!) : "";
 
-  // keep the newest thing in view when the tree outgrows the frame
-  const s = Math.max(0.8, Math.min(1, AVAIL / height));
-  const newest = cur && "assertion_id" in cur ? byId.get(cur.assertion_id as string) : target ? byId.get(target.assertion_id) : undefined;
-  const ty = newest ? Math.min(0, Math.max(AVAIL - height * s, AVAIL / 2 - newest.y * s)) : Math.min(0, AVAIL - height * s);
-  const quoteTo = cur?.kind === "capture" ? byId.get(cur.assertion_id) : undefined;
+  // camera: lean toward where something happens, then ease back to the whole wheel
+  const focus = cur?.kind === "capture" || cur?.kind === "retract" || cur?.kind === "supersede" || cur?.kind === "expire" || cur?.kind === "answer"
+    ? byId.get(cur.assertion_id) : target ? byId.get(target.assertion_id) : undefined;
+  // keep everything that is drawn inside the frame while the camera leans in
+  const all = [...pos, ...leaves];
+  const minX = Math.min(...all.map((p) => p.x - (leaves.includes(p as Leaf) && side(p) === "left" ? 140 : 170)));
+  const maxX = Math.max(...all.map((p) => p.x + (leaves.includes(p as Leaf) && side(p) === "right" ? 300 : 170)));
+  const minY = Math.min(...all.map((p) => p.y - 110)), maxY = Math.max(...all.map((p) => p.y + 120));
+  const zoom = Math.min(focus ? 1.05 : 1, W / (maxX - minX), (H - 130) / (maxY - minY));
+  const fx = focus ? C.x + (focus.x - C.x) * 0.3 : C.x;
+  const fy = focus ? C.y + (focus.y - C.y) * 0.3 : C.y;
+  const clamp = (v: number, lo: number, hi: number) => (lo > hi ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, v)));
+  const tx = clamp(C.x - fx * zoom, -minX * zoom, W - maxX * zoom);
+  const ty = clamp(C.y - fy * zoom, -minY * zoom, H - 130 - maxY * zoom);
+  const camera = `translate(${tx}px, ${ty}px) scale(${zoom})`;
+  const toScreen = (p: Pos) => ({ x: tx + p.x * zoom, y: ty + p.y * zoom });
+
   const words = q.get("caption") === "0" ? "" : caption(cur, events, tips, new Set(tips.keys()));
-  const branchName = (id: string) => (id === "root" ? ROOT : [...TOP, ...SUB].find((b) => b.id === id)!.name);
-  const branchCap = (id: string) => [...TOP, ...SUB].find((b) => b.id === id)?.caption;
+  const branch = (id: string) => [...TOP, ...SUB].find((b) => b.id === id);
+  const tipSide = (p: Pos) => p.label ?? "lab-u";
+  const quoteTo = cur?.kind === "capture" ? byId.get(cur.assertion_id) : undefined;
+  const still = q.get("still");
 
   return (
-    <main className="t-stage">
+    <main className={`t-stage${still ? " still" : ""}`} style={still ? ({ "--still": `-${Number(still)}ms` } as React.CSSProperties) : undefined}>
       <div className="t-frame" style={{ width: W, height: H, transform: `translate(-50%, -50%) scale(${scale})` }}>
-        <div className="t-canvas" style={{ transform: `translateY(${ty}px) scale(${s})` }}>
-          <svg className="t-links" width={W} height={Math.max(height, AVAIL)} aria-hidden="true">
+        <div className="t-canvas" style={{ transform: camera }}>
+          <svg className="t-links" width={W} height={H} aria-hidden="true">
             {[...pos, ...leaves].filter((p) => p.parent).map((p) => {
               const par = byId.get(p.parent!)!;
-              const a = tips.has(par.id) ? { x: par.x + TIP_OUT, y: par.y } : par;
-              const d = `M ${a.x} ${a.y} ${curve(a, p)}`;
+              const d = link(par, p);
               const tipId = tips.has(p.id) ? p.id : (p as Leaf).tip;
               const tip = tipId ? tips.get(tipId) : undefined;
               const cls = tip ? `tip${tip.expired || tip.superseded_by || retracted.has(tip.assertion_id) ? " gone" : ""}${(p as Leaf).fall ? " fall" : ""}` : filled.has(p.id) ? "on" : "empty";
-              return <path key={p.id} className={`t-link ${cls}${dim(p.id)}`} d={d} pathLength={1} style={{ d: `path("${d}")` } as React.CSSProperties} />;
+              return <path key={p.id} className={`t-link ${cls}${dim(p.id)}`} d={d} pathLength={1}
+                style={{ d: `path("${d}")`, "--i": (p as Leaf).i ?? 0 } as React.CSSProperties} />;
             })}
+            {pulse && <path key={`trail${inc!.index}`} className="t-trail" d={pulse} pathLength={1} />}
           </svg>
 
-          {pos.filter((p) => !tips.has(p.id)).map((p) => (
-            <div key={p.id} className={`t-node t-branch ${p.id === "root" ? "root" : SUB.some((b) => b.id === p.id) ? "sub" : "top"}${filled.has(p.id) ? "" : " empty"}${dim(p.id)}`}
-              style={{ transform: `translate(${p.x}px, ${p.y}px)` }}>
-              <span className="t-dot" />
-              <span className="t-name">{branchName(p.id)}</span>
-              {branchCap(p.id) && <span className="t-cap">{branchCap(p.id)}</span>}
-            </div>
-          ))}
-
-          {shown.map((t) => {
-            const p = byId.get(t.assertion_id)!;
-            const gone = t.expired ? `expired ${day(t.valid_to!)}` : retracted.has(t.assertion_id) ? `${t.said_by.split(" ")[0]} took it back` : "";
-            const replaced = !!t.superseded_by;
-            const isTarget = target?.assertion_id === t.assertion_id;
+          {pos.filter((p) => !tips.has(p.id)).map((p) => {
+            const b = branch(p.id);
             return (
-              <div key={t.assertion_id} className={`t-node t-tip${gone ? " gone" : ""}${replaced ? " replaced" : ""}${isTarget ? ` hit ${r!.outcome}` : ""}${dim(t.assertion_id)}`}
+              <div key={p.id} className={`t-node t-branch ${p.id === "root" ? "root" : SUB.some((s) => s.id === p.id) ? "sub" : "top"}${filled.has(p.id) ? "" : " empty"}${dim(p.id)}`}
                 style={{ transform: `translate(${p.x}px, ${p.y}px)` }}>
                 <span className="t-dot" />
-                <span className="t-name">{tipWords(t)}</span>
-                <span className="t-sources">{t.sources.map((src) => <i key={src} />)}</span>
-                {(gone || (isTarget && reason && !stopLeaf)) && <span className="t-status">{gone || reason}</span>}
+                <span className="t-name">{p.id === "root" ? ROOT : b!.name}</span>
+                {b && b.parent !== "root" && <span className="t-cap">{b.caption}</span>}
               </div>
             );
           })}
 
-          {leaves.map((l, i) => {
+          {shown.map((x) => {
+            const p = byId.get(x.assertion_id)!;
+            const gone = x.expired ? `expired ${day(x.valid_to!)}` : retracted.has(x.assertion_id) ? `${x.said_by.split(" ")[0]} took it back` : "";
+            const isTarget = target?.assertion_id === x.assertion_id;
+            const tag = isTarget && r!.outcome === "proposed" ? sourceTag(x) : "";
+            const line = gone || (isTarget && reason && !stopLeaf ? reason : "") || tag;
+            return (
+              <div key={x.assertion_id} className={`t-node t-tip ${tipSide(p)}${gone ? " gone" : ""}${x.superseded_by ? " replaced" : ""}${isTarget ? ` hit ${r!.outcome}` : ""}${dim(x.assertion_id)}`}
+                style={{ transform: `translate(${p.x}px, ${p.y}px)` }}>
+                <span className="t-dot" />
+                <span className="t-sources">{x.sources.map((s) => <i key={s} />)}</span>
+                <span className="t-name">{tipWords(x)}{line && <span key={line} className={`t-status${tag && line === tag ? " tag" : ""}`}>{line}</span>}</span>
+              </div>
+            );
+          })}
+
+          {leaves.map((l) => {
             const res = l.tip === r?.assertion_id ? results[l.c.predicate] : undefined;
             const tip = tips.get(l.tip)!;
             const gone = tip.expired || retracted.has(tip.assertion_id) || tip.superseded_by;
             return (
-              <div key={l.id} className={`t-node t-leaf${res ? ` r-${res}` : ""}${gone ? " gone" : ""}${l.fall ? " fall" : ""}${l.tip === r?.assertion_id ? (res ? "" : " dim") : dim(l.id)}`}
-                style={{ transform: `translate(${l.x}px, ${l.y}px)`, "--i": i % 6 } as React.CSSProperties}>
+              <div key={l.id} className={`t-node t-leaf ${side(l)}${res ? ` r-${res}` : ""}${gone ? " gone" : ""}${l.fall ? " fall" : ""}${l.tip === r?.assertion_id ? (res ? "" : " dim") : dim(l.id)}`}
+                style={{ transform: `translate(${l.x}px, ${l.y}px)`, "--i": l.i } as React.CSSProperties}>
                 <span className="t-dot" />
-                <span className="t-label">{leafWords(l.c)}</span>
+                <span className="t-label">{leafWords(l.c)}{l.c.edge === "open" && <em className="t-open"> ↗ open</em>}</span>
                 {stopLeaf?.id === l.id && reason && <span className="t-reason">{reason}</span>}
               </div>
             );
@@ -175,14 +194,14 @@ export function TreePage() {
 
         {cur?.kind === "capture" && quoteTo && (
           <blockquote key={cur.index} className="t-quote"
-            style={{ "--tx": `${quoteTo.x * s - 60}px`, "--ty": `${(quoteTo.y * s + ty) - 60}px` } as React.CSSProperties}>
+            style={{ "--tx": `${toScreen(quoteTo).x - 60}px`, "--ty": `${toScreen(quoteTo).y - 60}px` } as React.CSSProperties}>
             <p>&ldquo;{cur.this_excerpt}&rdquo;</p>
             <cite>{cur.said_by}</cite>
           </blockquote>
         )}
 
-        {words && <p key={`c${at}`} className="t-caption">{words}</p>}
-        {!clean && <p className="t-footer">{FOOTER} &middot; {at} / {last}</p>}
+        {words && <p key={`c${t}`} className="t-caption">{words}</p>}
+        {!clean && <p className="t-footer">{FOOTER} &middot; {t} / {last}</p>}
       </div>
     </main>
   );
