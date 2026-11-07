@@ -1,3 +1,4 @@
+import type { VideoTimeline } from "../grow/timeline";
 // Mirrors the backend contracts (BACKEND_PROMPT.md sections 4, 5 and 8, plus addendum A1).
 // The backend's contracts/ folder is the source of truth: when it exists, re-check these
 // types against it and change the types and the adapters here, never the backend.
@@ -235,4 +236,5 @@ export interface DataSource {
   getContextFor?(entity_id: string): Promise<Assertion[]>; // backend extra B3; optional
   chat?(text: string): Promise<ChatReply>; // B4; optional
   getBeat?(n: number): Promise<Beat>; // out/beat_N.json, for beat replay
+  getVideoTimeline?(): Promise<VideoTimeline>; // out/video_timeline.json, for /grow
 }

@@ -11,7 +11,7 @@ export const CHAPTERS = [
 const W = 1920;
 const H = 1080;
 
-function useScale() {
+export function useScale() {
   const read = () => Math.min(window.innerWidth / W, window.innerHeight / H);
   const [s, setS] = useState(read);
   useEffect(() => {

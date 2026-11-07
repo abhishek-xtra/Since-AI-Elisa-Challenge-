@@ -1,3 +1,4 @@
+import { GrowPage } from "./pages/GrowPage";
 import { MapPage } from "./pages/MapPage";
 import { ThreadPage } from "./pages/ThreadPage";
 import { TitleCard } from "./pages/TitleCard";
@@ -11,6 +12,8 @@ export function App() {
       return <MapPage />;
     case "thread":
       return <ThreadPage key={route.id} id={route.id} />;
+    case "grow":
+      return <GrowPage />;
     case "title":
       return <TitleCard chapter={route.chapter} />;
     default:

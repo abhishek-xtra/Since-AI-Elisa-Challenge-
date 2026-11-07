@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": false,\n  \"rule\": null,\n  \"reason\": \"The conversation reports a fault and a recovery, but no message states the rule or action that was applied.\"\n}",
+  "input_tokens": 3058,
+  "output_tokens": 60
+}

@@ -2,6 +2,8 @@
 import assertionsJson from "./mock/assertions.json";
 import graphJson from "./mock/graph.json";
 import notificationsJson from "./mock/notifications.json";
+import videoTimelineJson from "./mock/video_timeline.json";
+import type { VideoTimeline } from "../grow/timeline";
 import type { Assertion, Beat, ChatReply, DataSource, Graph, Thread, ThreadItem } from "./types";
 
 const threadFiles = import.meta.glob<Thread>("./mock/threads/*.json", { eager: true, import: "default" });
@@ -80,6 +82,11 @@ export function createMockSource({ delay = 150, withChat = true, withContextFor 
       const b = beats.get(n);
       if (!b) throw new Error(`No beat ${n}`);
       return clone(b);
+    },
+    // Byte-for-byte copy of the backend's out/video_timeline.json: the real events, not hand-written.
+    async getVideoTimeline() {
+      await wait();
+      return clone(videoTimelineJson) as unknown as VideoTimeline;
     },
   };
 
