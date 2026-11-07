@@ -78,6 +78,18 @@ export function sourceTag(t: Pick<Tip, "said_by" | "sources" | "valid_from">): s
   return `${first(t.said_by)} · ${CHANNEL[ch] ?? ch}, ${day(t.valid_from)}`;
 }
 
+const IN_TEXT: Record<string, string> = { teams: "Teams", email: "email", agent_thread: "agent thread" };
+/** What backs a tip, only once there is more than one of something: "2 sources · Teams, email", "2 cases". */
+export function evidenceTag(t: Pick<Tip, "sources" | "cases">): string {
+  const parts: string[] = [];
+  if (t.sources.length > 1) {
+    const ch = [...new Set(t.sources.map((s) => s.split(":")[0]))].map((c) => IN_TEXT[c] ?? c);
+    parts.push(`${t.sources.length} sources · ${ch.join(", ")}`);
+  }
+  if (t.cases.length > 1) parts.push(`${t.cases.length} cases`);
+  return parts.join(" · ");
+}
+
 /** One short reason line for a decline, in words. */
 export function reasonWords(r: Result, tip: Pick<Tip, "said_by" | "valid_to">, inc: Pick<IncidentEv, "entity_site">): string {
   if (r.reason.startsWith("expired")) return `expired ${tip.valid_to ? day(tip.valid_to) : r.reason.slice(8)}`;

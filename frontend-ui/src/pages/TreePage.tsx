@@ -1,95 +1,40 @@
 // /tree: the minimal view for the video. A radial filing system with the root in the centre, fixed named sectors
 // drawn dim from the first frame, tips growing outward in their sector and a fan of scope leaves at each tip. One
 // change per event, plain words from src/tree/words.ts built from backend fields. The system itself has no tree.
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { usePlayback } from "../grow/usePlayback";
-import { fold, type Candidate, type Tip, type TimelineEvent } from "../grow/timeline";
+import { fold, type TimelineEvent } from "../grow/timeline";
+import { link, placeAll, side, type Leaf, type Pos } from "../tree/layout";
+import { useTween } from "../tree/useTween";
 import { activeIncident } from "./GrowPage";
 import { useScale } from "./TitleCard";
-import { ROOT, SUB, TOP, branchOf, caption, day, leafWords, primary, reasonWords, sourceTag, tipWords } from "../tree/words";
+import { useQuery } from "../router";
+import { MOTION, motionMs, motionVars } from "../tree/motion";
+import { ROOT, SUB, TOP, branchOf, caption, day, evidenceTag, leafWords, primary, reasonWords, sourceTag, tipWords } from "../tree/words";
 import "../tree/tree.css";
 
 const W = 1920;
 const H = 1080;
-const C = { x: 900, y: 470 };
-const DEG = Math.PI / 180;
-// The wheel, placed by hand so no label meets another at 1920x1080: the centre, three named sectors around it (Faults
-// right, Site access lower left, Other on top) and their sub-branches. Tips grow out of a sub-branch along its
-// direction (degrees, 0 = right, 90 = down); scope leaves fan out beyond the tip. The upper left stays free for the
-// capture quote.
-const SKELETON: Record<string, { x: number; y: number; dir?: number; label?: "lab-u" | "lab-d" }> = {
-  root: C,
-  faults: { x: 1150, y: 430 }, access: { x: 690, y: 640 }, other: { x: 900, y: 290 },
-  sfp_replaced: { x: 1290, y: 300, dir: -15, label: "lab-u" },
-  alarm_raised: { x: 1430, y: 520, dir: 10, label: "lab-u" },
-  fault_other: { x: 1290, y: 720, dir: 25, label: "lab-d" },
-  keys: { x: 580, y: 770, dir: 175, label: "lab-d" },
-  route: { x: 480, y: 520, dir: 190, label: "lab-u" },
-  unsorted: { x: 900, y: 130, dir: -90, label: "lab-u" },
-};
-const TIP_DIST: Record<string, number> = { sfp_replaced: 250, alarm_raised: 250, fault_other: 250, keys: 210, route: 210, unsorted: 200 };
-const LEAF_DIST: Record<string, number> = { sfp_replaced: 160, alarm_raised: 160, fault_other: 160, keys: 130, route: 130, unsorted: 130 };
-const LEAF_STEP = 13;
-const COMPACT_DIST = 70; // more than two tips in a sub-branch: leaves shrink to a tight fan of dots
-const COMPACT_STEP = 14;
-const TIP_SPREAD = 140; // tips in one sub-branch sit side by side across its direction, further apart with big fans
 const FOOTER = "Visualisation for the video. The tree is drawn from the stored assertions; the system itself has no tree.";
-const step = (e: TimelineEvent) => (e.kind === "message" ? 900 : e.kind === "notification" ? 1800 : 3400);
-
-interface Pos { id: string; x: number; y: number; a: number; parent?: string; label?: string }
-interface Leaf extends Pos { c: Candidate; fall: boolean; tip: string; i: number; compact: boolean }
-
-const toward = (from: { x: number; y: number }, a: number, d: number) => ({ x: from.x + d * Math.cos(a * DEG), y: from.y + d * Math.sin(a * DEG) });
-const side = (p: Pos) => (Math.cos(p.a * DEG) >= -0.05 ? "right" : "left");
-
-/** Every stored tip stays on screen (a replaced fact is kept, dim). Leaves: the decided one once a tap decided. */
-function placeAll(tips: Tip[], t: number, events: TimelineEvent[]) {
-  const cur = events[t];
-  const shown = tips;
-  const pos: Pos[] = [{ id: "root", a: 0, ...C }];
-  const leaves: Leaf[] = [];
-  for (const top of TOP) pos.push({ id: top.id, a: 0, parent: "root", ...SKELETON[top.id] });
-  for (const sub of SUB) {
-    const s = SKELETON[sub.id];
-    pos.push({ id: sub.id, a: s.dir!, parent: sub.parent, x: s.x, y: s.y });
-    const mine = shown.filter((x) => branchOf(x) === sub.id).sort((a, b) => a.bornAt - b.bornAt);
-    const compact = mine.length > 2;
-    const spread = compact ? TIP_SPREAD : Math.max(TIP_SPREAD, 46 * Math.max(0, ...mine.map((x) => x.candidates.length)));
-    mine.forEach((tip, k) => {
-      const base = toward(s, s.dir!, TIP_DIST[sub.id]);
-      const off = (k - (mine.length - 1) / 2) * spread;
-      const tp = toward(base, s.dir! + 90, off);
-      // the lower of two side-by-side tips puts its label below, away from the sub-branch label
-      pos.push({ id: tip.assertion_id, a: s.dir!, parent: sub.id, label: off > 0 && s.label === "lab-u" ? "lab-d" : s.label, ...tp });
-      const tapped = cur?.kind === "answer" && cur.assertion_id === tip.assertion_id;
-      const live = tip.candidates.filter((c) => c.against === 0);
-      const list = tip.decided && !tapped ? live.filter((c) => c.predicate === tip.decided!.predicate) : live;
-      list.forEach((c, i) => {
-        const la = s.dir! + (i - (list.length - 1) / 2) * (compact ? COMPACT_STEP : LEAF_STEP);
-        leaves.push({ id: `${tip.assertion_id}:${c.predicate}`, a: la, parent: tip.assertion_id, compact,
-          ...toward(tp, la, compact ? COMPACT_DIST : LEAF_DIST[sub.id]), c,
-          tip: tip.assertion_id, i, fall: tapped && !!tip.decided && c.predicate !== tip.decided.predicate });
-      });
-    });
-  }
-  return { shown, pos, leaves };
-}
-
-/** A curved link from parent to child, bending out of the parent's side like a radial dendrogram. */
-function link(p: Pos, c: Pos) {
-  const k = { x: p.x + (c.x - p.x) * 0.25, y: c.y };
-  return `M ${p.x} ${p.y} Q ${k.x} ${k.y} ${c.x} ${c.y}`;
-}
 
 export function TreePage() {
   const scale = useScale();
-  const { state, events, at: t, last, clean, q } = usePlayback(step);
+  const gapQ = Number(useQuery().get("gap"));
+  const gap = Number.isFinite(gapQ) && gapQ > 0 ? gapQ : MOTION.gap;
+  const step = useCallback((e: TimelineEvent) => motionMs(e) + (e.kind === "capture" ? Math.max(gap, MOTION.captureGap) : gap), [gap]);
+  const { state, events, at: t, last, clean, q, next } = usePlayback(step, { spaceSteps: true });
   const view = useMemo(() => fold(events, t), [events, t]);
   const laid = useMemo(() => placeAll(view.tips, t, events), [view.tips, t, events]);
+  // one eased position per node per frame; nodes and links are both drawn from it
+  const targets = useMemo(() => new Map([...laid.pos, ...laid.leaves].map((p) => [p.id, { x: p.x, y: p.y }])), [laid]);
+  const tw = useTween(targets, MOTION.layout);
   if (state.status === "error") return <main className="thread-page"><p>Could not load the video timeline: {state.error.message}</p></main>;
   if (state.status === "loading") return <main className="t-stage" />;
 
-  const { shown, pos, leaves } = laid;
+  const { shown } = laid;
+  const pos: Pos[] = laid.pos.map((p) => ({ ...p, ...tw.get(p.id) }));
+  const leaves: Leaf[] = laid.leaves.map((l) => ({ ...l, ...tw.get(l.id) }));
+  const leafIds = new Set(laid.leaves.map((l) => l.id));
   const byId = new Map<string, Pos>([...pos, ...leaves].map((p) => [p.id, p]));
   const tips = new Map(shown.map((x) => [x.assertion_id, x]));
   const cur = view.current;
@@ -114,21 +59,40 @@ export function TreePage() {
   const dim = (id: string) => (target && !path.has(id) && t !== last ? " dim" : ""); // the last frame shows the whole wheel
   const reason = r && r.outcome === "declined" && target ? reasonWords(r, target, inc!) : "";
 
-  // camera: lean toward where something happens, then ease back to the whole wheel
-  const focus = cur?.kind === "capture" || cur?.kind === "retract" || cur?.kind === "supersede" || cur?.kind === "expire" || cur?.kind === "answer"
-    ? byId.get(cur.assertion_id) : target ? byId.get(target.assertion_id) : undefined;
-  // keep everything that is drawn inside the frame while the camera leans in
-  const all = [...pos, ...leaves];
-  const minX = Math.min(...all.map((p) => p.x - (leaves.includes(p as Leaf) && side(p) === "left" ? 150 : 150)));
-  const maxX = Math.max(...all.map((p) => p.x + (leaves.includes(p as Leaf) && side(p) === "right" ? 220 : 150)));
-  const minY = Math.min(...all.map((p) => p.y - 90)), maxY = Math.max(...all.map((p) => p.y + 100));
-  const final = t === last;  // the last event: ease out until the whole wheel is in frame
-  const zoom = Math.min(focus && !final ? 1.05 : 1, W / (maxX - minX), (H - 130) / (maxY - minY));
-  const fx = focus && !final ? C.x + (focus.x - C.x) * 0.3 : C.x;
-  const fy = focus && !final ? C.y + (focus.y - C.y) * 0.3 : C.y;
-  const clamp = (v: number, lo: number, hi: number) => (lo > hi ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, v)));
-  const tx = clamp(C.x - fx * zoom, -minX * zoom, W - maxX * zoom);
-  const ty = clamp(C.y - fy * zoom, -minY * zoom, H - 130 - maxY * zoom);
+  // camera: holds still until something happens, then one decisive move that frames the sector in play (about 60% of
+  // the height); messages and notifications never move it. The last event frames the whole wheel.
+  const all = [...laid.pos, ...laid.leaves]; // the camera frames where things are going, not where they are mid-slide
+  const box = (ps: Pos[]) => ({
+    x0: Math.min(...ps.map((p) => p.x - (leafIds.has(p.id) && side(p) === "left" ? 150 : 150))),
+    x1: Math.max(...ps.map((p) => p.x + (leafIds.has(p.id) && side(p) === "right" ? 220 : 150))),
+    y0: Math.min(...ps.map((p) => p.y - 90)), y1: Math.max(...ps.map((p) => p.y + 100)),
+  });
+  const final = t === last;
+  const focusId = (() => {
+    for (let i = t; i >= 0; i--) {
+      const e = events[i];
+      if (e.kind === "capture" || e.kind === "retract" || e.kind === "supersede" || e.kind === "expire" || e.kind === "answer") return e.assertion_id;
+      if (e.kind === "dispute") return e.assertions[0];
+      if (e.kind === "incident") {
+        const pr = primary(e, new Set(tips.keys()));
+        if (pr) return pr.assertion_id;
+      }
+    }
+    return undefined;
+  })();
+  const focusTip = !final && focusId ? tips.get(focusId) : undefined;
+  const sector = focusTip ? branchOf(focusTip) : undefined;
+  const framed = sector
+    ? all.filter((p) => p.id === sector || p.id === SUB.find((s) => s.id === sector)!.parent ||
+        (tips.has(p.id) && branchOf(tips.get(p.id)!) === sector) || (leafIds.has(p.id) && branchOf(tips.get((p as Leaf).tip)!) === sector))
+    : all;
+  const bb = box(framed);
+  const VIEW_H = H - 130;
+  const zoom = sector
+    ? Math.min(1.35, Math.max(1, (0.6 * VIEW_H) / (bb.y1 - bb.y0)), (0.9 * W) / (bb.x1 - bb.x0))
+    : Math.min(1, W / (bb.x1 - bb.x0), VIEW_H / (bb.y1 - bb.y0));
+  const tx = W / 2 - ((bb.x0 + bb.x1) / 2) * zoom;
+  const ty = VIEW_H / 2 - ((bb.y0 + bb.y1) / 2) * zoom;
   const camera = `translate(${tx}px, ${ty}px) scale(${zoom})`;
   const toScreen = (p: Pos) => ({ x: tx + p.x * zoom, y: ty + p.y * zoom });
 
@@ -139,7 +103,7 @@ export function TreePage() {
   const still = q.get("still");
 
   return (
-    <main className={`t-stage${still ? " still" : ""}`} style={still ? ({ "--still": `-${Number(still)}ms` } as React.CSSProperties) : undefined}>
+    <main className={`t-stage${still ? " still" : ""}`} style={{ ...motionVars(), ...(still ? { "--still": `-${Number(still)}ms` } : {}) } as React.CSSProperties}>
       <div className="t-frame" style={{ width: W, height: H, transform: `translate(-50%, -50%) scale(${scale})` }}>
         <div className={`t-canvas${final ? " final" : ""}`} style={{ transform: camera }}>
           <svg className="t-links" width={W} height={H} aria-hidden="true">
@@ -178,8 +142,7 @@ export function TreePage() {
               <div key={x.assertion_id} className={`t-node t-tip ${tipSide(p)}${x.trust === "hunch" ? " hunch" : ""}${x.status === "disputed" ? " disputed" : ""}${gone ? " gone" : ""}${x.superseded_by ? " replaced" : ""}${isTarget ? ` hit ${r!.outcome}` : ""}${dim(x.assertion_id)}`}
                 style={{ transform: `translate(${p.x}px, ${p.y}px)` }}>
                 <span className="t-dot" />
-                <span className="t-sources">{x.sources.map((s) => <i key={s} />)}</span>
-                <span className="t-name">{tipWords(x)}{line && <span key={line} className={`t-status${tag && line === tag ? " tag" : line === "disputed" || line === "hunch" ? ` mark ${line}` : ""}`}>{line}</span>}</span>
+                <span className="t-name">{tipWords(x)}{evidenceTag(x) && <span key={evidenceTag(x)} className="t-evidence">{evidenceTag(x)}</span>}{line && <span key={line} className={`t-status${tag && line === tag ? " tag" : line === "disputed" || line === "hunch" ? ` mark ${line}` : ""}`}>{line}</span>}</span>
               </div>
             );
           })}
@@ -211,6 +174,8 @@ export function TreePage() {
         )}
 
         {words && <p key={`c${t}`} className="t-caption">{words}</p>}
+        {/* an invisible strip on the right edge steps forward on click, like the Teams clone (mouse-only recording) */}
+        <div className="t-next" onClick={next} aria-hidden="true" />
         {!clean && <p className="t-footer">{FOOTER} &middot; {t} / {last}</p>}
       </div>
     </main>
