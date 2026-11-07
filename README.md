@@ -28,6 +28,30 @@ uvicorn api.app:app                                  # GET /assertions /graph /t
 - `LLM_BUDGET_EUR` (default 50): a live call that could push the recorded spend past this cap is refused.
 - `OUT_DIR` overrides `out/` (the tests use a temp dir). Live calls need `GOOGLE_CLOUD_PROJECT` and Application Default Credentials.
 
+## The whole demo: one backend, two front-ends
+
+Everything the judges see comes from `demo.py` output in `out/` (nine beats). Two front-ends read it, both switchable to the live API with one setting:
+
+| Folder | What it shows | Run |
+|---|---|---|
+| `ui/` | Microsoft Teams clone: the chats where knowledge is captured, the one question, the relayed fix, the declines, the expiry and the retraction. Replay with `?beat=N` (1..9) and `&channel=experts\|faults\|site-access`. Script: `docs/DEMO_CHAT.md`. | `cd ui; npm install; npm run dev` |
+| `frontend-ui/` | Context map: the tip landing in the network graph with its candidate scopes, the Finland view with tip counts per region, a beat timeline that plays the context growing over time, chapter title cards. `?beat=N`, `?zoom=out`, `?clean=1` for recording. | `cd frontend-ui; npm install; npm run dev` |
+
+Full sequence from a clean clone (PowerShell):
+
+```powershell
+py -3.14 -m pip install -r requirements.txt
+$env:LLM_OFFLINE="1"; py -3.14 -m pytest -q; py -3.14 -m eval.runner
+$env:LLM_OFFLINE="1"; py -3.14 demo.py                       # writes out/
+$env:LLM_OFFLINE="1"; py -3.14 -m uvicorn api.app:app        # API on :8000 (leave running)
+# second window, either front-end, against the API:
+$env:VITE_DATA_SOURCE="api"; $env:VITE_API_URL="http://localhost:8000"; npm run dev
+```
+
+Without the two `VITE_` variables each front-end runs on its own byte-for-byte copy of `out/` (see `ui/src/data/mock/README.md` and `frontend-ui/src/data/mock/real-out/README.md`), which looks identical. Live mode (reporting a new fault, answering a question) needs the API.
+
+Branches: `backend` (backend work), `ui` (Teams clone), `frontend-api` (map on real data, from Abhishek's `ui-frontend`), all merged into `main`.
+
 ## Contracts
 
 - `contracts/message.schema.json`: one message from any channel (author, role, timestamp, channel, thread, verbatim text).
