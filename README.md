@@ -24,6 +24,8 @@ py -3.14 demo.py --clean                             # wipe out/
 uvicorn api.app:app                                  # GET /assertions /graph /threads/{id} /beats/{n}, POST /incident /answer
 ```
 
+`POST /incident` returns `{results, agent_text, prior_knowledge}`; `prior_knowledge` is `"none"` when no assertion matched the trigger (the agent falls back to its standard procedure) and `"found"` otherwise, even if every match was declined (each decline carries its reason).
+
 - `LLM_OFFLINE=1`: every model call must be a cache hit in `.llm_cache/`; a miss raises instead of calling Vertex AI. The demo and the tests run this way.
 - `LLM_BUDGET_EUR` (default 50): a live call that could push the recorded spend past this cap is refused.
 - `OUT_DIR` overrides `out/` (the tests use a temp dir). Live calls need `GOOGLE_CLOUD_PROJECT` and Application Default Credentials.
@@ -89,11 +91,21 @@ Python 3.14; pydantic 2 (contracts, LLM output schemas); google-genai on Vertex 
 
 All data is synthetic. Elisa's example chat and email in `data/elisa_examples/` are used unmodified (the adapters date them 2026-11-01, as they carry times only). Every generated scenario thread is listed in `data/DATA_CARD.md` with its model, script and hand edits. Data handling: names and device IDs are illustrative, there is no personal or customer data, and nothing leaves the machine except the prompts sent to Vertex AI; GDPR handling of real chats is out of scope for this build. Facts are stored verbatim, including any code or key written in a message (a gate code ends up in the store, `graph.json` and the thread files); masking them is a policy decision for Elisa.
 
+## What Elisa told us (Discord, 7 Nov)
+
+Elisa's challenge owner answered our five questions:
+
+1. One tap, asked only when a rule is actually reused; asking nothing during capture is right. Confirms the design (beat 3).
+2. Assume installation year and model are device attributes and region a site attribute, and model them ourselves. Confirms the synthetic topology.
+3. Silence is right, wrong context is worse than none; a bonus would be an explicit no-prior-knowledge signal. Added `prior_knowledge` to `POST /incident` and beats 1 and 7.
+4. A question belongs to the team that owns the domain, anyone on it can answer, and until then the rule stays usable but marked ambiguous in scope; it should not depend on one named person. Added `team` to the question (the speaker is still named). Divergence: an unanswered rule is not proposed (docs/DECISIONS.md).
+5. Keeping secrets verbatim is acceptable for the prototype; production would treat them as sensitive. Keys and codes stay verbatim here (see [Data](#data)).
+
 ## Demo beats
 
 `py -3.14 demo.py` prints these and writes `out/beat_N.json`, `out/graph.json`, `out/graph.html`, `out/assertions.json`, `out/thread_<id>.json`, `out/questions.json`, `out/notifications.json`.
 
-1. **No context.** Empty store: `get_context` on TRN-087 returns `[]`; the stand-in agent says no captured context applies and adds nothing. It never invents a procedure; the real agent's own runbook is out of scope.
+1. **No context.** Empty store: `get_context` on TRN-087 returns `[]`; the stand-in agent says no captured context applies and adds nothing, and the beat data carries `prior_knowledge: "none"`, an explicit signal that the agent is falling back to standard procedure. It never invents a procedure; the real agent's own runbook is out of scope.
 2. **Capture and link.** Erkki's chat and email become one assertion CA-0001 (`interface.bounce`, avoid `sfp.replace`, `node.reboot`) with five candidates and their support/against/edge, trust `verified_by_outcome`, 0 questions asked.
 3. **First use and the one question.** TRN-087 is `ambiguous` on site; Erkki is asked once and taps "All older units"; the re-run is `proposed` and the agent says to disable and enable the interface, avoid `node.reboot`, citing Erkki, 1 case. 12 messages · 1 assertion · 0 forms · 1 tap.
 4. **Decline.** TRN-101 (installed 2023) is `ambiguous`: 2023 is beyond the known edge 2019, so Erkki gets one edge question; he taps "No", the boundary becomes `install_year <= 2019`, closed, and the re-run is `declined` on install_year. No cutoff was invented: Erkki set it.

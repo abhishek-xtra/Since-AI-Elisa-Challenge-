@@ -30,3 +30,5 @@ Each list is one bullet: `- <name>: ` followed by backticked values. Notes go on
   - What an assertion's `applies_to.entity_type` can be. A workflow trigger (the barrier key) applies to a `site`.
 - edge answers: `raise`, `close`
   - What an option of an edge question does to an `open` candidate (contracts/get_context.md).
+- teams: `network-experts`, `field-operations`
+  - The team that owns a question's domain (contracts/get_context.md): `network-experts` for an incident-trigger rule, `field-operations` for a workflow-trigger rule.

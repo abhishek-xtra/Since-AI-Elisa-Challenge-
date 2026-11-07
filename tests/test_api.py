@@ -32,8 +32,15 @@ def test_incident_declined(client):
     # the demo already closed TRN-101's edge question (beat 4), so it declines directly
     r = client.post("/incident", json={"entity_id": "TRN-101", "event": "sfp_replaced", "at_time": "2026-11-07T10:00:00+02:00",
                                        "symptoms": ["link_up", "optics_normal", "alarms_cleared", "counters_zero"]})
-    assert r.status_code == 200 and set(r.json()) == {"results", "agent_text"}
+    assert r.status_code == 200 and set(r.json()) == {"results", "agent_text", "prior_knowledge"}
     assert [x["outcome"] for x in r.json()["results"]] == ["declined"] and "install_year" in r.json()["results"][0]["reason"]
+    assert r.json()["agent_text"].startswith("No captured context applies")
+    assert r.json()["prior_knowledge"] == "found"  # matched, then declined: the decline carries the reason
+
+
+def test_incident_no_prior_knowledge(client):
+    r = client.post("/incident", json={"entity_id": "TRN-101", "event": "alarm_raised", "at_time": "2026-11-07T10:00:00+02:00"})
+    assert r.status_code == 200 and r.json()["results"] == [] and r.json()["prior_knowledge"] == "none"
     assert r.json()["agent_text"].startswith("No captured context applies")
 
 

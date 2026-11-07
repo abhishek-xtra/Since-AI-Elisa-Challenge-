@@ -109,6 +109,7 @@
           "assertion_id": "CA-0001",
           "key": "firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
           "to": "Erkki Expert",
+          "team": "network-experts",
           "thread_id": "thread-001",
           "text": "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site.",
           "options": [
@@ -156,6 +157,7 @@
       "assertion_id": "CA-0001",
       "key": "firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
       "to": "Erkki Expert",
+      "team": "network-experts",
       "thread_id": "thread-001",
       "text": "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site.",
       "options": [

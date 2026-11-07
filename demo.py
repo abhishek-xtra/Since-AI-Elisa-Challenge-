@@ -17,7 +17,7 @@ from agent import out_path, read_json_list
 from agent.get_context import get_context
 from agent.notify import notify
 from agent.questions import answer
-from agent.stand_in import propose, proposal_text
+from agent.stand_in import prior_knowledge, propose, proposal_text
 from binder.bind import _ws
 from contracts.models import Message
 from pipeline import ADAPTERS, ROOT, ingest, load_topology
@@ -138,7 +138,8 @@ def beat1(s: JsonStore):
              f"Store: {len(s.all())} assertions",
              f"get_context -> {json.dumps([dump(r) for r in results])}: no context",
              f"Agent: {text}"]
-    return "No context", lines, {"results": [dump(r) for r in results], "proposal": dump(p), "agent_text": text}, []
+    return "No context", lines, {"results": [dump(r) for r in results], "proposal": dump(p), "agent_text": text,
+                            "prior_knowledge": prior_knowledge(results)}, []
 
 
 def beat2(s: JsonStore):
@@ -241,7 +242,7 @@ def beat7(s: JsonStore):
              f"{a.evidence.said_by} was not asked."]
     return "Second technician, no question", lines, {"incident": {"entity_id": "TRN-105", "event": SFP, "symptoms": SYMPTOMS, "at": SECOND_AT.isoformat()},
                                                      "results": [dump(r) for r in results], "proposal": dump(p), "agent_text": text,
-                                                     "notifications": notes, "questions_new": 0}, [chat]
+                                                     "prior_knowledge": prior_knowledge(results), "notifications": notes, "questions_new": 0}, [chat]
 
 
 def beat8(s: JsonStore):

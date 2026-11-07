@@ -15,6 +15,11 @@ SYSTEM = ("You are the stand-in for the network operations agent. You have no to
 NO_CONTEXT = "No captured context applies to this incident; nothing to add."
 
 
+def prior_knowledge(results: list[ContextResult]) -> str:
+    """'none': no assertion matched the trigger, the agent falls back to standard procedure. 'found' even if all declined."""
+    return "found" if results else "none"
+
+
 class AgentProposal(BaseModel):
     """What the agent proposes for this incident."""
     action: Action = Field(description="The canonical action to take.")

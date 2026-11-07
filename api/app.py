@@ -15,7 +15,7 @@ import llm
 from agent import out_path, read_json_list
 from agent.get_context import get_context
 from agent.questions import answer as apply_answer
-from agent.stand_in import AgentProposal, propose, proposal_text, NO_CONTEXT
+from agent.stand_in import AgentProposal, propose, proposal_text, prior_knowledge, NO_CONTEXT
 from contracts.vocabulary import Event, Symptom
 
 app = FastAPI(title="Elisa context layer")
@@ -90,7 +90,8 @@ def incident(body: Incident):
         except ValueError as e:
             raise HTTPException(404, str(e))
         demo.refresh(s)
-    return {"results": [demo.dump(r) for r in results], "agent_text": agent_text(results, body)}  # model call outside the lock
+    return {"results": [demo.dump(r) for r in results], "agent_text": agent_text(results, body),
+            "prior_knowledge": prior_knowledge(results)}  # model call outside the lock
 
 
 @app.post("/answer")

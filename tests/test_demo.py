@@ -29,7 +29,8 @@ def test_nine_beats(out):
     for n in range(1, 10):
         b = load(out, f"beat_{n}.json")
         assert b["beat"] == n and b["title"] and b["lines"] and isinstance(b["data"], dict)
-    assert load(out, "beat_1.json")["data"]["results"] == []
+    assert load(out, "beat_1.json")["data"]["results"] == [] and load(out, "beat_1.json")["data"]["prior_knowledge"] == "none"
+    assert load(out, "beat_7.json")["data"]["prior_knowledge"] == "found"
 
 
 def test_beat3_proposed_without_reboot(out):

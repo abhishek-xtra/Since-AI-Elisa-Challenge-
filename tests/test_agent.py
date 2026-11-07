@@ -67,7 +67,7 @@ def test_core_question_answer_and_proposal(make_store, out_dir):
     r = only(ctx(s, "TRN-087"))
     assert r.outcome == "ambiguous" and "site" in r.reason
     q = r.question
-    assert "site == 'OULU-07'=fails" in q.key and q.to == "Erkki Expert" and q.thread_id == "thread-001"
+    assert "site == 'OULU-07'=fails" in q.key and q.to == "Erkki Expert" and q.team == "network-experts" and q.thread_id == "thread-001"
     assert q.text == "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site."
     labels = {o.label: o for o in q.options}
     assert labels["All older units"].sets_decided == "install_year <= 2019" and labels["All older units"].edge == "open"

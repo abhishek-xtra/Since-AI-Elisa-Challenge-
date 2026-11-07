@@ -29,12 +29,14 @@ For two or more `disputed` assertions matching the same incident, order by: trus
 
 Built only here, only on `ambiguous`, only if its key is not in `assertion.questions_asked`.
 
+**Address.** Addressed to the owning team (`team`: `network-experts` for an incident-trigger rule, `field-operations` for a workflow-trigger rule, contracts/vocabulary.md); the speaker is named (`to` = `evidence.said_by`, who gets it first); anyone on the team can answer. Until answered the rule is ambiguous in scope and not proposed.
+
 **Key.** The candidates that made it ambiguous (those that hold and those that fail, or the `unknown` ones), as `<predicate>=<result>` strings, sorted, joined by `" | "`. Example: `"firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails"`. The same ambiguity is never asked twice; a genuinely new one (a 2020 unit after the site question was settled) has a different key and can be.
 
 **Scope question** (some hold, some fail): one option per surviving candidate that holds for the new entity (the broad choice), one per candidate that fails (the narrow choice), plus `"No"` with `sets_decided: "id == '<origin>'"`.
 
 ```json
-{"assertion_id": "CA-0001", "key": "...", "to": "Erkki Expert", "thread_id": "thread-001",
+{"assertion_id": "CA-0001", "key": "...", "to": "Erkki Expert", "team": "network-experts", "thread_id": "thread-001",
  "text": "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site.",
  "options": [
    {"label": "All older units", "sets_decided": "install_year <= 2019", "edge": "open"},

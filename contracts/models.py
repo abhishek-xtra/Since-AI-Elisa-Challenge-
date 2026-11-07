@@ -11,7 +11,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from contracts.vocabulary import (Action, CaseOutcome, Channel, Edge, EdgeAnswer, EntityType, Event, ExtractedOutcome, NodeType,
-                                  Outcome, Role, Status, Symptom, TriggerKind, Trust)
+                                  Outcome, Role, Status, Symptom, Team, TriggerKind, Trust)
 
 
 class Strict(BaseModel):
@@ -152,7 +152,8 @@ class Question(Strict):
     """The one question, built only inside get_context on 'ambiguous' when its key is not yet in questions_asked."""
     assertion_id: str = Field(description="Assertion the question is about.")
     key: str = Field(description="Sorted (candidate predicate, evaluation result) pairs that made it ambiguous; format in contracts/get_context.md.")
-    to: str = Field(description="evidence.said_by of the assertion.")
+    to: str = Field(description="evidence.said_by of the assertion: the speaker is named and gets it first.")
+    team: Team = Field(description="The team that owns the domain; anyone on it can answer. network-experts for an incident trigger, field-operations for a workflow trigger.")
     thread_id: str = Field(description="The expert's original thread; the question is posted there.")
     text: str = Field(description="One short sentence naming the new entity and the disagreeing attribute.")
     options: list[Option] = Field(description="Generated from the disagreeing candidates, plus 'No'.")

@@ -18,12 +18,13 @@ Channel = Literal["teams", "email", "agent_thread"]
 NodeType = Literal["transmission_node", "router", "other"]
 EntityType = Literal["transmission_node", "router", "site"]
 EdgeAnswer = Literal["raise", "close"]
+Team = Literal["network-experts", "field-operations"]
 
 # list name in vocabulary.md -> Literal
 LISTS = {
     "events": Event, "symptoms": Symptom, "actions": Action, "value-carrying actions": ValueCarryingAction,
     "trust": Trust, "assertion status": Status, "per-entity outcome": Outcome, "trigger kinds": TriggerKind,
     "candidate edges": Edge, "predicate results": PredicateResult, "case outcomes": CaseOutcome, "extracted outcomes": ExtractedOutcome,
-    "roles": Role, "channels": Channel, "node types": NodeType, "entity types": EntityType, "edge answers": EdgeAnswer,
+    "roles": Role, "channels": Channel, "node types": NodeType, "entity types": EntityType, "edge answers": EdgeAnswer, "teams": Team,
 }
 VALUE_CARRYING_ACTIONS = frozenset(get_args(ValueCarryingAction))

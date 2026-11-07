@@ -85,6 +85,7 @@ def build_question(assertion: Assertion, entity, results_by_candidate: dict[str,
         options = [Option(label="Yes", edge_answer="raise"), Option(label="No", edge_answer="close")]
     return Question(
         assertion_id=assertion.id, key=question_key(results_by_candidate), to=assertion.evidence.said_by,
+        team="network-experts" if assertion.trigger.kind == "incident" else "field-operations",
         thread_id=assertion.evidence.sources[0].split(":", 1)[-1] if assertion.evidence.sources else "",
         text=f"Your {origin} tip: does it apply to {entity.id} too? {detail}".strip(), options=options)
 
