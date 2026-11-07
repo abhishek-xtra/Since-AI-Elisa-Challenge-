@@ -42,7 +42,7 @@
       </div>
       <audio id="vo-capture" src="assets/vo/075d87e61927.wav" data-start="21.435" data-duration="8.085" data-track-index="0"></audio>
       <div id="s-scopes" class="clip scene" data-start="29.920" data-duration="15.997" data-track-index="1" data-track-kind="graphics" style="z-index:5">
-        <div class="inner" id="in-scopes"><div class="cam" id="cam-scopes"><iframe src="http://localhost:5183/tree?clean=1&amp;caption=0&amp;t=16&amp;play=1" style="height:1080px"></iframe></div><div class="cap"><span id="cap-scopes">Five candidate scopes. No guess.</span></div></div>
+        <div class="inner" id="in-scopes"><div class="cam" id="cam-scopes"><iframe src="http://localhost:5183/tree?clean=1&amp;caption=0&amp;t=16" style="height:1080px"></iframe></div><div class="cap"><span id="cap-scopes">Five candidate scopes. No guess.</span></div></div>
       </div>
       <audio id="vo-scopes" src="assets/vo/7f612138114a.wav" data-start="30.120" data-duration="14.997" data-track-index="0"></audio>
       <div id="s-status" class="clip scene" data-start="45.517" data-duration="7.72" data-track-index="2" data-track-kind="graphics" style="z-index:6">
@@ -54,7 +54,7 @@
       </div>
       <audio id="vo-question" src="assets/vo/994c8cf5fd08.wav" data-start="53.037" data-duration="3.904" data-track-index="0"></audio>
       <div id="s-honed" class="clip scene" data-start="57.341" data-duration="5.181" data-track-index="2" data-track-kind="graphics" style="z-index:8">
-        <div class="inner" id="in-honed"><div class="cam" id="cam-honed"><iframe src="http://localhost:5183/tree?clean=1&amp;caption=0&amp;t=28&amp;play=1" style="height:1080px"></iframe></div><div class="cap"><span id="cap-honed">Honed by one answer.</span></div></div>
+        <div class="inner" id="in-honed"><div class="cam" id="cam-honed"><iframe src="http://localhost:5183/tree?clean=1&amp;caption=0&amp;t=28" style="height:1080px"></iframe></div><div class="cap"><span id="cap-honed">Honed by one answer.</span></div></div>
       </div>
       <audio id="vo-honed" src="assets/vo/1928b8506930.wav" data-start="57.541" data-duration="4.181" data-track-index="0"></audio>
       <div id="s-sami" class="clip scene" data-start="62.123" data-duration="7.549" data-track-index="1" data-track-kind="graphics" style="z-index:9">
@@ -74,11 +74,11 @@
       </div>
       <audio id="vo-decline" src="assets/vo/403b4dfb71aa.wav" data-start="80.768" data-duration="6.549" data-track-index="0"></audio>
       <div id="s-dispute" class="clip scene" data-start="87.717" data-duration="4.563" data-track-index="1" data-track-kind="graphics" style="z-index:13">
-        <div class="inner" id="in-dispute"><div class="cam" id="cam-dispute"><iframe src="http://localhost:5183/tree?clean=1&amp;caption=0&amp;src=dispute&amp;t=32&amp;play=1" style="height:1080px"></iframe></div><div class="cap"><span id="cap-dispute">Two experts disagree: kept both, not guessed</span></div></div>
+        <div class="inner" id="in-dispute"><div class="cam" id="cam-dispute"><iframe src="http://localhost:5183/tree?clean=1&amp;caption=0&amp;src=dispute&amp;t=32" style="height:1080px"></iframe></div><div class="cap"><span id="cap-dispute">Two experts disagree: kept both, not guessed</span></div></div>
       </div>
       <audio id="vo-dispute" src="assets/vo/c67792671a87.wav" data-start="87.917" data-duration="3.563" data-track-index="0"></audio>
       <div id="s-hunch" class="clip scene" data-start="91.880" data-duration="5.885" data-track-index="2" data-track-kind="graphics" style="z-index:14">
-        <div class="inner" id="in-hunch"><div class="cam" id="cam-hunch"><iframe src="http://localhost:5183/tree?clean=1&amp;caption=0&amp;src=hunch&amp;t=28&amp;play=1" style="height:1080px"></iframe></div><div class="cap"><span id="cap-hunch">Heard second-hand: kept, never relayed</span></div></div>
+        <div class="inner" id="in-hunch"><div class="cam" id="cam-hunch"><iframe src="http://localhost:5183/tree?clean=1&amp;caption=0&amp;src=hunch&amp;t=28" style="height:1080px"></iframe></div><div class="cap"><span id="cap-hunch">Heard second-hand: kept, never relayed</span></div></div>
       </div>
       <audio id="vo-hunch" src="assets/vo/9173ff486f64.wav" data-start="92.080" data-duration="4.885" data-track-index="0"></audio>
       <div id="s-expiry" class="clip scene" data-start="97.365" data-duration="3.325" data-track-index="1" data-track-kind="graphics" style="z-index:15">
@@ -120,7 +120,7 @@
   tl.fromTo("#in-capture", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.inOut" }, 21.235);
   tl.fromTo("#cap-capture", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 21.485);
   tl.set("#cam-scopes", {"x":0,"y":0,"scale":1}, 29.920);
-  tl.to("#cam-scopes", { ...{"x":-576,"y":0,"scale":1.3}, duration: 15.997, ease: "sine.inOut" }, 29.920);
+  tl.to("#cam-scopes", { ...{"x":-672,"y":0,"scale":1.35}, duration: 15.997, ease: "sine.inOut" }, 29.920);
   tl.fromTo("#in-scopes", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power2.inOut" }, 29.920);
   tl.fromTo("#cap-scopes", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 30.170);
   tl.set("#cam-status", {"x":0,"y":0,"scale":1}, 45.517);
@@ -131,7 +131,7 @@
   tl.fromTo("#in-question", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.inOut" }, 52.837);
   tl.fromTo("#cap-question", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 53.087);
   tl.set("#cam-honed", {"x":0,"y":0,"scale":1}, 57.341);
-  tl.to("#cam-honed", { ...{"x":-576,"y":0,"scale":1.3}, duration: 5.181, ease: "sine.inOut" }, 57.341);
+  tl.to("#cam-honed", { ...{"x":-672,"y":0,"scale":1.35}, duration: 5.181, ease: "sine.inOut" }, 57.341);
   tl.fromTo("#in-honed", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power2.inOut" }, 57.341);
   tl.fromTo("#cap-honed", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 57.591);
   tl.set("#cam-sami", {"x":0,"y":0,"scale":1}, 62.123);
@@ -143,7 +143,7 @@
   tl.fromTo("#in-notice", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.inOut" }, 69.272);
   tl.fromTo("#cap-notice", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 69.522);
   tl.set("#cam-merge", {"x":0,"y":0,"scale":1}, 72.672);
-  tl.to("#cam-merge", { ...{"x":-576,"y":0,"scale":1.3}, duration: 8.296, ease: "sine.inOut" }, 72.672);
+  tl.to("#cam-merge", { ...{"x":-672,"y":0,"scale":1.35}, duration: 8.296, ease: "sine.inOut" }, 72.672);
   tl.fromTo("#in-merge", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power2.inOut" }, 72.672);
   tl.fromTo("#cap-merge", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 72.922);
   tl.set("#cam-decline", {"x":-192,"y":-108,"scale":1.1}, 80.568);
@@ -151,11 +151,11 @@
   tl.fromTo("#in-decline", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power2.inOut" }, 80.568);
   tl.fromTo("#cap-decline", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 80.818);
   tl.set("#cam-dispute", {"x":0,"y":0,"scale":1}, 87.717);
-  tl.to("#cam-dispute", { ...{"x":-480,"y":0,"scale":1.25}, duration: 4.563, ease: "sine.inOut" }, 87.717);
+  tl.to("#cam-dispute", { ...{"x":-576,"y":0,"scale":1.3}, duration: 4.563, ease: "sine.inOut" }, 87.717);
   tl.fromTo("#in-dispute", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power2.inOut" }, 87.717);
   tl.fromTo("#cap-dispute", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 87.967);
   tl.set("#cam-hunch", {"x":0,"y":0,"scale":1}, 91.880);
-  tl.to("#cam-hunch", { ...{"x":-96,"y":-54,"scale":1.1}, duration: 5.885, ease: "sine.inOut" }, 91.880);
+  tl.to("#cam-hunch", { ...{"x":0,"y":-324,"scale":1.3}, duration: 5.885, ease: "sine.inOut" }, 91.880);
   tl.fromTo("#in-hunch", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.inOut" }, 91.880);
   tl.fromTo("#cap-hunch", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 92.130);
   tl.set("#cam-expiry", {"x":-535,"y":-324,"scale":1.3}, 97.365);

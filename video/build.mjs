@@ -11,7 +11,7 @@ const VOICE = 'am_michael';
 const SPEED = '1.4'; // the script's voiceover runs ~158 s at Kokoro's 1.0; 1.4 lands the film near two minutes
 const TEAMS = 'http://127.0.0.1:8090/';
 const MAP = 'http://localhost:5183/';
-const TREE = MAP + 'tree?clean=1&caption=0&'; // radial tree view; caption=0 so our caption bar is the only one
+const TREE = MAP + 'tree?clean=1&caption=0&'; // radial tree; caption=0 so ours is the only caption. No play=1: the render loads every iframe at the start, so an animation would finish long before its scene
 
 // url: null = placeholder (dark frame + caption only); `todo` names the page to swap in. None left.
 // h: iframe height (2600 lays out the whole Experts thread so the camera can pan it).
@@ -30,7 +30,7 @@ const SCENES = [
   { id: 'capture', url: TEAMS + '?beat=2&channel=experts', h: 2600, enter: 'fade', cam: [[1150, 560, 1.4], [1150, 690, 1.7], [1100, 1000, 1.25]],
     caption: 'Saved as a tip. Nothing for you to do.',
     vo: "Erkki answers from experience: bounce the interface, don't reboot. He says it in chat, and again in an email. The layer notes it. One tip, two sources, his words kept verbatim." },
-  { id: 'scopes', url: TREE + 't=16&play=1', enter: 'wipe', cam: [[960, 540, 1.0], [1250, 330, 1.3]],
+  { id: 'scopes', url: TREE + 't=16', enter: 'wipe', cam: [[960, 540, 1.0], [1300, 200, 1.35]],
     caption: 'Five candidate scopes. No guess.',
     vo: "The tip is classified: an incident, after an SFP swap, link up and counters at zero. And because nobody said exactly which units this applies to, it is filed under every scope it might be: this model, this firmware, this site, this region, and 'older units', with an open edge at 2019. Nothing is decided yet." },
   { id: 'status', url: TEAMS + '?beat=3', enter: 'wipe', cam: [[1150, 540, 1.0], [1150, 262, 1.6]],
@@ -39,7 +39,7 @@ const SCENES = [
   { id: 'question', url: TEAMS + '?beat=3&channel=experts', enter: 'fade', cam: [[1150, 600, 1.0], [1210, 785, 1.7]],
     caption: 'Answered: All older units',
     vo: 'One tap: all older units. That answer becomes the source. The other scopes fall away.' },
-  { id: 'honed', url: TREE + 't=28&play=1', enter: 'wipe', cam: [[960, 540, 1.0], [1250, 300, 1.3]],
+  { id: 'honed', url: TREE + 't=28', enter: 'wipe', cam: [[960, 540, 1.0], [1350, 200, 1.35]],
     caption: 'Honed by one answer.',
     vo: 'On the graph, the pathway lights: trigger, tip, scope, and the four unused candidates are gone.' },
   { id: 'sami', url: TEAMS + '?beat=7', enter: 'wipe', cam: [[1150, 500, 1.0], [1160, 770, 1.6]],
@@ -48,16 +48,16 @@ const SCENES = [
   { id: 'notice', url: TEAMS + '?beat=7&channel=experts', enter: 'fade', min: 3.4, cam: [[1150, 700, 1.2], [1200, 862, 1.9]],
     caption: 'Your tip from 2026-11-01 was proposed for TRN-105 today.',
     vo: 'Erkki just sees that his tip travelled.' },
-  { id: 'merge', url: TREE + 't=18', enter: 'wipe', cam: [[960, 540, 1.0], [1250, 300, 1.3]],
+  { id: 'merge', url: TREE + 't=18', enter: 'wipe', cam: [[960, 540, 1.0], [1300, 200, 1.35]],
     caption: 'Same meaning, one tip.',
     vo: "Erkki's email says the same thing in different words. It is not a new tip: it merges as a second source on the same one. Same trigger, same action, one key." },
   { id: 'decline', url: TEAMS + '?beat=4', enter: 'wipe', cam: [[1150, 640, 1.1], [1080, 660, 1.7]],
     caption: 'install year 2023 is beyond the known edge 2019',
     vo: 'It also knows when to stop. A 2023 unit is beyond anything Erkki has seen, so it declines and asks him where the edge is.' },
-  { id: 'dispute', url: TREE + 'src=dispute&t=32&play=1', enter: 'wipe', cam: [[960, 540, 1.0], [1300, 380, 1.25]],
+  { id: 'dispute', url: TREE + 'src=dispute&t=32', enter: 'wipe', cam: [[960, 540, 1.0], [1380, 300, 1.3]],
     caption: 'Two experts disagree: kept both, not guessed',
     vo: 'Two experts disagree. It keeps both, marks the dispute, and does not pick a winner.' },
-  { id: 'hunch', url: TREE + 'src=hunch&t=28&play=1', enter: 'fade', cam: [[960, 540, 1.0], [960, 540, 1.1]],
+  { id: 'hunch', url: TREE + 'src=hunch&t=28', enter: 'fade', cam: [[960, 540, 1.0], [620, 700, 1.3]],
     caption: 'Heard second-hand: kept, never relayed',
     vo: 'Someone heard the key might have moved. It is kept as a hunch, never relayed, and never replaces what is verified.' },
   { id: 'expiry', url: TEAMS + '?beat=8&channel=site-access', enter: 'wipe', cam: [[1150, 800, 1.3], [1060, 840, 1.8]],

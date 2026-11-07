@@ -38,7 +38,7 @@ sub-compositions per scene (an editing convenience in the desktop app); the film
 Edit its entry in `SCENES` in `build.mjs` (`url`, `cam` points `[x, y, scale]` on the 1920-wide
 page, `caption`, `vo`, `enter`: fade, wipe or cut), then `node build.mjs`. `url: null` makes a
 placeholder (dark frame with the caption only). Tree scenes go through `TREE`, which adds
-`clean=1&caption=0` so our caption bar is the only caption. On the tree Erkki's tip is CA-0002, in
+`clean=1&caption=0` so our caption bar is the only caption. Tree scenes use the static state at an event, not `&play=1`: the render loads all iframes up front, so a playing animation has already finished when its scene comes up (seen in the first render: `t=16&play=1` showed the final wheel). On the tree Erkki's tip is CA-0002, in
 the Teams clone CA-0001: do not cut between the two with an ID in frame.
 
 ## Scenes (124.3 s)
@@ -49,16 +49,16 @@ the Teams clone CA-0001: do not cut between the two with an ID in frame.
 | 2 | veikko | 11.8 | 5.7 | Teams `?beat=2&channel=experts` (Veikko 09:14) | Elisa's real example | Veikko is at a site. ... traffic is still dead. |
 | 3 | silent | 17.5 | 3.7 | Teams `?beat=1` | No captured context applies to this incident; nothing to add. | The layer is listening. It knows nothing about this yet, so it says nothing. |
 | 4 | capture | 21.2 | 8.7 | Teams `?beat=2&channel=experts` (09:22, capture line, email) | Saved as a tip. Nothing for you to do. | Erkki answers from experience: ... his words kept verbatim. |
-| 5 | scopes | 29.9 | 15.6 | `/tree?t=16&play=1` | Five candidate scopes. No guess. | The tip is classified: ... Nothing is decided yet. |
+| 5 | scopes | 29.9 | 15.6 | `/tree?t=16` | Five candidate scopes. No guess. | The tip is classified: ... Nothing is decided yet. |
 | 6 | status | 45.5 | 7.3 | Teams `?beat=3` (STATUS card) | | Six days later, ... in his own thread. |
 | 7 | question | 52.8 | 4.5 | Teams `?beat=3&channel=experts` (question card) | Answered: All older units | One tap: all older units. ... The other scopes fall away. |
-| 8 | honed | 57.3 | 4.8 | `/tree?t=28&play=1` | Honed by one answer. | On the graph, the pathway lights: ... are gone. |
+| 8 | honed | 57.3 | 4.8 | `/tree?t=28` | Honed by one answer. | On the graph, the pathway lights: ... are gone. |
 | 9 | sami | 62.1 | 7.2 | Teams `?beat=7` | [CA-0001] Disable the interface, ... verified_by_outcome. | A day later, Sami in Helsinki, ... Nobody is interrupted. |
 | 10 | notice | 69.3 | 3.4 | Teams `?beat=7&channel=experts` | Your tip from 2026-11-01 was proposed for TRN-105 today. | Erkki just sees that his tip travelled. |
 | 11 | merge | 72.7 | 7.9 | `/tree?t=18` | Same meaning, one tip. | Erkki's email says the same thing in different words. ... one key. |
 | 12 | decline | 80.6 | 7.2 | Teams `?beat=4` | install year 2023 is beyond the known edge 2019 | It also knows when to stop. ... where the edge is. |
-| 13 | dispute | 87.7 | 4.2 | `/tree?src=dispute&t=32&play=1` | Two experts disagree: kept both, not guessed | Two experts disagree. It keeps both, marks the dispute, and does not pick a winner. |
-| 14 | hunch | 91.9 | 5.5 | `/tree?src=hunch&t=28&play=1` | Heard second-hand: kept, never relayed | Someone heard the key might have moved. ... what is verified. |
+| 13 | dispute | 87.7 | 4.2 | `/tree?src=dispute&t=32` | Two experts disagree: kept both, not guessed | Two experts disagree. It keeps both, marks the dispute, and does not pick a winner. |
+| 14 | hunch | 91.9 | 5.5 | `/tree?src=hunch&t=28` | Heard second-hand: kept, never relayed | Someone heard the key might have moved. ... what is verified. |
 | 15 | expiry | 97.4 | 2.9 | Teams `?beat=8&channel=site-access` | expired 2026-11-20 | A road closure expires on the date the engineer gave. |
 | 16 | retract | 100.3 | 3.4 | Teams `?beat=9&channel=experts` | under review | And when Erkki takes a tip back, it goes under review, not deleted. |
 | 17 | value | 103.7 | 12.5 | Teams `?beat=7` (zooms out to both engineers) | 12 messages · 1 assertion · 0 forms · 1 tap | What it cost the team: ... the date it stopped being true. |
