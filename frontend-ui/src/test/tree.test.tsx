@@ -5,7 +5,7 @@ import { setSource } from "../data";
 import { createMockSource } from "../data/mockSource";
 import timeline from "../data/mock/video_timeline.json";
 import { fold, type TimelineEvent } from "../grow/timeline";
-import { SUB, branchOf, caption, leafWords, place, tipWords } from "../tree/words";
+import { SUB, branchOf, caption, evidenceTag, leafWords, place, tipWords } from "../tree/words";
 
 const events = timeline.events as unknown as TimelineEvent[];
 
@@ -33,6 +33,9 @@ describe("tree label templates", () => {
     expect(place("HEL-02")).toBe("Helsinki 02");
     expect(tipWords({ action: "interface.bounce", action_text: "x", avoid: ["sfp.replace", "node.reboot"], said_by: "Erkki Expert" }))
       .toBe("Bounce the port, don't reboot · Erkki");
+    expect(evidenceTag({ sources: ["teams:thread-001"], cases: [] })).toBe("");
+    expect(evidenceTag({ sources: ["teams:thread-001", "email:email-001"], cases: [] })).toBe("2 sources · Teams, email");
+    expect(evidenceTag({ sources: ["teams:a"], cases: [{ entity: "TRN-042", at: "", outcome: null }, { entity: "TRN-063", at: "", outcome: null }] })).toBe("2 cases");
     expect(tipWords({ action: "site.access_key", action_text: "in the site cabinet", avoid: [], said_by: "Veikko Vikkelä" }))
       .toBe("Key in the site cabinet · Veikko");
   });

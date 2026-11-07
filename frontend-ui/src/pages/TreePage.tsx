@@ -10,7 +10,7 @@ import { activeIncident } from "./GrowPage";
 import { useScale } from "./TitleCard";
 import { useQuery } from "../router";
 import { MOTION, motionMs, motionVars } from "../tree/motion";
-import { ROOT, SUB, TOP, branchOf, caption, day, leafWords, primary, reasonWords, sourceTag, tipWords } from "../tree/words";
+import { ROOT, SUB, TOP, branchOf, caption, day, evidenceTag, leafWords, primary, reasonWords, sourceTag, tipWords } from "../tree/words";
 import "../tree/tree.css";
 
 const W = 1920;
@@ -142,8 +142,7 @@ export function TreePage() {
               <div key={x.assertion_id} className={`t-node t-tip ${tipSide(p)}${x.trust === "hunch" ? " hunch" : ""}${x.status === "disputed" ? " disputed" : ""}${gone ? " gone" : ""}${x.superseded_by ? " replaced" : ""}${isTarget ? ` hit ${r!.outcome}` : ""}${dim(x.assertion_id)}`}
                 style={{ transform: `translate(${p.x}px, ${p.y}px)` }}>
                 <span className="t-dot" />
-                <span className="t-sources">{x.sources.map((s) => <i key={s} />)}</span>
-                <span className="t-name">{tipWords(x)}{line && <span key={line} className={`t-status${tag && line === tag ? " tag" : line === "disputed" || line === "hunch" ? ` mark ${line}` : ""}`}>{line}</span>}</span>
+                <span className="t-name">{tipWords(x)}{evidenceTag(x) && <span key={evidenceTag(x)} className="t-evidence">{evidenceTag(x)}</span>}{line && <span key={line} className={`t-status${tag && line === tag ? " tag" : line === "disputed" || line === "hunch" ? ` mark ${line}` : ""}`}>{line}</span>}</span>
               </div>
             );
           })}

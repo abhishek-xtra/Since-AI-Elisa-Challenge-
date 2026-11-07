@@ -55,10 +55,7 @@
 .t-tip.lab-u .t-name { left: 0; translate: -50% 0; bottom: 16px; }
 .t-tip.lab-l .t-name { right: 24px; top: 0; translate: 0 -50%; text-align: right; }
 .t-tip.lab-r .t-name { left: 24px; top: 0; translate: 0 -50%; text-align: left; }
-.t-sources { position: absolute; display: flex; gap: 8px; }
-.t-tip.lab-u .t-sources, .t-tip.lab-d .t-sources { left: 16px; top: -4px; }
-.t-tip.lab-l .t-sources, .t-tip.lab-r .t-sources { left: 0; top: 20px; translate: -50% 0; }
-.t-sources i { width: 9px; height: 9px; border-radius: 50%; background: var(--context-text); animation: t-pop var(--m-pop) var(--pop) both; }
+.t-evidence { display: block; margin-top: 2px; font-size: 16px; font-weight: 400; color: var(--text-muted); white-space: nowrap; animation: t-fade-in var(--m-fade) var(--ease-out) both; }
 .t-status { display: table; margin: 4px auto 0; white-space: nowrap; font-size: 16px; font-weight: 400; color: var(--text); padding: 0 8px; animation: t-fade-in var(--m-fade) var(--ease-out) both; }
 .t-status.tag { color: var(--context-text); border: 2px solid var(--context); border-radius: var(--radius-round); padding: 0 14px; }
 .t-tip.gone .t-dot, .t-tip.replaced .t-dot { background: var(--net); box-shadow: none; }
