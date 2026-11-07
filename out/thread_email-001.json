@@ -1,0 +1,19 @@
+{
+  "thread_id": "email-001",
+  "channel": "email",
+  "messages": [
+    {
+      "id": "email:001",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "timestamp": "2026-11-01T10:00:00+02:00",
+      "channel": "email",
+      "thread_id": "email-001",
+      "text": "Subject: RE: TRN-042 traffic not recovering after SFP replacement\n\nHi Veikko,\n\nThat sounds like the behaviour we have seen with some of the older transmission units.\n\nThe confusing part is that everything can look normal after replacing the optical module:\n\n- interface status = UP\n- optical levels = OK\n- alarms = cleared\n\n...but traffic still doesn't recover.\n\nBefore replacing the SFP again or rebooting the unit, check the traffic counters.\n\nIf the interface is UP but the counters remain at zero, try disabling and enabling the interface once.\n\nThis has solved the issue in several cases I've seen.\n\nI don't think this is written in the normal field instructions. It is one of those things we have learned from experience.\n\nRegards,\nErkki",
+      "incident": null
+    }
+  ],
+  "questions": [],
+  "notifications": [],
+  "captured": []
+}

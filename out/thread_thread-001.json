@@ -1,0 +1,213 @@
+{
+  "thread_id": "thread-001",
+  "channel": "teams",
+  "messages": [
+    {
+      "id": "teams:thread-001:1",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "timestamp": "2026-11-01T09:14:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "Hi Erkki, I'm at the site now. Changed the SFP on transmission node TRN-042.\nLink is up and alarms cleared, but traffic is still not coming back. Have you seen this before?",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:2",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "timestamp": "2026-11-01T09:16:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "Yes. Is this one of the older units?",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:3",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "timestamp": "2026-11-01T09:16:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "Yes, installed around 2019 I think.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:4",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "timestamp": "2026-11-01T09:18:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "Ok. Don't trust the green link status on those.\nSometimes after changing the SFP the interface comes up normally, but the forwarding state doesn't recover correctly.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:5",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "timestamp": "2026-11-01T09:18:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "So another SFP?",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:6",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "timestamp": "2026-11-01T09:19:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "No. Usually the SFP is fine.\nCheck whether the traffic counters are actually increasing. If they stay at zero even though the interface is UP, it's probably the issue I've seen before.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:7",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "timestamp": "2026-11-01T09:21:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "Yes. Link UP. RX power looks normal. Counters basically zero.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:8",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "timestamp": "2026-11-01T09:22:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "That's it.\nDisable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:9",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "timestamp": "2026-11-01T09:25:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "Did that. Traffic is back 👍",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:10",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "timestamp": "2026-11-01T09:25:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "Good. These old units sometimes behave like this after an optical module replacement.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:11",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "timestamp": "2026-11-01T09:26:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "Is this documented somewhere?",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-001:12",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "timestamp": "2026-11-01T09:27:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "text": "Not that I know of 😄\nWe've just learned it over the years.",
+      "incident": null
+    }
+  ],
+  "questions": [
+    {
+      "assertion_id": "CA-0001",
+      "key": "firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+      "to": "Erkki Expert",
+      "thread_id": "thread-001",
+      "text": "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site.",
+      "options": [
+        {
+          "label": "All older units",
+          "sets_decided": "install_year <= 2019",
+          "edge": "open",
+          "edge_answer": null
+        },
+        {
+          "label": "All TX-200 units",
+          "sets_decided": "model == 'TX-200'",
+          "edge": null,
+          "edge_answer": null
+        },
+        {
+          "label": "All on firmware 4.1",
+          "sets_decided": "firmware == '4.1'",
+          "edge": null,
+          "edge_answer": null
+        },
+        {
+          "label": "All of the north region",
+          "sets_decided": "region == 'north'",
+          "edge": null,
+          "edge_answer": null
+        },
+        {
+          "label": "Only OULU-07",
+          "sets_decided": "site == 'OULU-07'",
+          "edge": null,
+          "edge_answer": null
+        },
+        {
+          "label": "No",
+          "sets_decided": "id == 'TRN-042'",
+          "edge": null,
+          "edge_answer": null
+        }
+      ],
+      "entity_id": "TRN-087",
+      "answered": true
+    },
+    {
+      "assertion_id": "CA-0001",
+      "key": "install_year <= 2019=unknown",
+      "to": "Erkki Expert",
+      "thread_id": "thread-001",
+      "text": "Your TRN-042 tip: does it apply to TRN-101 too? Installed 2023, newer than any unit it has worked on.",
+      "options": [
+        {
+          "label": "Yes",
+          "sets_decided": null,
+          "edge": null,
+          "edge_answer": "raise"
+        },
+        {
+          "label": "No",
+          "sets_decided": null,
+          "edge": null,
+          "edge_answer": "close"
+        }
+      ],
+      "entity_id": "TRN-101",
+      "answered": true
+    }
+  ],
+  "notifications": [
+    {
+      "to": "Erkki Expert",
+      "text": "Your tip from 2026-11-01 was used on TRN-087 today.",
+      "assertion_id": "CA-0001",
+      "entity_id": "TRN-087",
+      "at": "2026-11-07T10:00:00+02:00"
+    }
+  ],
+  "captured": [
+    {
+      "message_id": "teams:thread-001:8",
+      "assertion_id": "CA-0001"
+    }
+  ]
+}
