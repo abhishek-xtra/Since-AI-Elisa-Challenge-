@@ -8,12 +8,14 @@ export type Route =
   | { page: "thread"; id: string }
   | { page: "title"; chapter: string }
   | { page: "grow" }
+  | { page: "tree" }
   | { page: "notfound" };
 
 export function parseRoute(pathname: string): Route {
   const parts = pathname.split("/").filter(Boolean).map(decodeURIComponent);
   if (parts.length === 0) return { page: "map" };
   if (parts[0] === "grow") return { page: "grow" };
+  if (parts[0] === "tree") return { page: "tree" };
   if (parts[0] === "thread" && parts[1]) return { page: "thread", id: parts[1] };
   if (parts[0] === "title" && parts[1]) return { page: "title", chapter: parts[1] };
   return { page: "notfound" };

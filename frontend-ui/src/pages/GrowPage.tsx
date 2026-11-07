@@ -1,11 +1,10 @@
 // /grow: the video's context tree. Chat on the left, the stored assertions drawn as a growing tree in the centre, the
 // agent's answers as Teams-style cards on the right. Every word comes from out/video_timeline.json; the system has no tree.
-import { useEffect, useMemo, useState } from "react";
-import { getSource } from "../data";
-import { useAsync } from "../useAsync";
-import { useQuery, withQuery } from "../router";
+import { useMemo } from "react";
+import { withQuery } from "../router";
+import { usePlayback } from "../grow/usePlayback";
 import { useScale } from "./TitleCard";
-import { COL, duration, fold, layout, type IncidentEv, type LaidNode, type MessageEv, type Result, type Tip, type TimelineEvent } from "../grow/timeline";
+import { COL, fold, layout, type IncidentEv, type LaidNode, type MessageEv, type Result, type Tip, type TimelineEvent } from "../grow/timeline";
 import "../grow/grow.css";
 
 const W = 1920;
@@ -91,7 +90,7 @@ function tipState(tip: Tip) {
 }
 
 /** The incident whose pathway is lit: the current event, or the one its notifications and answers follow. */
-function activeIncident(events: TimelineEvent[], t: number): IncidentEv | undefined {
+export function activeIncident(events: TimelineEvent[], t: number): IncidentEv | undefined {
   for (let i = t; i >= 0; i--) {
     const e = events[i];
     if (e.kind === "incident") return e;
@@ -280,33 +279,8 @@ function Card({ e, current, tapped }: { e: TimelineEvent; current: boolean; tapp
 // ---------- page ----------
 
 export function GrowPage() {
-  const q = useQuery();
   const scale = useScale();
-  const clean = q.get("clean") === "1";
-  const [state] = useAsync(() => getSource().getVideoTimeline!(), "video");
-  const events = state.status === "ready" ? state.value.events : [];
-  const start = Number(q.get("t") ?? 0);
-  const [t, setT] = useState(Number.isFinite(start) ? start : 0);
-  const [playing, setPlaying] = useState(q.get("play") === "1");
-  const [speed, setSpeed] = useState(1);
-  const last = events.length - 1;
-  const at = Math.max(0, Math.min(t, last));
-
-  useEffect(() => {
-    if (!playing || at >= last || !events.length) return;
-    const id = setTimeout(() => setT(at + 1), duration(events[at]) / speed);
-    return () => clearTimeout(id);
-  }, [playing, at, last, speed, events]);
-
-  useEffect(() => {
-    const on = (e: KeyboardEvent) => {
-      if (e.code === "Space") { e.preventDefault(); setPlaying((p) => !p); }
-      if (e.code === "ArrowRight") setT((x) => Math.min(x + 1, last));
-      if (e.code === "ArrowLeft") setT((x) => Math.max(x - 1, 0));
-    };
-    window.addEventListener("keydown", on);
-    return () => window.removeEventListener("keydown", on);
-  }, [last]);
+  const { state, events, at, last, setT, playing, setPlaying, speed, setSpeed, clean } = usePlayback();
 
   const view = useMemo(() => fold(events, at), [events, at]);
   if (state.status === "error") return <main className="thread-page"><p>Could not load the video timeline: {state.error.message}</p></main>;

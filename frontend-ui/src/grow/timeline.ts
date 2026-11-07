@@ -25,7 +25,7 @@ export interface CaptureEv extends Base {
   valid_to: string | null; supersedes: string | null; superseded_by: string | null;
 }
 export interface NoCaptureEv extends Base { kind: "no_capture"; thread_id: string; source: string; reason: string | null }
-export interface IncidentEv extends Base { kind: "incident"; entity: string; event: string; symptoms: string[]; source: string; results: Result[]; not_matched: string[]; agent_text: string | null }
+export interface IncidentEv extends Base { kind: "incident"; entity: string; entity_site: string; entity_region: string; event: string; symptoms: string[]; source: string; results: Result[]; not_matched: string[]; agent_text: string | null }
 export interface AnswerEv extends Base { kind: "answer"; assertion_id: string; to: string; thread_id: string; key: string; option_index: number; option_label: string; decided: Decided | null; status: string; candidates: { predicate: string; edge: string }[] }
 export interface NotificationEv extends Base { kind: "notification"; to: string; text: string; assertion_id: string; entity_id: string }
 export interface SupersedeEv extends Base { kind: "supersede"; assertion_id: string; superseded_by: string; valid_to: string; action_text: string; new_action_text: string }

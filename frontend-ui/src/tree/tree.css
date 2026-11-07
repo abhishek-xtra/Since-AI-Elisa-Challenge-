@@ -1,0 +1,93 @@
+/* /tree: one colour for the filing system, the tip colour for captured things, dim for the rest. Nothing under 24px. */
+.t-stage {
+  --skel: #b7c2ce;
+  --holds: #5fc49a;
+  --fail: #e0626b;
+  --unknown: #f0b44c;
+  --slow: 1200ms;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow: hidden;
+}
+.t-frame { position: absolute; left: 50%; top: 50%; transform-origin: center; background: var(--bg); overflow: hidden; }
+.t-stage p { margin: 0; }
+.t-canvas { position: absolute; left: 0; top: 0; width: 1920px; transform-origin: 0 0; transition: transform var(--slow) var(--ease-in-out); }
+.t-links { position: absolute; left: 0; top: 0; overflow: visible; }
+
+.t-link { fill: none; stroke: var(--skel); stroke-width: 3; opacity: 0.35; transition: d var(--slow) var(--ease-in-out), opacity var(--slow), stroke var(--slow); }
+.t-link.on { opacity: 0.9; }
+.t-link.tip { stroke: var(--context); opacity: 0.9; stroke-dasharray: 1; animation: t-draw var(--slow) var(--ease-out) both; }
+.t-link.gone { stroke: var(--net); opacity: 0.3; }
+.t-link.dim { opacity: 0.15; }
+.t-link.fall { animation: t-fade var(--slow) var(--ease-in) forwards; }
+
+.t-node { position: absolute; left: 0; top: 0; transition: transform var(--slow) var(--ease-in-out), opacity var(--slow); }
+.t-dot { position: absolute; width: 18px; height: 18px; left: -9px; top: -9px; border-radius: 50%; background: var(--skel); transition: background var(--slow), box-shadow var(--slow); }
+.t-name { position: absolute; left: -9px; bottom: 16px; white-space: nowrap; font-weight: 600; transition: color var(--slow); }
+.t-cap { position: absolute; left: -9px; top: 16px; white-space: nowrap; background: var(--bg); padding-right: 8px; font-size: 30px; color: var(--text-muted); }
+
+.t-branch .t-name { background: var(--bg); padding-right: 8px; }
+.t-branch.root .t-dot { width: 30px; height: 30px; left: -15px; top: -15px; }
+.t-branch.root .t-name { font-size: 46px; bottom: 24px; }
+.t-branch.top .t-name { font-size: 38px; }
+.t-branch.sub .t-name { font-size: 32px; }
+.t-branch.empty { opacity: 0.35; }
+.t-branch.dim { opacity: 0.2; }
+
+.t-tip .t-dot { width: 26px; height: 26px; left: -13px; top: -13px; background: var(--context); box-shadow: var(--context-glow); }
+.t-tip .t-name { font-size: 34px; color: var(--context-text); white-space: normal; width: 390px; left: 28px; bottom: auto; top: 0; transform: translateY(-50%); line-height: 1.15; }
+.t-tip { animation: t-grow var(--slow) var(--ease-spring) both; }
+.t-sources { position: absolute; left: -12px; top: 22px; display: flex; gap: 8px; }
+.t-sources i { width: 12px; height: 12px; border-radius: 50%; background: var(--context-text); animation: t-grow var(--slow) var(--ease-spring) both; }
+.t-status { position: absolute; left: 28px; top: 50px; white-space: nowrap; font-size: 30px; color: var(--text); animation: t-in var(--slow) var(--ease-out) both; }
+.t-tip.gone .t-dot { background: var(--net); box-shadow: none; }
+.t-tip.gone .t-name { color: var(--text-muted); }
+.t-tip.gone { opacity: 0.55; }
+.t-tip.replaced .t-name { text-decoration: line-through; }
+.t-tip.replaced { animation: t-fade calc(var(--slow) * 2) var(--ease-in) forwards; }
+.t-tip.dim { opacity: 0.25; }
+.t-tip.hit .t-dot { box-shadow: 0 0 34px 14px rgba(255, 61, 127, 0.6); }
+
+.t-leaf .t-dot { width: 14px; height: 14px; left: -7px; top: -7px; background: var(--context-text); }
+.t-leaf .t-label { position: absolute; left: 20px; top: -18px; white-space: nowrap; font-size: 30px; color: var(--text); }
+.t-leaf { animation: t-grow var(--slow) var(--ease-spring) both; animation-delay: calc(var(--i, 0) * 250ms); }
+.t-leaf.gone { opacity: 0.4; }
+.t-leaf.dim { opacity: 0.2; }
+.t-leaf.r-holds .t-dot { background: var(--holds); box-shadow: 0 0 22px 8px rgba(95, 196, 154, 0.6); }
+.t-leaf.r-holds .t-label { color: var(--holds); }
+.t-leaf.r-fails .t-dot, .t-leaf.r-missing .t-dot { background: var(--fail); box-shadow: 0 0 22px 8px rgba(224, 98, 107, 0.55); }
+.t-leaf.r-fails .t-label, .t-leaf.r-missing .t-label { color: var(--fail); }
+.t-leaf.r-unknown .t-dot { background: var(--unknown); }
+.t-leaf.fall { animation: t-fall var(--slow) var(--ease-in) forwards; }
+.t-reason { position: absolute; left: 20px; top: 22px; white-space: nowrap; font-size: 30px; color: var(--text); animation: t-in var(--slow) var(--ease-out) both; }
+
+.t-pulse { position: absolute; left: 0; top: 0; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: #fff; box-shadow: 0 0 24px 10px var(--context); offset-rotate: 0deg; animation: t-travel 2000ms var(--ease-in-out) forwards; }
+
+.t-quote { position: absolute; left: 40px; top: 24px; margin: 0; max-width: 600px; padding: 14px 22px; background: var(--panel); border-left: 4px solid var(--context); border-radius: var(--radius-panel); animation: t-quote 2800ms var(--ease-in-out) forwards; z-index: 3; }
+.t-quote p { font-size: 26px; line-height: 1.3; font-style: italic; }
+.t-quote cite { display: block; margin-top: 8px; font-size: 26px; font-style: normal; color: var(--context-text); }
+
+.t-caption { position: absolute; left: 0; right: 0; bottom: 56px; text-align: center; font-size: 40px; font-weight: 600; color: var(--text); animation: t-in 600ms var(--ease-out) both; }
+.t-footer { position: absolute; right: 24px; bottom: 12px; font-size: 13px; color: var(--text-muted); opacity: 0.7; }
+
+@keyframes t-grow { from { opacity: 0; scale: 0.2; } to { opacity: 1; scale: 1; } }
+@keyframes t-in { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+@keyframes t-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes t-fade { to { opacity: 0; } }
+@keyframes t-fall { to { opacity: 0; translate: 0 90px; } }
+@keyframes t-travel { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@keyframes t-quote {
+  0% { opacity: 0; transform: translate(0, 0) scale(1); }
+  15%, 55% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-stage *, .t-stage *::before, .t-stage *::after { animation: none !important; transition: none !important; }
+  .t-pulse { display: none; }
+  .t-leaf.fall, .t-link.fall { opacity: 0; }
+  .t-tip.replaced { opacity: 0.25; }
+}

@@ -178,8 +178,9 @@ def run_incident(step: dict, s: JsonStore, ev: list, expired: set) -> list:
                     "question": r.question.model_dump(mode="json") if r.question else None,
                     "action_text": a.action_text, "said_by": a.evidence.said_by, "trust": a.trust, "status": a.status})
     missed = [a.id for a in s.all() if not trigger_matches(a, step["event"], step["symptoms"])]
+    site = entity.id if entity_type(entity) == "site" else entity.site
     ev.append({"kind": "incident", "at": at.isoformat(), "entity": step["entity"], "event": step["event"],
-               "symptoms": step["symptoms"], "source": step["source"], "results": per, "not_matched": missed,
+               "entity_site": site, "entity_region": lookup(TOPO, site).region, "symptoms": step["symptoms"], "source": step["source"], "results": per, "not_matched": missed,
                "agent_text": text})
     for r in results:
         if r.reason.startswith("expired") and r.assertion.id not in expired:

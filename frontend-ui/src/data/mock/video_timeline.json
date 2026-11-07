@@ -71,6 +71,8 @@
       "at": "2026-10-05T08:00:00+02:00",
       "entity": "OULU-03",
       "event": "dispatch_created",
+      "entity_site": "OULU-03",
+      "entity_region": "north",
       "symptoms": [],
       "source": "12b_barrier_update",
       "results": [
@@ -525,6 +527,8 @@
       "at": "2026-11-07T10:00:00+02:00",
       "entity": "TRN-087",
       "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
       "symptoms": [
         "link_up",
         "optics_normal",
@@ -648,6 +652,8 @@
       "at": "2026-11-07T10:00:00+02:00",
       "entity": "TRN-087",
       "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
       "symptoms": [
         "link_up",
         "optics_normal",
@@ -693,6 +699,8 @@
       "at": "2026-11-07T10:00:00+02:00",
       "entity": "TRN-101",
       "event": "sfp_replaced",
+      "entity_site": "HEL-02",
+      "entity_region": "south",
       "symptoms": [
         "link_up",
         "optics_normal",
@@ -788,6 +796,8 @@
       "at": "2026-11-07T10:00:00+02:00",
       "entity": "TRN-101",
       "event": "sfp_replaced",
+      "entity_site": "HEL-02",
+      "entity_region": "south",
       "symptoms": [
         "link_up",
         "optics_normal",
@@ -824,6 +834,8 @@
       "at": "2026-11-07T10:00:00+02:00",
       "entity": "TRN-087",
       "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
       "symptoms": [
         "link_up",
         "optics_normal",
@@ -860,6 +872,8 @@
       "at": "2026-11-07T10:00:00+02:00",
       "entity": "TRN-063",
       "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
       "symptoms": [
         "link_up",
         "optics_normal",
@@ -905,6 +919,8 @@
       "at": "2026-11-07T10:00:00+02:00",
       "entity": "TRN-087",
       "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
       "symptoms": [
         "link_up",
         "optics_normal",
@@ -1012,6 +1028,8 @@
       "at": "2026-11-08T08:00:00+02:00",
       "entity": "OULU-03",
       "event": "dispatch_created",
+      "entity_site": "OULU-03",
+      "entity_region": "north",
       "symptoms": [],
       "source": "beats 5, 6",
       "results": [
@@ -1066,6 +1084,8 @@
       "at": "2026-11-08T08:00:00+02:00",
       "entity": "OULU-07",
       "event": "dispatch_created",
+      "entity_site": "OULU-07",
+      "entity_region": "north",
       "symptoms": [],
       "source": "12_barrier",
       "results": [
@@ -1111,6 +1131,8 @@
       "at": "2026-11-08T14:00:00+02:00",
       "entity": "TRN-105",
       "event": "sfp_replaced",
+      "entity_site": "HEL-02",
+      "entity_region": "south",
       "symptoms": [
         "link_up",
         "optics_normal",
@@ -1363,6 +1385,8 @@
       "at": "2026-11-11T10:00:00+02:00",
       "entity": "TRN-087",
       "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
       "symptoms": [
         "link_up",
         "optics_normal",
@@ -1401,6 +1425,8 @@
       "at": "2026-11-15T08:00:00+02:00",
       "entity": "OULU-11",
       "event": "dispatch_created",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
       "symptoms": [],
       "source": "beat 8",
       "results": [
@@ -1471,6 +1497,8 @@
       "at": "2026-11-21T08:00:00+02:00",
       "entity": "OULU-11",
       "event": "dispatch_created",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
       "symptoms": [],
       "source": "beat 8",
       "results": [
