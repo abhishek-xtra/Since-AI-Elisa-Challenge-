@@ -202,6 +202,13 @@
       "assertion_id": "CA-0001",
       "entity_id": "TRN-087",
       "at": "2026-11-07T10:00:00+02:00"
+    },
+    {
+      "to": "Erkki Expert",
+      "text": "Your tip from 2026-11-01 was proposed for TRN-105 today.",
+      "assertion_id": "CA-0001",
+      "entity_id": "TRN-105",
+      "at": "2026-11-08T14:00:00+02:00"
     }
   ],
   "captured": [

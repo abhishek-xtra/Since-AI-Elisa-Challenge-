@@ -26,7 +26,7 @@ def out(tmp_path_factory):
 
 
 def test_six_beats(out):
-    for n in range(1, 7):
+    for n in range(1, 8):
         b = load(out, f"beat_{n}.json")
         assert b["beat"] == n and b["title"] and b["lines"] and isinstance(b["data"], dict)
     assert load(out, "beat_1.json")["data"]["results"] == []
@@ -73,11 +73,12 @@ def test_thread_001(out):
     assert [q["entity_id"] for q in t["questions"]] == ["TRN-087", "TRN-101"]
     assert "site == 'OULU-07'=fails" in t["questions"][0]["key"] and t["questions"][1]["key"] == "install_year <= 2019=unknown"
     assert all(q["answered"] for q in t["questions"])
-    assert len(t["notifications"]) == 1 and t["notifications"][0]["to"] == "Erkki Expert"
+    assert [n["entity_id"] for n in t["notifications"]] == ["TRN-087", "TRN-105"]  # beats 3 and 7
+    assert all(n["to"] == "Erkki Expert" for n in t["notifications"])
     assert t["captured"] == [{"message_id": "teams:thread-001:8", "assertion_id": "CA-0001"}]
 
 
 def test_deterministic(out, tmp_path):
     again = run_demo(tmp_path / "out")
-    for n in range(1, 7):
+    for n in range(1, 8):
         assert (out / f"beat_{n}.json").read_bytes() == (again / f"beat_{n}.json").read_bytes(), n

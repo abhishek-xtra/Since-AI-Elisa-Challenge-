@@ -1,6 +1,6 @@
 # Demo chat copy: the agent reads, finds, relays, and does not ask twice
 
-Teams-style copy for the video and for Abhishek's mock Teams page. Four scenes, about 90 seconds of screen time.
+Teams-style copy for the video and the Teams clone (`web/`). Scene 3 is demo beat 7. Four scenes, about 90 seconds of screen time.
 
 **What is verbatim and what is written.** Every line marked `AGENT` is the exact text the backend produces (`out/beat_3.json` `agent_text`, `out/notifications.json`, `out/questions.json`, and a replay on TRN-105 run on 7 Nov morning against the demo store). Lines marked `STATUS` are copy the frontend builds from a `ContextResult` (outcome + reason); the backend gives the fields, not the sentence. Technician and expert lines in scenes 2 to 4 are written for the demo and are synthetic. Scene 1 is Elisa's own example chat, unmodified.
 

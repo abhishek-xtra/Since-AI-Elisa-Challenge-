@@ -18,7 +18,7 @@ A context layer that reads conversations people already have (a Teams chat, an e
 ```powershell
 py -3.14 -m pip install -r requirements.txt
 $env:LLM_OFFLINE="1"; py -3.14 -m pytest -q          # whole suite, from the cache
-$env:LLM_OFFLINE="1"; py -3.14 demo.py               # the six beats, writes out/
+$env:LLM_OFFLINE="1"; py -3.14 demo.py               # the seven beats, writes out/
 py -3.14 demo.py --beat 3                            # one beat on the state the previous beats left in out/
 py -3.14 demo.py --clean                             # wipe out/
 uvicorn api.app:app                                  # GET /assertions /graph /threads/{id} /beats/{n}, POST /incident /answer
@@ -64,6 +64,7 @@ All data is synthetic. Elisa's example chat and email in `data/elisa_examples/` 
 4. **Decline.** TRN-101 (installed 2023) is `ambiguous`: 2023 is beyond the known edge 2019, so Erkki gets one edge question; he taps "No", the boundary becomes `install_year <= 2019`, closed, and the re-run is `declined` on install_year. No cutoff was invented: Erkki set it.
 5. **Barrier.** The 2 Oct barrier email is ingested; a dispatch to OULU-03 proposes the key location (at the neighbouring farm, ask for Mäkelä) before the drive; Erkki's notification from beat 3 is shown.
 6. **Update.** Veikko's 7 Nov Teams message supersedes the old fact: the farm assertion gets `valid_to` 2026-11-07 and `superseded_by` CA-0003; the next dispatch proposes the site cabinet and declines the farm as superseded; no question.
+7. **Second technician, no question.** Sami (Helsinki, synthetic thread `data/scenarios/13_second_technician/`) hits the same fault on TRN-105, a 2019 TX-200 in the south region, a day after Erkki's tap. `get_context` proposes CA-0001 (all hold: `install_year <= 2019`), no question, the proposal is relayed with Erkki as the source, and Erkki gets one notification line. His thread is shown, not ingested. Script for the screen: `docs/DEMO_CHAT.md`.
 
 ## Rollback
 

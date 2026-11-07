@@ -1,6 +1,6 @@
 """Module 8: the six demo beats (BACKEND_PROMPT section 7). Runs fully from the LLM cache (LLM_OFFLINE=1 works).
 
-py -3.14 demo.py            all six beats on a fresh out/ (OUT_DIR overrides out/)
+py -3.14 demo.py            all seven beats on a fresh out/ (OUT_DIR overrides out/)
 py -3.14 demo.py --beat N   one beat on the state the previous beats left in out/ (beat 1 starts fresh)
 py -3.14 demo.py --clean    wipe out/
 
@@ -15,6 +15,7 @@ from datetime import datetime, timedelta, timezone
 
 from agent import out_path, read_json_list
 from agent.get_context import get_context
+from agent.notify import notify
 from agent.questions import answer
 from agent.stand_in import propose, proposal_text
 from binder.bind import _ws
@@ -26,12 +27,14 @@ from store.json_store import JsonStore
 H = timezone(timedelta(hours=2))
 INCIDENT_AT = datetime(2026, 11, 7, 10, tzinfo=H)   # TRN-087 and TRN-101 (DECISIONS item 11)
 DISPATCH_AT = datetime(2026, 11, 8, 8, tzinfo=H)    # barrier dispatch
+SECOND_AT = datetime(2026, 11, 8, 14, tzinfo=H)     # Sami on TRN-105 (beat 7)
 RECORDED_AT = datetime(2026, 11, 6, tzinfo=timezone.utc)
 SFP = "sfp_replaced"
 SYMPTOMS = ["link_up", "optics_normal", "alarms_cleared", "counters_zero"]
 CORE = [ROOT / "data/elisa_examples/teams_chat.json", ROOT / "data/elisa_examples/email.txt"]
 BARRIER = ROOT / "data/scenarios/12_barrier/email.txt"
 UPDATE = ROOT / "data/scenarios/12b_barrier_update/thread.json"
+SECOND = ROOT / "data/scenarios/13_second_technician/thread.json"
 VIDEO_LINE = ("Nobody edited anything. The newer message replaced the old fact, "
               "and the old one is kept with the date it stopped being true.")
 TOPO = load_topology()
@@ -120,7 +123,7 @@ def question_lines(q) -> list[str]:
     return [f"Question to {q.to} in {q.thread_id}: {q.text}", *[f"  [{i}] {o.label}" for i, o in enumerate(q.options)]]
 
 
-# ---------- the six beats ----------
+# ---------- the seven beats ----------
 
 def beat1(s: JsonStore):
     results = get_context(s, TOPO, "TRN-087", SFP, SYMPTOMS, INCIDENT_AT)
@@ -214,7 +217,29 @@ def beat6(s: JsonStore):
                              "questions": [dump(q) for q in questions], "video_line": VIDEO_LINE}, threads
 
 
-BEATS = {1: beat1, 2: beat2, 3: beat3, 4: beat4, 5: beat5, 6: beat6}
+def beat7(s: JsonStore):
+    """A second technician, another region, a day later: proposed with no question. Erkki is not asked."""
+    chat = ADAPTERS[SECOND.suffix](SECOND)  # shown, not ingested: Sami states no rule
+    results = get_context(s, TOPO, "TRN-105", SFP, SYMPTOMS, SECOND_AT)
+    p = propose(results, "TRN-105", SFP, SYMPTOMS)
+    text = proposal_text(results, p)
+    notify(results, "TRN-105", SECOND_AT)
+    notes = [n for n in read_json_list("notifications.json") if n["entity_id"] == "TRN-105"]
+    a = s.get("CA-0001")
+    d = a.applies_to.decided
+    lines = [f"{chat[0].author} ({chat[0].thread_id}): {chat[0].text}",
+             f"Incident: {SFP} on TRN-105 (HEL-02, south) at {SECOND_AT.isoformat()}", *map(result_line, results),
+             f"Agent: {text}",
+             f"No question: scope {d.predicate} ({d.edge} edge) was decided by {a.evidence.said_by} at first use; "
+             f"{len(a.questions_asked)} questions asked in total, 0 new",
+             "Notifications:", *[f"  to {n['to']}: {n['text']}" for n in notes],
+             f"{a.evidence.said_by} was not asked."]
+    return "Second technician, no question", lines, {"incident": {"entity_id": "TRN-105", "event": SFP, "symptoms": SYMPTOMS, "at": SECOND_AT.isoformat()},
+                                                     "results": [dump(r) for r in results], "proposal": dump(p), "agent_text": text,
+                                                     "notifications": notes, "questions_new": 0}, [chat]
+
+
+BEATS = {1: beat1, 2: beat2, 3: beat3, 4: beat4, 5: beat5, 6: beat6, 7: beat7}
 
 
 def run(n: int) -> None:

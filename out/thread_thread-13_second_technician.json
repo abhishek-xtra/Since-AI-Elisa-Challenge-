@@ -1,0 +1,29 @@
+{
+  "thread_id": "thread-13_second_technician",
+  "channel": "teams",
+  "messages": [
+    {
+      "id": "teams:thread-13_second_technician:1",
+      "author": "Sami Korhonen",
+      "role": "field_engineer",
+      "timestamp": "2026-11-08T14:00:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-13_second_technician",
+      "text": "TRN-105 at HEL-02 not passing traffic after an SFP change. Interface up, optics fine, alarms clear, counters zero. Thinking of swapping the SFP again.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-13_second_technician:2",
+      "author": "Sami Korhonen",
+      "role": "field_engineer",
+      "timestamp": "2026-11-08T14:03:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-13_second_technician",
+      "text": "That did it, counters moving. Who's Erkki?",
+      "incident": null
+    }
+  ],
+  "questions": [],
+  "notifications": [],
+  "captured": []
+}
