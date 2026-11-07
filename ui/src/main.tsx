@@ -5,3 +5,4 @@ import './tokens.css';
 import './app.css';
 
 createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>);
+window.addEventListener('hashchange', () => window.location.reload()); // #beat-N changed: replay that beat

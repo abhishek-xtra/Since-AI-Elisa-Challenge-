@@ -9,8 +9,15 @@ const THREAD_IDS = ['thread-001', 'email-001', 'email-12_barrier', 'thread-12b_b
 const VIEWER = 'Erkki Expert'; // the demo is watched from Erkki's seat
 const DEFAULT_CHANNEL: Record<number, string> = { 1: 'faults', 2: 'experts', 3: 'faults', 4: 'faults', 5: 'site-access', 6: 'site-access', 7: 'faults' };
 
-export function beatFromUrl(search = window.location.search): number | null {
-  const n = Number(new URLSearchParams(search).get('beat'));
+// ?beat=3&channel=experts, or #beat-3-experts where only a hash reaches the page (the hosted copy)
+export function urlParams(search = window.location.search, hash = window.location.hash): { beat: string | null; channel: string | null } {
+  const q = new URLSearchParams(search);
+  const m = /^#beat-(\d+)(?:-([a-z-]+))?$/.exec(hash);
+  return { beat: q.get('beat') ?? m?.[1] ?? null, channel: q.get('channel') ?? m?.[2] ?? null };
+}
+
+export function beatFromUrl(search = window.location.search, hash = window.location.hash): number | null {
+  const n = Number(urlParams(search, hash).beat);
   return Number.isInteger(n) && n >= 1 && n <= 7 ? n : null;
 }
 
@@ -26,7 +33,7 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
   const [topology, setTopology] = useState<Topology | null>(null);
   const [error, setError] = useState<string | null>(null);
   // ?channel=experts opens another channel first (for recording); otherwise the channel the beat is about
-  const [selected, setSelected] = useState(new URLSearchParams(window.location.search).get('channel') ?? (beat ? DEFAULT_CHANNEL[beat] : 'faults'));
+  const [selected, setSelected] = useState(urlParams().channel ?? (beat ? DEFAULT_CHANNEL[beat] : 'faults'));
   const postsRef = useRef<HTMLDivElement>(null);
   const [seen, setSeen] = useState<Set<string> | null>(null);
   const [opened, setOpened] = useState<Set<string>>(new Set()); // items on screen this session (clears the Activity badge)
