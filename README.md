@@ -52,6 +52,15 @@ $env:VITE_DATA_SOURCE="api"; $env:VITE_API_URL="http://localhost:8000"; npm run 
 
 Without the two `VITE_` variables each front-end runs on its own byte-for-byte copy of `out/` (see `ui/src/data/mock/README.md` and `frontend-ui/src/data/mock/real-out/README.md`), which looks identical. Live mode (reporting a new fault, answering a question) needs the API.
 
+**Recording the demo (reveal and play modes).** Both front-ends have hidden controls for screen recording; nothing on screen shows them.
+
+| Page | URL | Controls |
+|---|---|---|
+| Teams clone, messages arriving one by one | `http://localhost:5173/?beat=3&reveal=1` (any beat, add `&channel=experts\|faults\|site-access`) | Space or Right arrow reveals the next item (typing row, slide-in, the agent's card expanding, a cursor tapping the answer, the notice dropping in); Left hides the last; clicking the invisible 40 px strip at the right edge of the posts also advances. `&reveal=auto&every=1400` plays hands-free. Timings in `ui/src/reveal.ts`. |
+| Context tree, growing in real time | `http://localhost:5183/tree?from=14&to=28&play=1&clean=1` (`&gap=` ms between events; `?t=N` alone is a still) | Space or Right steps forward, Left back, the right-edge strip advances. The camera moves once per event (420 ms) and holds; a new tip holds at least 2.5 s. `?src=dispute\|hunch\|all` loads the other timelines. Timings in `frontend-ui/src/tree/motion.ts`. |
+
+Record with a real screen recorder at 1920x1080 (for example `ffmpeg -f gdigrab -framerate 30 -i desktop -t 20 out.mp4`), never with a frame-seeking renderer: the pages animate on a real clock. `docs/VIDEO_HANDOFF.md` has the full storyboard.
+
 **Live mode for a judge (clicking "Report fault" or a question button).** Live calls rewrite the files under `out/`, which are committed and are what the replay reads, so serve a copy instead. Also, after beat 9 Erkki's tip is under review, so an old unit is declined "under review"; for a live proposal serve the state after beat 7:
 
 ```powershell
