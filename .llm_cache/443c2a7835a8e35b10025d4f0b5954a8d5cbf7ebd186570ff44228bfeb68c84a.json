@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"action\": \"other\", \"action_text\": \"Use the forest track from the north side.\", \"avoid\": [], \"cites\": [\"CA-0004\"]}",
+  "input_tokens": 863,
+  "output_tokens": 53
+}

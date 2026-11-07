@@ -1,5 +1,6 @@
 // Talks to the backend's api/app.py (BACKEND_PROMPT section 8). Same shapes as the out/ files.
 import { adaptAssertion, adaptBeat, adaptGraph, adaptResult, adaptThread } from "./adapt";
+import type { VideoTimeline } from "../grow/timeline";
 import type { Assertion, Beat, ChatReply, ContextResult, DataSource, Graph, Thread } from "./types";
 
 /** Thrown when an optional backend endpoint (B3, B4, beats) does not exist. */
@@ -59,5 +60,7 @@ export function createApiSource(baseUrl: string, fetchImpl: FetchLike = (...a) =
         return adaptBeat(await call<Beat>(`/out/beat_${n}.json`, undefined, `/out/beat_${n}.json`));
       }
     },
+    // Static copy of the backend's out/video_timeline.json in frontend-ui/public/out/, as the beat fallback.
+    getVideoTimeline: () => call<VideoTimeline>("/out/video_timeline.json", undefined, "/out/video_timeline.json"),
   };
 }
