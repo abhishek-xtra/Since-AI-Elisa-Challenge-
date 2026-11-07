@@ -26,20 +26,28 @@ function useScale() {
 export function TitleCard({ chapter }: { chapter: string }) {
   const q = useQuery();
   const scale = useScale();
+  // Click anywhere to play the entrance again, for another take.
+  const [take, setTake] = useState(0);
   const index = CHAPTERS.findIndex((c) => c.slug === chapter);
   if (index < 0) return <main className="title-missing"><p>No chapter "{chapter}". Try capture, bind, recall or stay-true.</p></main>;
   const c = CHAPTERS[index];
 
   return (
-    <main className="title-stage">
-      <div className="title-card" style={{ width: W, height: H, transform: `translate(-50%, -50%) scale(${scale})` }}>
+    <main className="title-stage" onClick={() => setTake((t) => t + 1)}>
+      <div key={take} className="title-card" style={{ width: W, height: H, transform: `translate(-50%, -50%) scale(${scale})` }}>
         <p className="title-chapter">Chapter {index + 1} of 4</p>
-        <h1 className="title-word">{c.word}</h1>
+        <h1 className="title-word">
+          <span>{c.word}</span>
+        </h1>
         <p className="title-line">{c.line}</p>
         <div className="title-track" aria-hidden="true">
           <span className="title-rail" />
           {CHAPTERS.map((s, i) => (
-            <span key={s.slug} className={`title-stop${i === index ? " current" : ""}${i < index ? " done" : ""}`} style={{ left: `${(i / 3) * 100}%` }}>
+            <span
+              key={s.slug}
+              className={`title-stop${i === index ? " current" : ""}${i < index ? " done" : ""}`}
+              style={{ left: `${(i / 3) * 100}%`, "--i": i } as React.CSSProperties}
+            >
               <span className="title-stop-label">{s.word}</span>
             </span>
           ))}

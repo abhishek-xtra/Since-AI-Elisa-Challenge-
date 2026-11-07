@@ -118,6 +118,12 @@ function NodeView({
   );
 }
 
+/** Decides once, on mount, whether this node plays its entrance; later renders never restart it. */
+function NodeEnter({ animate, children }: { animate: boolean; children: React.ReactNode }) {
+  const [play] = useState(animate);
+  return <div className={`node-enter${play ? " animate" : ""}`}>{children}</div>;
+}
+
 export function MapPage() {
   const q = useQuery();
   const beatN = Number(q.get("beat")) || 0;
@@ -160,6 +166,14 @@ export function MapPage() {
   const raw = useMemo(() => (layoutView ? layout(layoutView) : new Map()), [layoutView]);
   const positions = useMemo(() => fit(raw, w, h), [raw, w, h]);
   const ready = state.status === "ready";
+
+  // Each new level or focus re-mounts the canvas. It blooms out from the focus,
+  // unless it arrived through a zoom transition, which already carries the motion.
+  const canvasKey = `${zoomedOut}|${focus}|${beatN}`;
+  const bloom = useMemo(() => !(document.documentElement.dataset.transition ?? "").startsWith("zoom"), [canvasKey]);
+  // Nodes that appear later (an expanded badge) grow out of the badge that was clicked.
+  const spawnRef = useRef<{ key: string; x: number; y: number } | null>(null);
+  const spawn = spawnRef.current?.key === canvasKey ? spawnRef.current : null;
   const pageRef = useRef<HTMLElement>(null);
   useEffect(() => {
     // On a narrow screen the map scrolls; start with the focus in the middle.
@@ -167,7 +181,12 @@ export function MapPage() {
     if (ready && el) el.scrollTo?.({ left: (el.scrollWidth - el.clientWidth) / 2, top: (el.scrollHeight - el.clientHeight) / 2 });
   }, [ready, w, h, focus]);
 
-  if (state.status === "loading") return <main className="map-page"><p className="map-status muted">Loading…</p></main>;
+  if (state.status === "loading")
+    return (
+      <main className="map-page">
+        <p className="sr-only" role="status">Loading the map</p>
+      </main>
+    );
   if (state.status === "error")
     return (
       <main className="map-page">
@@ -189,9 +208,17 @@ export function MapPage() {
   function onBadge(n: ViewNode) {
     const action = n.badge?.action;
     if (!action) return;
-    if (action.type === "expand") setExpanded((e) => [...new Set([...e, ...action.sites])]);
-    else if (action.type === "zoom-out") navigate(withQuery({ zoom: "out", beat: null }));
-    else navigate(withQuery({ zoom: null, focus: action.id, beat: null }));
+    if (action.type === "expand") {
+      const at = positions.get(n.id);
+      spawnRef.current = at ? { key: canvasKey, ...at } : null;
+      setExpanded((e) => [...new Set([...e, ...action.sites])]);
+    } else if (action.type === "zoom-out") zoomOut();
+    else navigate(withQuery({ zoom: null, focus: action.id, beat: null }), { transition: "zoom-in", origin: positions.get(n.id) });
+  }
+
+  function zoomOut() {
+    setSelected(null);
+    navigate(withQuery({ zoom: "out", beat: null }), { transition: "zoom-out" });
   }
 
   function onReply(r: ChatReply) {
@@ -213,26 +240,46 @@ export function MapPage() {
           Show unconfirmed hunches
         </label>
         {!zoomedOut && (
-          <button type="button" className="text-btn" onClick={() => navigate(withQuery({ zoom: "out", beat: null }))}>
+          <button type="button" className="text-btn" onClick={zoomOut}>
             Zoom out to whole network
           </button>
         )}
       </div>
 
-      <div className="map-canvas" style={{ width: w, height: h }}>
-        <svg className="map-edges" width={w} height={h} aria-hidden="true">
+      <div key={canvasKey} className={`map-canvas${bloom ? " bloom" : ""}`} style={{ width: w, height: h }}>
+        <svg key={expanded.join(",")} className={`map-edges${expanded.length ? " later" : ""}`} width={w} height={h} aria-hidden="true">
           {view.edges.map((e, i) => {
             const a = positions.get(e.from);
             const b = positions.get(e.to);
             if (!a || !b) return null;
-            return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} className={`edge edge-${e.kind}`} />;
+            const far = Math.max(Math.hypot(a.x - w / 2, a.y - h / 2), Math.hypot(b.x - w / 2, b.y - h / 2));
+            return (
+              <line
+                key={i}
+                x1={a.x}
+                y1={a.y}
+                x2={b.x}
+                y2={b.y}
+                pathLength={1}
+                className={`edge edge-${e.kind}`}
+                style={{ "--d": `${Math.round(far * 0.9)}ms` } as React.CSSProperties}
+              />
+            );
           })}
         </svg>
         {view.nodes.map((n) => {
           const p = positions.get(n.id);
           if (!p) return null;
+          const from = spawn ?? { x: w / 2, y: h / 2 };
+          const motion = {
+            transform: `translate(${p.x}px, ${p.y}px)`,
+            "--fx": `${from.x - p.x}px`,
+            "--fy": `${from.y - p.y}px`,
+            "--d": `${spawn ? 0 : Math.round(Math.hypot(p.x - w / 2, p.y - h / 2) * 0.9)}ms`,
+          } as React.CSSProperties;
           return (
-            <div key={n.id} className={`map-node kind-${n.kind}`} style={{ left: p.x, top: p.y }}>
+            <div key={n.id} className={`map-node kind-${n.kind}`} style={motion}>
+              <NodeEnter animate={bloom || !!spawn}>
               <NodeView
                 n={n}
                 selected={n.id === selected}
@@ -240,6 +287,7 @@ export function MapPage() {
                 onTip={(id) => setSelected((s) => (s === id ? null : id))}
                 onBadge={onBadge}
               />
+              </NodeEnter>
             </div>
           );
         })}
@@ -253,7 +301,7 @@ export function MapPage() {
 
       {selectedTip && (
         <div onClick={(e) => e.stopPropagation()}>
-          <TipCard tip={selectedTip} all={loaded.assertions} style={cardStyle} onClose={() => setSelected(null)} />
+          <TipCard key={selectedTip.id} side={cardStyle && "right" in cardStyle ? "left" : "right"} tip={selectedTip} all={loaded.assertions} style={cardStyle} onClose={() => setSelected(null)} />
         </div>
       )}
 

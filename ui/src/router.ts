@@ -1,5 +1,7 @@
 // A tiny path router: three routes do not need a dependency.
 import { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
+import { prefersReducedMotion } from "./motion";
 
 export type Route =
   | { page: "map" }
@@ -17,10 +19,39 @@ export function parseRoute(pathname: string): Route {
 
 const EVENT = "app:navigate";
 
-export function navigate(url: string, replace = false) {
-  if (replace) window.history.replaceState(null, "", url);
-  else window.history.pushState(null, "", url);
-  window.dispatchEvent(new Event(EVENT));
+/** "page" for a new screen, "zoom-in" / "zoom-out" for the map, "none" to skip the transition. */
+export type Transition = "page" | "fade" | "zoom-in" | "zoom-out" | "none";
+
+interface NavigateOptions {
+  replace?: boolean;
+  transition?: Transition;
+  /** Where a zoom-in heads, in canvas pixels. */
+  origin?: { x: number; y: number };
+}
+
+type ViewTransitionDoc = Document & { startViewTransition?: (update: () => void) => { finished: Promise<void> } };
+
+export function navigate(url: string, opts: NavigateOptions | boolean = {}) {
+  const { replace = false, transition, origin } = typeof opts === "boolean" ? { replace: opts } : opts;
+  const update = () => {
+    if (replace) window.history.replaceState(null, "", url);
+    else window.history.pushState(null, "", url);
+    window.dispatchEvent(new Event(EVENT));
+  };
+  const samePath = new URL(url, window.location.href).pathname === window.location.pathname;
+  const kind = transition ?? (samePath ? "fade" : "page");
+  const doc = document as ViewTransitionDoc;
+  if (kind === "none" || !doc.startViewTransition || prefersReducedMotion()) return update();
+
+  const root = document.documentElement;
+  root.dataset.transition = kind;
+  if (origin) {
+    root.style.setProperty("--vt-x", `${origin.x}px`);
+    root.style.setProperty("--vt-y", `${origin.y}px`);
+  }
+  doc.startViewTransition(update).finished.finally(() => {
+    if (root.dataset.transition === kind) delete root.dataset.transition;
+  });
 }
 
 /** Current location; re-renders on navigate() and back/forward. */
@@ -28,7 +59,8 @@ export function useLocation() {
   const read = () => ({ pathname: window.location.pathname, search: window.location.search });
   const [loc, setLoc] = useState(read);
   useEffect(() => {
-    const on = () => setLoc(read());
+    // Synchronous, so a view transition captures the new screen.
+    const on = () => flushSync(() => setLoc(read()));
     window.addEventListener("popstate", on);
     window.addEventListener(EVENT, on);
     return () => {

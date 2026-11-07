@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getSource, sendChat } from "../data";
+import { afterExit } from "../motion";
 import type { ChatReply } from "../data/types";
 import { ChatIcon, CloseIcon, SendIcon } from "./Icons";
 
@@ -14,6 +15,7 @@ export function ChatPanel({ onReply }: { onReply: (r: ChatReply) => void }) {
   const [lines, setLines] = useState<Line[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
+  const [closing, setClosing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
 
@@ -42,6 +44,13 @@ export function ChatPanel({ onReply }: { onReply: (r: ChatReply) => void }) {
     }
   }
 
+  async function close() {
+    setClosing(true);
+    await afterExit(180);
+    setClosing(false);
+    setOpen(false);
+  }
+
   if (!open)
     return (
       <button type="button" className="chat-pill" onClick={() => setOpen(true)}>
@@ -50,10 +59,10 @@ export function ChatPanel({ onReply }: { onReply: (r: ChatReply) => void }) {
     );
 
   return (
-    <section className="chat-panel" aria-label="Ask or add context">
+    <section className={`chat-panel${closing ? " closing" : ""}`} aria-label="Ask or add context">
       <header className="chat-head">
         <h2>Ask or add context</h2>
-        <button type="button" className="icon-btn" aria-label="Collapse" onClick={() => setOpen(false)}>
+        <button type="button" className="icon-btn" aria-label="Collapse" onClick={close}>
           <CloseIcon />
         </button>
       </header>
@@ -63,7 +72,13 @@ export function ChatPanel({ onReply }: { onReply: (r: ChatReply) => void }) {
             {l.text}
           </li>
         ))}
-        {busy && <li className="chat-line chat-them muted">…</li>}
+        {busy && (
+          <li className="chat-line chat-them typing" aria-label="Working on it">
+            <span />
+            <span />
+            <span />
+          </li>
+        )}
       </ol>
       <form className="chat-form" onSubmit={submit}>
         <label htmlFor="chat-input" className="sr-only">
