@@ -1,0 +1,52 @@
+{
+  "scenario": "08_conflict",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/08_conflict/thread.json"
+  ],
+  "ingest_first": [
+    "01_core"
+  ],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "incident",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero"
+      ]
+    },
+    "action": "sfp.replace",
+    "trust": "stated",
+    "status": "disputed",
+    "evidence": {
+      "said_by": "Jari Korhonen"
+    }
+  },
+  "checks": {
+    "assertion_count": 2,
+    "statuses": {
+      "interface.bounce": "disputed",
+      "sfp.replace": "disputed"
+    }
+  },
+  "incidents": [
+    {
+      "entity": "TRN-042",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero"
+      ],
+      "at": "2026-11-07T10:00:00+02:00",
+      "expect": "proposed",
+      "reason_contains": "disputed",
+      "select": {
+        "action": "interface.bounce"
+      }
+    }
+  ]
+}

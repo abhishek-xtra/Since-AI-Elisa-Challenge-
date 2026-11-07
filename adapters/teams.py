@@ -2,7 +2,7 @@ import json
 from datetime import datetime, time
 from pathlib import Path
 
-from adapters.common import HELSINKI, SYNTHETIC_DATE, map_role
+from adapters.common import HELSINKI, SYNTHETIC_DATE, map_role, source_stem
 from contracts.models import Message
 
 
@@ -10,7 +10,7 @@ def load_teams(path, date: str | None = None) -> list[Message]:
     path = Path(path)
     data = json.loads(path.read_text(encoding="utf-8"))
     day = datetime.fromisoformat(date or data.get("date") or SYNTHETIC_DATE).date()
-    thread_id = "thread-001" if path.stem == "teams_chat" else f"thread-{path.stem}"
+    thread_id = f"thread-{source_stem(path, '001')}"
     return [
         Message(
             id=f"teams:{thread_id}:{m['seq']}",

@@ -1,0 +1,22 @@
+{
+  "scenario": "11_counters_rising",
+  "placeholder": true,
+  "inputs": [],
+  "ingest_first": [
+    "01_core"
+  ],
+  "extracted": null,
+  "incidents": [
+    {
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_rising"
+      ],
+      "at": "2026-11-07T10:00:00+02:00",
+      "expect": "absent"
+    }
+  ]
+}

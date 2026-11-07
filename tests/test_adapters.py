@@ -46,7 +46,7 @@ def test_scenario_date_and_other_role(tmp_path):
         {"seq": 1, "time": "08:00", "author": "Veikko Vikkelä", "role": "Field Engineer", "text": "the key moved"},
     ]}), encoding="utf-8")
     msgs = load_teams(p)
-    assert [m.id for m in msgs] == ["teams:thread-thread:1", "teams:thread-thread:2"]
+    assert [m.id for m in msgs] == [f"teams:thread-{tmp_path.name}:1", f"teams:thread-{tmp_path.name}:2"]  # generic file name -> folder name
     assert msgs[0].timestamp.isoformat() == "2026-11-07T08:00:00+02:00"
     assert msgs[1].role == "other"
     assert load_teams(p, date="2026-10-02")[0].timestamp.isoformat() == "2026-10-02T08:00:00+02:00"

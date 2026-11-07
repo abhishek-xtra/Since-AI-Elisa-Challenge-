@@ -1,0 +1,35 @@
+{
+  "scenario": "10_typos",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/10_typos/thread.json"
+  ],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "incident",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero"
+      ]
+    },
+    "action": "interface.bounce"
+  },
+  "checks": {
+    "assertion_count": 1,
+    "origin_entity": "TRN-087"
+  },
+  "bind": {
+    "candidates_include": [
+      "model == 'TX-200'",
+      "site == 'OULU-11'"
+    ],
+    "candidates_exclude": [
+      "id == 'TRN-087'"
+    ]
+  },
+  "incidents": [],
+  "ingest_first": []
+}
