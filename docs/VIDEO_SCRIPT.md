@@ -6,21 +6,22 @@ Voiceover is about 290 words, which is two minutes at a calm pace. Captions are 
 
 | Time | Shot | Voiceover | On screen / caption |
 |---|---|---|---|
-| 0:00 | Title card `/title/capture` style, black, the one line | "Every network team has knowledge that lives in people, not documents. Here is how an AI layer learns it without anyone writing anything down." | **Hidden knowledge. Zero forms.** |
+| 0:00 | Screen, not a slide: the Teams clone Experts channel at `?beat=1&channel=experts`, Erkki's last two messages in view ("Is this documented somewhere?" / "Not that I know of. We've just learned it over the years.") | "Have you had this one? The link is up, everything looks fine, and traffic is still dead. The person who knows the fix is one expert, and it is written down nowhere. Every time he leaves, retires, or is on holiday, the network team starts from zero." | **Hidden knowledge. One expert. Nothing written down.** |
 | 0:10 | Teams clone, Experts, `?beat=1&channel=experts`, scroll Veikko's 09:14 message into view | "Veikko is at a site. He swapped an optical module, the link is up, alarms are clear, and traffic is still dead." | Veikko's message, Elisa's real example |
 | 0:18 | Teams clone, Faults, `?beat=1` | "The layer is listening. It knows nothing about this yet, so it says nothing." | Context layer: *No captured context applies to this incident; nothing to add.* (verbatim) |
 | 0:24 | Teams clone, Experts, continue scroll to Erkki 09:22 and the capture line | "Erkki answers from experience: bounce the interface, don't reboot. He says it in chat, and again in an email. The layer notes it. One tip, two sources, his words kept verbatim." | **Saved as a tip. Nothing for you to do.** |
 | 0:36 | `/grow?t=<capture of CA-0001>` the branch sprouting | "Now the graph starts. The tip is classified: an incident, after an SFP swap, link up and counters at zero. And because nobody said exactly which units this applies to, it is filed under every scope it might be: this model, this firmware, this site, this region, and 'older units', with an open edge at 2019. Nothing is decided yet." | **Five candidate scopes. No guess.** |
-| 0:52 | Card `/title/recall` with counter | "Recall." | **0 forms · 1 tap** |
+| 0:52 | One-second chapter sting `/title/recall`, or skip it: the judges asked for screen, not slides | "Recall." | |
 | 0:55 | Teams clone, Faults, `?beat=3` | "Six days later, same symptoms on a different site. The layer finds Erkki's tip, but the scope is unclear, so it asks him once, in his own thread." | STATUS card: ambiguous, the backend reason |
 | 1:03 | Teams clone, Experts, `?beat=3&channel=experts`, the question card | "One tap: all older units. That answer becomes the source. The other scopes fall away." | *Your TRN-042 tip: does it apply to TRN-087 too?* → **Answered: All older units** |
 | 1:10 | `/grow?t=<incident TRN-087 after answer>` pathway lighting up | "On the graph, the pathway lights: trigger, tip, scope, and the four unused candidates are gone." | **Honed by one answer.** |
 | 1:16 | Teams clone, Faults, `?beat=7` | "A day later, Sami in Helsinki, never spoke to Erkki. The layer walks the same path, cites Erkki, and relays the fix. Nobody is interrupted." | Context layer: *[CA-0001] Disable the interface, wait a little, then enable it again. Avoid: sfp.replace, node.reboot. Source: Erkki Expert (teams, email), 1 case, verified_by_outcome.* (verbatim) |
 | 1:26 | Teams clone, Experts, the notice line | "Erkki just sees that his tip travelled." | *Your tip from 2026-11-01 was proposed for TRN-105 today.* |
 | 1:30 | `/grow` at a later event: the reworded fix from another thread merging as a second case dot | "When someone else describes the same fix in different words, 'shut, no shut, came back', it is not a new tip. It merges as a second case on the same one. Same trigger, same action, one key." | **Same meaning, one tip.** |
-| 1:40 | Card `/title/stay-true` | "Stay true." | |
+| 1:40 | One-second sting `/title/stay-true`, or skip | "Stay true." | |
 | 1:42 | Teams clone, `?beat=4` TRN-101 decline, then `?beat=8&channel=site-access` expiry, then `?beat=9&channel=experts` retraction, quick cuts | "It also knows when to stop. A 2023 unit is beyond anything Erkki has seen, so it declines and asks him where the edge is. A road closure expires on the date the engineer gave. And when Erkki takes a tip back, it goes under review, not deleted." | *install year 2023 is beyond the known edge 2019* / *expired 2026-11-20* / *under review* (all verbatim reasons) |
-| 1:54 | `/grow` final frame, whole tree, then black | "The model reads the language. The code decides the scope, the trust, and whether to ask. No confidence scores, no invented rules, nothing touches the network." | **Capture. Bind. Recall.** |
+| 1:50 | Teams clone `?beat=7`, then the counter overlay from `beat_3.data.counters` | "What it cost the team: twelve messages they were writing anyway, one tap from Erkki, no forms. What they got: two engineers on two sites fixed the fault from one conversation, and every suggestion carries its source, its scope, and the date it stopped being true. The model reads the language; the code decides scope and trust; nothing touches the network." | **12 messages · 1 assertion · 0 forms · 1 tap** |
+| 2:00 | Black | | **Capture. Bind. Recall.** |
 
 ## Where each design choice is shown
 
@@ -41,3 +42,9 @@ Voiceover is about 290 words, which is two minutes at a calm pace. Captions are 
 - The `/grow` event indices (`t=`) come from `out/video_timeline.json` once the `video` branch lands; replace the placeholders in the table.
 - Voiceover can be Windows SAPI or edge-tts; no paid voice. Measure each clip's audio length first and set scene lengths from it.
 - Do not add any agent line that is not in `out/`. If a shot needs a sentence the backend does not produce, say it in the voiceover instead.
+
+## The judges' three rules, and how the script meets them
+
+1. **Start with the problem.** The first ten seconds are Erkki's own words from Elisa's example ("Not that I know of. We've just learned it over the years.") and two sentences: one expert, nothing written down, the team starts from zero when he is away.
+2. **Show it working, screen not slides.** Every shot is a recorded page: the Teams clone, the growth page, the map. Chapter cards are one-second stings at most, or cut. Each shot says what the user did (wrote in chat, tapped once), what the AI did (captured, asked, relayed, declined), and the result (the fix on another site, no interruption).
+3. **Explain the value with evidence only.** Numbers the demo supports and may be said: 12 messages read, 1 tip stored, 0 forms, 1 tap, 2 sources, 2 engineers helped on 2 sites, 1 question asked and never repeated, 3 declines with a stated reason. Claims that are supported without numbers: less manual documentation, the expert is interrupted once instead of every time, every suggestion is sourced and scoped, stale facts expire by themselves, the system never acts on the network. Never say: hours saved, incidents prevented, cost reduced, accuracy percentages, or anything about Elisa's real network.
