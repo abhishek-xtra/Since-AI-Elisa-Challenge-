@@ -5,7 +5,7 @@
       "label": "OULU-07",
       "kind": "site",
       "attrs": {
-        "name": "Oulu, Kaukovainio hut",
+        "name": "Oulu city hut",
         "region": "north",
         "access": ""
       }
@@ -15,7 +15,7 @@
       "label": "OULU-11",
       "kind": "site",
       "attrs": {
-        "name": "Oulu, Ritaharju mast",
+        "name": "Oulu north mast",
         "region": "north",
         "access": ""
       }
@@ -25,7 +25,7 @@
       "label": "OULU-03",
       "kind": "site",
       "attrs": {
-        "name": "Ii, forest mast",
+        "name": "Forest mast, private road",
         "region": "north",
         "access": "Private road with a locked barrier"
       }
@@ -35,7 +35,7 @@
       "label": "HKI-02",
       "kind": "site",
       "attrs": {
-        "name": "Helsinki, Pasila exchange",
+        "name": "Helsinki exchange",
         "region": "south",
         "access": ""
       }
@@ -45,7 +45,7 @@
       "label": "HKI-05",
       "kind": "site",
       "attrs": {
-        "name": "Espoo, Leppävaara rooftop",
+        "name": "Espoo rooftop",
         "region": "south",
         "access": ""
       }

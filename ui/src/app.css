@@ -417,6 +417,77 @@ p {
   white-space: nowrap;
 }
 
+.net-sublabel {
+  margin-top: -3px;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+.net-node.hub .net-label {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Background devices: a dot only; hover for the details. */
+.net-node.quiet {
+  pointer-events: auto;
+  padding: 6px;
+}
+
+.net-node.quiet .net-dot {
+  opacity: 0.7;
+}
+
+.net-node.focus .net-sublabel {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.map-legend {
+  position: fixed;
+  top: 54px;
+  left: var(--s4);
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1) var(--s4);
+  font-size: 12px;
+  color: var(--text-muted);
+  animation: fade-in 500ms var(--ease-out) 300ms both;
+}
+
+.map-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.key-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-round);
+  background: var(--net);
+}
+
+.key-dot.hub {
+  width: 10px;
+  height: 10px;
+  background: var(--net-hub);
+}
+
+.key-dot.tip {
+  width: 10px;
+  height: 10px;
+  background: var(--context);
+  box-shadow: 0 0 8px 2px rgba(255, 61, 127, 0.5);
+}
+
 .net-node.focus .net-label {
   color: var(--text);
   font-weight: 700;
@@ -812,6 +883,9 @@ button.count-badge:hover {
 }
 
 @media (max-width: 600px) {
+  .map-legend {
+    top: 140px;
+  }
   .map-controls {
     top: 52px;
     left: var(--s4);

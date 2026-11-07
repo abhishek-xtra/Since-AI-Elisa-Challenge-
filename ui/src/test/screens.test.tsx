@@ -145,7 +145,7 @@ describe("beat replay", () => {
     r.unmount();
     go("/?beat=6");
     render(<App />);
-    await screen.findByText("Around OULU-03");
+    await screen.findByText("Around Forest mast, private road (OULU-03)");
     await waitFor(() => expect(screen.getByRole("dialog", { name: "Site access" }).textContent).toContain("in the site cabinet"));
   });
 

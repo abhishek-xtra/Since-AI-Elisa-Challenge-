@@ -29,7 +29,7 @@ describe("context map, local view", () => {
     const { graph, assertions } = await fixtures();
     const v = localView(graph, assertions, { focus: "TRN-087", showHunches: false, expanded: [], at: AT });
     const badges = v.nodes.filter((n) => n.kind === "badge").map((n) => n.label);
-    expect(badges).toEqual(["2 more sites, 1 tip", "Rest of the network: 2 tips"]);
+    expect(badges).toEqual(["2 more sites nearby · 1 tip", "Southern Finland · 2 tips"]);
   });
 
   it("expanding a site badge brings its nodes and tips into view", async () => {
@@ -48,6 +48,18 @@ describe("context map, local view", () => {
     expect([...a.entries()]).toEqual([...b.entries()]);
   });
 
+  it("labels in plain words: only the focus and tip devices show IDs", async () => {
+    const { graph, assertions } = await fixtures();
+    const v = localView(graph, assertions, { focus: "TRN-087", showHunches: false, expanded: [], at: AT });
+    const by = (id: string) => v.nodes.find((n) => n.id === id)!;
+    expect(by("TRN-087").sublabel).toBe("TX-200 · installed 2018");
+    expect(by("TRN-042").sublabel).toBe("Fixed here 1 Nov");
+    expect(by("TRN-088").quiet).toBe(true);
+    expect(by("OULU-11").label).toBe("Oulu north mast");
+    expect(by("region:north").label).toBe("Northern Finland");
+    expect(by("model:TX-200").label).toBe("TX-200 units");
+  });
+
   it("TRN-101 (2023): Erkki's tip does not apply", async () => {
     const { graph, assertions } = await fixtures();
     const v = localView(graph, assertions, { focus: "TRN-101", showHunches: false, expanded: [], at: AT });
@@ -59,6 +71,6 @@ describe("zoom out", () => {
   it("shows regions only, with live tip counts", async () => {
     const { graph, assertions } = await fixtures();
     const v = regionView(graph, assertions, { showHunches: false, at: AT });
-    expect(v.nodes.map((n) => `${n.label}: ${n.badge?.text}`)).toEqual(["North: 3 tips", "South: 2 tips"]);
+    expect(v.nodes.map((n) => `${n.label}: ${n.badge?.text}`)).toEqual(["Northern Finland: 3 tips", "Southern Finland: 2 tips"]);
   });
 });

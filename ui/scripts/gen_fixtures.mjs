@@ -13,11 +13,11 @@ const clone = (o) => JSON.parse(JSON.stringify(o));
 
 // ---------- topology (BACKEND_PROMPT 4.2 seed, synthetic) ----------
 const sites = [
-  { id: "OULU-07", name: "Oulu, Kaukovainio hut", region: "north", access: "" },
-  { id: "OULU-11", name: "Oulu, Ritaharju mast", region: "north", access: "" },
-  { id: "OULU-03", name: "Ii, forest mast", region: "north", access: "Private road with a locked barrier" },
-  { id: "HKI-02", name: "Helsinki, Pasila exchange", region: "south", access: "" },
-  { id: "HKI-05", name: "Espoo, Leppävaara rooftop", region: "south", access: "" },
+  { id: "OULU-07", name: "Oulu city hut", region: "north", access: "" },
+  { id: "OULU-11", name: "Oulu north mast", region: "north", access: "" },
+  { id: "OULU-03", name: "Forest mast, private road", region: "north", access: "Private road with a locked barrier" },
+  { id: "HKI-02", name: "Helsinki exchange", region: "south", access: "" },
+  { id: "HKI-05", name: "Espoo rooftop", region: "south", access: "" },
 ];
 const N = (id, model, install_year, firmware, site, type = "transmission_node") => ({ id, type, model, install_year, firmware, site });
 const nodes = [

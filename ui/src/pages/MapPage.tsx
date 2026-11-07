@@ -111,9 +111,10 @@ function NodeView({
     );
   const hub = n.kind !== "device";
   return (
-    <div className={`net-node${hub ? " hub" : ""}${n.focus ? " focus" : ""}`}>
+    <div className={`net-node${hub ? " hub" : ""}${n.focus ? " focus" : ""}${n.quiet ? " quiet" : ""}`} title={n.title}>
       <span className={`net-dot${hub ? " hub" : ""}`} aria-hidden="true" />
-      <span className="net-label">{n.label}</span>
+      {!n.quiet && <span className="net-label">{n.label}</span>}
+      {!n.quiet && n.sublabel && <span className="net-sublabel">{n.sublabel}</span>}
     </div>
   );
 }
@@ -226,7 +227,9 @@ export function MapPage() {
     if (r.kind === "add") reload();
   }
 
-  const chipText = zoomedOut ? "Whole network" : `Around ${view.nodes.find((n) => n.id === focus)?.label ?? focus}`;
+  const focusNode = view.nodes.find((n) => n.id === focus);
+  const focusName = focusNode ? (focusNode.kind === "site" ? `${focusNode.label} (${focusNode.id})` : focusNode.label) : focus;
+  const chipText = zoomedOut ? "Whole network · pick a region to look closer" : `Around ${focusName}`;
 
   return (
     <main className="map-page" ref={pageRef} onClick={() => setSelected(null)}>
@@ -234,6 +237,17 @@ export function MapPage() {
         <h1>Context map</h1>
         <span className="chip">{chipText}</span>
       </header>
+      <ul className="map-legend" aria-label="Key">
+        <li>
+          <span className="key-dot tip" aria-hidden="true" /> Tip from a colleague
+        </li>
+        <li>
+          <span className="key-dot device" aria-hidden="true" /> Network device
+        </li>
+        <li>
+          <span className="key-dot hub" aria-hidden="true" /> Site, area or model group
+        </li>
+      </ul>
       <div className="map-controls" onClick={(e) => e.stopPropagation()}>
         <label className="toggle">
           <input type="checkbox" checked={showHunches} onChange={(e) => setShowHunches(e.target.checked)} />

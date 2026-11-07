@@ -1,5 +1,5 @@
 // Chooses what is in view and counts badges (FRONTEND_PROMPT 5.3). Pure, so it is easy to test.
-import { attachments, isHunch, isLive, labelFor, regionId, scopeHolds, withNetworkEdges } from "../data/derive";
+import { attachments, formatDay, isHunch, isLive, labelFor, regionId, scopeHolds, withNetworkEdges } from "../data/derive";
 import type { Assertion, Graph, GraphNode } from "../data/types";
 
 export type ViewNodeKind = "device" | "site" | "region" | "model" | "tip" | "badge";
@@ -15,6 +15,12 @@ export interface ViewNode {
   id: string;
   kind: ViewNodeKind;
   label: string;
+  /** A short second line in plain words. */
+  sublabel?: string;
+  /** A background device: drawn as a dot only, its details in a tooltip. */
+  quiet?: boolean;
+  /** Tooltip text. */
+  title?: string;
   focus?: boolean;
   tip?: Assertion;
   hunch?: boolean;
@@ -97,6 +103,31 @@ export function visibleTips(assertions: Assertion[], showHunches: boolean, at: D
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
+// Plain-language names for the map. Our synthetic regions are areas of Finland.
+const REGION_NAMES: Record<string, string> = {
+  north: "Northern Finland",
+  south: "Southern Finland",
+  east: "Eastern Finland",
+  west: "Western Finland",
+};
+
+export function regionName(node: GraphNode): string {
+  const key = node.id.replace(/^region:/, "").toLowerCase();
+  return REGION_NAMES[key] ?? `${node.label || key} region`;
+}
+
+function displayName(node: GraphNode): string {
+  if (node.kind === "region") return regionName(node);
+  if (node.kind === "site" && typeof node.attrs.name === "string" && node.attrs.name) return node.attrs.name;
+  if (node.kind === "model") return `${node.label} units`;
+  return node.label || node.id;
+}
+
+function deviceDetails(node: GraphNode): string {
+  const parts = [node.attrs.model, node.attrs.install_year ? `installed ${node.attrs.install_year}` : undefined].filter(Boolean);
+  return parts.join(" · ");
+}
+
 export function localView(graph: Graph, assertions: Assertion[], opts: ViewOptions): MapView {
   const g = withNetworkEdges(graph);
   const byId = new Map(g.nodes.map((n) => [n.id, n]));
@@ -114,7 +145,14 @@ export function localView(graph: Graph, assertions: Assertion[], opts: ViewOptio
   for (const id of [...inView].sort()) {
     const n = byId.get(id);
     if (!n || !KIND[n.kind]) continue;
-    nodes.push({ id, kind: KIND[n.kind], label: n.label || n.id, focus: id === opts.focus });
+    const kind = KIND[n.kind];
+    const node: ViewNode = { id, kind, label: displayName(n), focus: id === opts.focus };
+    if (kind === "site" && node.label !== id) node.sublabel = id;
+    if (kind === "device") {
+      node.title = `${id} · ${deviceDetails(n)}`;
+      if (node.focus) node.sublabel = deviceDetails(n);
+    }
+    nodes.push(node);
   }
   for (const e of g.edges) if (NET_KINDS.has(e.kind) && inView.has(e.from) && inView.has(e.to)) edges.push({ from: e.from, to: e.to, kind: "net" });
 
@@ -132,6 +170,18 @@ export function localView(graph: Graph, assertions: Assertion[], opts: ViewOptio
     nodes.push({ id: a.id, kind: "tip", label: labelFor(a), tip: a, hunch: isHunch(a) });
     const targets = att.length ? att : [opts.focus];
     for (const t of targets) edges.push({ from: a.id, to: t, kind: "tip" });
+  }
+
+  // Only devices that matter get a text label: the focus, and devices where a tip was used.
+  const tipEnds = new Set(edges.filter((e) => e.kind === "tip").map((e) => e.to));
+  for (const n of nodes) {
+    if (n.kind !== "device" || n.focus) continue;
+    if (!tipEnds.has(n.id)) {
+      n.quiet = true;
+      continue;
+    }
+    const used = shown.flatMap((a) => a.evidence.cases.filter((c) => c.entity === n.id)).sort((x, y) => x.at.localeCompare(y.at))[0];
+    if (used) n.sublabel = `${used.outcome === "recovered" ? "Fixed here" : "Seen here"} ${formatDay(used.at)}`;
   }
 
   // Badges: one per region in view for its sites outside the view, one for the rest of the network.
@@ -166,9 +216,8 @@ export function localView(graph: Graph, assertions: Assertion[], opts: ViewOptio
     const tips = tipCount.get(region) ?? 0;
     if (!sites.length && !tips) continue;
     const id = `badge:${region}`;
-    const label = sites.length
-      ? `${plural(sites.length, "more site")}, ${tips ? plural(tips, "tip") : "no tips"}`
-      : `${plural(tips, "more tip")} nearby`;
+    const tipText = tips ? plural(tips, "tip") : "no tips";
+    const label = sites.length ? `${plural(sites.length, "more site")} nearby · ${tipText}` : `${plural(tips, "more tip")} nearby`;
     nodes.push({
       id,
       kind: "badge",
@@ -182,7 +231,7 @@ export function localView(graph: Graph, assertions: Assertion[], opts: ViewOptio
     nodes.push({
       id: "badge:rest",
       kind: "badge",
-      label: `Rest of the network: ${plural(restTips, "tip")}`,
+      label: `${otherRegions.length && otherRegions.length <= 2 ? otherRegions.map(regionName).join(", ") : "Other regions"} · ${plural(restTips, "tip")}`,
       badge: { text: "", tips: restTips, action: { type: "zoom-out" } },
     });
     edges.push({ from: "badge:rest", to: opts.focus, kind: "badge" });
@@ -206,7 +255,7 @@ export function regionView(graph: Graph, assertions: Assertion[], opts: Pick<Vie
   const nodes: ViewNode[] = regions.map((r: GraphNode) => ({
     id: r.id,
     kind: "region",
-    label: r.label,
+    label: regionName(r),
     badge: { text: plural(counts.get(r.id) ?? 0, "tip"), tips: counts.get(r.id) ?? 0, action: { type: "focus", id: r.id } },
   }));
   return { nodes, edges: [], tips: [], focusId: "" };
