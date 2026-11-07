@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"found\":true,\"rule\":{\"trigger_kind\":\"incident\",\"event\":\"sfp_replaced\",\"symptoms\":[\"link_up\",\"counters_zero\"],\"stated_condition\":\"older units\",\"condition_is_relative\":true,\"action\":\"interface.bounce\",\"action_text\":\"the bounce\",\"avoid\":[],\"excerpt\":\"Correction on the SFP swap thing where the link comes up but the counters stay at zero: ignore what I said about the bounce on the older units, that was a different issue, don't rely on it.\",\"said_by\":\"Erkki Expert\",\"said_by_role\":\"expert\",\"hedged\":false,\"first_hand\":false,\"outcome\":\"unknown\",\"outcome_excerpt\":null,\"about_entity\":null,\"retracts\":true},\"reason\":\"The expert retracts earlier advice about bouncing the interface on older units when the link comes up with zero counters after an SFP swap.\"}",
+  "input_tokens": 3142,
+  "output_tokens": 197
+}

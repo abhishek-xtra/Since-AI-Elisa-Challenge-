@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"workflow\",\n    \"event\": \"dispatch_created\",\n    \"symptoms\": [],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"other\",\n    \"action_text\": \"use the forest track from the north side\",\n    \"avoid\": [],\n    \"excerpt\": \"Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side.\",\n    \"said_by\": \"Kalle Niskanen\",\n    \"said_by_role\": \"field_engineer\",\n    \"hedged\": false,\n    \"first_hand\": true,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"OULU-11\",\n    \"retracts\": false\n  },\n  \"reason\": \"A field engineer shares first-hand site access instructions for anyone dispatched to the site while the main road is closed.\"\n}",
+  "input_tokens": 3198,
+  "output_tokens": 277
+}

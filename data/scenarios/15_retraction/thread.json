@@ -1,0 +1,16 @@
+{
+  "channel": "teams",
+  "note": "Written by hand (no model) for the retraction scenario: the experts channel. Synthetic; names are illustrative.",
+  "date": "2026-11-10",
+  "placeholder": false,
+  "participants": [
+    {"name": "Erkki Expert", "role": "Network Expert"},
+    {"name": "Pirjo Virtanen", "role": "Network Expert"}
+  ],
+  "messages": [
+    {"seq": 1, "time": "16:20", "author": "Erkki Expert", "role": "Network Expert",
+     "text": "Correction on the SFP swap thing where the link comes up but the counters stay at zero: ignore what I said about the bounce on the older units, that was a different issue, don't rely on it."},
+    {"seq": 2, "time": "16:24", "author": "Pirjo Virtanen", "role": "Network Expert",
+     "text": "Ok, noted. Let us know when you know more."}
+  ]
+}

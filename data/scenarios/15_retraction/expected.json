@@ -1,0 +1,38 @@
+{
+  "scenario": "15_retraction",
+  "placeholder": false,
+  "inputs": [
+    "data/scenarios/15_retraction/thread.json"
+  ],
+  "ingest_first": [
+    "01_core"
+  ],
+  "extracted": true,
+  "assertion": {
+    "id": "CA-0001",
+    "action": "interface.bounce",
+    "status": "review",
+    "superseded_by": null,
+    "valid_to": null
+  },
+  "checks": {
+    "assertion_count": 1,
+    "case_count": 1,
+    "source_count": 3
+  },
+  "incidents": [
+    {
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "at": "2026-11-11T10:00:00+02:00",
+      "expect": "declined",
+      "reason_contains": "under review"
+    }
+  ]
+}

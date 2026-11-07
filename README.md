@@ -40,7 +40,7 @@ uvicorn api.app:app                                  # GET /assertions /graph /t
 
 ## How generative AI is used
 
-- `gemini-4-argon` (`EXTRACT_MODEL`) reads a thread and returns the structured rule (trigger, action, avoid, verbatim excerpt, speaker, stated condition). It also runs the stand-in network operations agent: one structured call that turns `get_context` results into a proposal.
+- `gemini-4-argon` (`EXTRACT_MODEL`) reads a thread and returns the structured rule (trigger, action, avoid, verbatim excerpt, speaker, stated condition, and whether the speaker is retracting earlier advice). It also runs the stand-in network operations agent: one structured call that turns `get_context` results into a proposal.
 - `gemini-3.5-flash` (`GENERATE_MODEL`) expanded the scenario scripts into synthetic threads (see `data/DATA_CARD.md`); a different model on purpose.
 - The model never decides scope, outcome, trust, supersession or whether a question is asked. Binding, candidate evaluation, `get_context`, the question and its options, applying the answer, notifications and the proposal text are code. An extracted excerpt that is not verbatim in the thread is dropped.
 - Every call goes through `llm.py` and is cached on disk in `.llm_cache/` (keyed by model, prompt and schema), so the demo and tests replay offline. Spend is recorded in `.llm_cache/_spend.json` and capped by `LLM_BUDGET_EUR`.

@@ -663,5 +663,47 @@
       }
     ],
     "passed": true
+  },
+  {
+    "scenario": "15_retraction",
+    "trap": "a retraction, not a new rule and not a deletion. Ingested after 01_core, CA-0001 goes to status review (nothing deleted, nothing superseded) and gains this thread as a source; TRN-087 is then declined \"under review\".",
+    "lane": "spine",
+    "placeholder": false,
+    "inputs": [
+      "data/scenarios/15_retraction/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created [], changed ['CA-0001']"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "case_count",
+        "passed": true,
+        "why": "CA-0001: 1, want 1"
+      },
+      {
+        "name": "source_count",
+        "passed": true,
+        "why": "CA-0001: 3, want 3"
+      },
+      {
+        "name": "step 1 TRN-087 sfp_replaced @2026-11-11 -> declined",
+        "passed": true,
+        "why": "CA-0001 declined: under review"
+      }
+    ],
+    "passed": true
   }
 ]

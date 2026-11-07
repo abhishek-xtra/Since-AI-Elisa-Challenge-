@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"workflow\",\n    \"event\": \"dispatch_created\",\n    \"symptoms\": [],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"site.access_key\",\n    \"action_text\": \"in the cabinet\",\n    \"avoid\": [],\n    \"excerpt\": \"someone said the key might be in the cabinet now, the access road barrier key I mean, but I haven't been there myself to check so not 100% sure.\",\n    \"said_by\": \"Veikko Vikkelä\",\n    \"said_by_role\": \"field_engineer\",\n    \"hedged\": true,\n    \"first_hand\": false,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"OULU-03\",\n    \"retracts\": false\n  },\n  \"reason\": \"A field engineer shares a hedged, second-hand tip about where the site access barrier key is located for a dispatch.\"\n}",
+  "input_tokens": 3098,
+  "output_tokens": 268
+}

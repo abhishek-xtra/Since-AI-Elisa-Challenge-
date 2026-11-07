@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"older units\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"disable the interface, wait a little, then enable it again\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"On those older units: disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Did that. Traffic is back 👍\",\n    \"about_entity\": \"TRN-087\",\n    \"retracts\": false\n  },\n  \"reason\": \"An expert states a reusable rule to bounce the interface instead of rebooting when an SFP swap on older units leaves the link up with zero traffic counters.\"\n}",
+  "input_tokens": 4318,
+  "output_tokens": 306
+}

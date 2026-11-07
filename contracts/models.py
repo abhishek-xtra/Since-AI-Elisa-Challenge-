@@ -186,6 +186,7 @@ class ExtractedRule(BaseModel):
     outcome: ExtractedOutcome = Field(description="'recovered' only if a later message reports the action worked ('traffic is back', 'did that, works'); 'failed' only if a later message reports the action was tried and did not work ('didn't help', 'no change, had to reboot'); otherwise 'unknown'.")
     outcome_excerpt: str | None = Field(description="The confirming or failing message text, copied character for character; null when outcome is 'unknown'.")
     about_entity: str | None = Field(description="The device or site ID the CURRENT case is about, as written in the thread (e.g. 'TRN-087'); null if none is named. Not a device mentioned as a past example.")
+    retracts: bool = Field(default=False, description="true when the speaker withdraws their own earlier advice ('ignore what I said about X, don't rely on it'); the rule is then the advice being withdrawn.")
 
 
 class ExtractionResult(BaseModel):

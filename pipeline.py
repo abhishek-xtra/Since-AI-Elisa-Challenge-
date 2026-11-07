@@ -8,6 +8,7 @@ import extractor
 from adapters import load_email, load_teams
 from contracts.models import Assertion, Topology
 from extractor.merge import merge
+from extractor.retract import retract
 
 log = logging.getLogger("pipeline")
 ROOT = Path(__file__).parent
@@ -30,7 +31,9 @@ def ingest(paths: list, store, topology: Topology, recorded_at: datetime | None 
             log.info("%s: not extracted", path)
             continue
         before = {a.id: a for a in store.all()}
-        result = merge(store.all(), binder.bind(*out, messages, topology), topology)
+        assertion, rule = out
+        result = (retract(store.all(), assertion) if rule.retracts
+                  else merge(store.all(), binder.bind(assertion, rule, messages, topology), topology))
         store.replace_all(result)
         changed = [a for a in result if before.get(a.id) != a]
         new = [a.id for a in changed if a.id not in before]

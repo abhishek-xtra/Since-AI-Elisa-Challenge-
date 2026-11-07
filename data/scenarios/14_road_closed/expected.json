@@ -11,7 +11,7 @@
       "kind": "workflow",
       "event": "dispatch_created"
     },
-    "action": "site.access_key",
+    "action": "other",
     "trust": "stated",
     "applies_to": {
       "entity_type": "site"

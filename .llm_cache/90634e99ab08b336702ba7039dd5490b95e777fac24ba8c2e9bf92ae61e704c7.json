@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"found\":true,\"rule\":{\"trigger_kind\":\"incident\",\"event\":\"sfp_replaced\",\"symptoms\":[\"link_up\",\"counters_zero\"],\"stated_condition\":\"older units\",\"condition_is_relative\":true,\"action\":\"interface.bounce\",\"action_text\":\"disable the interface and enable it again\",\"avoid\":[\"node.reboot\"],\"excerpt\":\"On the older units disable the interface and enable it again, don't reboot.\",\"said_by\":\"Erkki Expert\",\"said_by_role\":\"expert\",\"hedged\":false,\"first_hand\":false,\"outcome\":\"recovered\",\"outcome_excerpt\":\"Done, traffic back.\",\"about_entity\":\"TRN-087\",\"retracts\":false},\"reason\":\"An expert gives a reusable rule for older units experiencing link up and zero counters after an SFP replacement, and the field engineer confirms it resolved the issue.\"}",
+  "input_tokens": 3107,
+  "output_tokens": 192
+}
