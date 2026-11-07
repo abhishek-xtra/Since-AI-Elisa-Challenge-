@@ -4,7 +4,7 @@ Veikko swaps an optical module, the link comes up, the alarms clear, and traffic
 
 This is a context layer for that knowledge. It reads the conversations people already have (a Teams thread, an email), stores each reusable operational rule as a **context assertion** bound to the network graph (a trigger, candidate scopes over topology attributes, an action, an avoid list, verbatim evidence, trust, validity), and hands it back when the same situation comes up on another unit. When nobody said exactly which units a tip applies to, it stores every reading, lets later cases narrow them, and asks the expert one question, once. It is advisory: it never acts on the network, never writes to the topology, and uses no numeric confidence anywhere.
 
-Team: Mikael Salomaa and Abhishek, Since AI 2026.
+Team: Mikael Salomaa and Abhishek Singh, Since AI 2026.
 
 ## The demo video
 

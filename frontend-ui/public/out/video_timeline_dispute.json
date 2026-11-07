@@ -518,7 +518,7 @@
       "log": [
         "no rule: The conversation is casual chat about lunch, a meeting change, and a coffee machine, with no operational rule stated.",
         "no rule: The conversation is casual chat about lunch, a meeting change, and a coffee machine, with no operational rule stated.",
-        "<repo>\\data\\scenarios\\04_chitchat\\thread.json: not extracted"
+        "<repo>/data/scenarios/04_chitchat/thread.json: not extracted"
       ],
       "index": 25
     },
@@ -1823,7 +1823,7 @@
       "log": [
         "no rule: The conversation reports a fault and a recovery, but no message states the rule or action that was applied.",
         "no rule: The conversation reports a fault and a recovery, but no message states the rule or action that was applied.",
-        "<repo>\\data\\scenarios\\13_second_technician\\thread.json: not extracted"
+        "<repo>/data/scenarios/13_second_technician/thread.json: not extracted"
       ],
       "index": 58
     },
@@ -1949,7 +1949,7 @@
       "log": [
         "no rule: The conversation only contains a one-off instruction to reboot a specific device with no stated condition or fault.",
         "no rule: The conversation only contains a one-off instruction to reboot a specific device with no stated condition or fault.",
-        "<repo>\\data\\scenarios\\16_one_off\\thread.json: not extracted"
+        "<repo>/data/scenarios/16_one_off/thread.json: not extracted"
       ],
       "index": 65
     },

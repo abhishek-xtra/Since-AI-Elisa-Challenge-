@@ -111,6 +111,7 @@ class Log(logging.Handler):
         msg = record.getMessage()
         for root in (str(ROOT), ROOT.as_posix()):  # no machine paths in the log: the file must be identical on every clone
             msg = msg.replace(root, '<repo>')
+        msg = msg.replace('\\', '/')  # Windows separators: the file must be identical across OSes too
         self.lines.append((record.name, msg))
 
 
