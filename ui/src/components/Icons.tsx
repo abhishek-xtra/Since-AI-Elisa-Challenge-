@@ -14,7 +14,7 @@ const svg = (size: number) => ({
 
 export const CheckIcon = ({ size = 14 }: P) => (
   <svg {...svg(size)}>
-    <path d="M5 12.5l4.5 4.5L19 7.5" />
+    <path d="M5 12.5l4.5 4.5L19 7.5" pathLength={1} />
   </svg>
 );
 

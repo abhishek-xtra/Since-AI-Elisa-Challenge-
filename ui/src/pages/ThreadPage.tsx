@@ -67,7 +67,7 @@ function NotificationBanner({ n, result, assertions }: { n: Notification; result
   let detail = n.text;
   if (a && (!result || result.outcome === "proposed")) detail = `The agent proposed it on ${entity ?? "the device"}: ${adviceSentence(a)}`;
   return (
-    <div className="notice" role="status">
+    <div className="notice pop" role="status">
       <p className="notice-title">{title}</p>
       <p className="notice-detail">{detail}</p>
     </div>
@@ -95,10 +95,10 @@ function QuestionCard({
           <span className="msg-author">Context layer</span>
           {item.at && <time dateTime={item.at}>{formatTime(item.at)}</time>}
         </header>
-        <div className="question-card">
+        <div className={`question-card${answered ? " is-answered" : ""}`}>
           <p className="question-text">{item.text}</p>
           {answered ? (
-            <p className="question-answered">
+            <p className="question-answered pop">
               <CheckIcon /> Answered: {answered.label}
             </p>
           ) : (
@@ -154,7 +154,12 @@ export function ThreadPage({ id }: { id: string }) {
   // In beat replay, answers stay local: a replay must never write to the backend.
   const [localAnswers, setLocalAnswers] = useState<Record<string, { label: string }>>({});
 
-  if (state.status === "loading") return <main className="thread-page"><p className="muted">Loading…</p></main>;
+  if (state.status === "loading")
+    return (
+      <main className="thread-page">
+        <p className="sr-only" role="status">Loading the thread</p>
+      </main>
+    );
   if (state.status === "error")
     return (
       <main className="thread-page">
@@ -217,7 +222,14 @@ export function ThreadPage({ id }: { id: string }) {
       <header className="thread-head">
         <h1>{participants.join(", ")}</h1>
       </header>
-      <div className="thread-list">{rows}</div>
+      <div className="thread-list">
+        {rows.map((row, i) => (
+          // Rows rise in one after another on first load; later additions (answer, notice) animate on their own.
+          <div key={row.key} className="rise" style={{ "--i": Math.min(i, 16) } as React.CSSProperties}>
+            {row}
+          </div>
+        ))}
+      </div>
       <BeatControls title={beat?.title} />
     </main>
   );

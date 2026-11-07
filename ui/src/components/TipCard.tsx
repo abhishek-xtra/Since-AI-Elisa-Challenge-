@@ -6,9 +6,12 @@ export function TipCard({
   tip,
   all,
   style,
+  side = "right",
   onClose,
 }: {
   tip: Assertion;
+  /** Which side of the tip the card sits on, so it grows out of the tip. */
+  side?: "left" | "right";
   all: Assertion[];
   style?: React.CSSProperties;
   onClose: () => void;
@@ -17,7 +20,7 @@ export function TipCard({
   const replaced = tip.supersedes ? ` Replaced earlier info from ${old ? formatDay(old.valid_from) : "before"}.` : "";
   const meta = `${tip.evidence.said_by}, ${channelInWords(tip)}, ${formatDay(tip.valid_from)}. ${trustInWords(tip.trust)} · ${caseCountInWords(tip)}.${replaced}`;
   return (
-    <div className="tip-card" role="dialog" aria-label={labelFor(tip)} style={style} onKeyDown={(e) => e.key === "Escape" && onClose()}>
+    <div className="tip-card" data-side={side} role="dialog" aria-label={labelFor(tip)} style={style} onKeyDown={(e) => e.key === "Escape" && onClose()}>
       <p className="tip-card-title">{labelFor(tip)}</p>
       <p className="tip-card-advice">{adviceSentence(tip)}</p>
       <p className="tip-card-meta">{meta}</p>

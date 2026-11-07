@@ -7,7 +7,7 @@ export function BeatControls({ title }: { title?: string }) {
   const q = useQuery();
   if (q.get("clean") === "1") return null;
   const beat = Number(q.get("beat")) || 0;
-  const go = (n: number) => navigate(withQuery({ beat: n >= 1 ? String(n) : null }));
+  const go = (n: number) => navigate(withQuery({ beat: n >= 1 ? String(n) : null }), { transition: "none" });
 
   return (
     <nav className="beat-controls" aria-label="Beat replay">
