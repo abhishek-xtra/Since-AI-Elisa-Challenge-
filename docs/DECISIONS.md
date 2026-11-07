@@ -24,3 +24,9 @@ Mikael is asleep. The orchestrator (Claude Fable) stands in for the human gate s
 ## Agent decisions
 
 (agents append here)
+
+- **adapters (module 1):** Email `thread_id` uses the same mapped stem as the id (`email-001` for Elisa's `email.txt`, `email-<stem>` otherwise), so id and thread agree. Email `text` is `Subject: <subject>`, a blank line, then the body with leading/trailing newlines stripped. A `Date:` header is parsed as RFC 2822 (`email.utils`). Teams date precedence: `date` argument, then the file's top-level `"date"`, then `SYNTHETIC_DATE`. Teams messages are sorted by `seq`. Offset is a fixed `+02:00` (EET), not a DST-aware Europe/Helsinki zone, as specified; a summer-dated scenario would still get `+02:00`.
+
+- **Module 3 (predicates), open edge on a failed ordering comparison.** With `edge="open"` any `<`/`<=`/`>`/`>=` comparison that is false returns `unknown` (not only strictly beyond the number), so open `install_year < 2019` on a 2019 node is `unknown`, as the task brief required; `==`/`!=` and `missing` are unaffected. Lives in `predicates.evaluate.open_edge_result`.
+- **Module 3, parse vs missing.** `parse` accepts any lowercase identifier as `attr` so `vendor == 'X'` evaluates to `missing` (contracts/predicates.md example); only a malformed string raises `ValueError`. Type errors also raise `ValueError`: `<`/`>` on a string attribute, int value on a string attribute or vice versa, non-dotted firmware value. Both quote styles are accepted.
+- **Module 3, Site attributes.** A Site exposes `id`, `name`, `region` and `site` (= its own id); everything else (including `access`) is `missing`.
