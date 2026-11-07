@@ -9,8 +9,10 @@ from contracts.models import ContextResult
 from contracts.vocabulary import Action
 
 SYSTEM = ("You are the stand-in for the network operations agent. You have no tools. You must base the proposal only on "
-          "the context results given; if none are proposed, fall back to the default field procedure (reboot the unit "
-          "or replace the SFP again) and say so.")
+          "the context results given. If none are proposed, set action to 'other' and say that no captured context "
+          "applies; never invent steps, procedures or thresholds that are not in the results.")
+# With nothing captured the layer stays silent: it must not hand out advice it cannot source.
+NO_CONTEXT = "No captured context applies to this incident; nothing to add."
 
 
 class AgentProposal(BaseModel):
@@ -38,7 +40,7 @@ def proposal_text(results: list[ContextResult], proposal: AgentProposal) -> str:
     proposed = [r for r in results if r.outcome == "proposed"]
     cited = [r for r in proposed if r.assertion.id in proposal.cites] or proposed
     if not cited:
-        return f"No captured context applies; default field procedure: {proposal.action_text}"
+        return NO_CONTEXT
     lines = []
     for r in cited:
         a = r.assertion

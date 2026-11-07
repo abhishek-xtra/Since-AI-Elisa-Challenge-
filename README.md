@@ -58,7 +58,7 @@ All data is synthetic. Elisa's example chat and email in `data/elisa_examples/` 
 
 `py -3.14 demo.py` prints these and writes `out/beat_N.json`, `out/graph.json`, `out/graph.html`, `out/assertions.json`, `out/thread_<id>.json`, `out/questions.json`, `out/notifications.json`.
 
-1. **No context.** Empty store: `get_context` on TRN-087 returns `[]`; the stand-in agent falls back to rebooting the unit or replacing the SFP again.
+1. **No context.** Empty store: `get_context` on TRN-087 returns `[]`; the stand-in agent says no captured context applies and adds nothing. It never invents a procedure; the real agent's own runbook is out of scope.
 2. **Capture and link.** Erkki's chat and email become one assertion CA-0001 (`interface.bounce`, avoid `sfp.replace`, `node.reboot`) with five candidates and their support/against/edge, trust `verified_by_outcome`, 0 questions asked.
 3. **First use and the one question.** TRN-087 is `ambiguous` on site; Erkki is asked once and taps "All older units"; the re-run is `proposed` and the agent says to disable and enable the interface, avoid `node.reboot`, citing Erkki, 1 case. 12 messages · 1 assertion · 0 forms · 1 tap.
 4. **Decline.** TRN-101 (installed 2023) is `ambiguous`: 2023 is beyond the known edge 2019, so Erkki gets one edge question; he taps "No", the boundary becomes `install_year <= 2019`, closed, and the re-run is `declined` on install_year. No cutoff was invented: Erkki set it.

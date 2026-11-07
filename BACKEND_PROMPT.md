@@ -268,7 +268,7 @@ Scenario folders must exist for Appendix A rows 1 to 12 (the spine) plus `12b_ba
 
 Each beat prints a short human-readable block and writes `out/beat_N.json`. Runs fully from the LLM cache. Order:
 
-1. **No context.** Incident on TRN-087 with an empty store. The stand-in agent (one prompt, one tool call, cached) proposes a reboot or another SFP swap. Show the empty `get_context` result and the agent text.
+1. **No context.** Incident on TRN-087 with an empty store. The stand-in agent (one prompt, one tool call, cached) says no captured context applies and adds nothing; it must not invent a procedure. Show the empty `get_context` result and the agent text.
 2. **Capture and link.** Ingest the chat and the email. Print the assertion, the candidates with support counts, the trust, and "0 questions asked". Write `out/graph.json` (nodes, edges with `kind: SCOPED_BY|EVIDENCED_BY`).
 3. **First use and the one question.** Same incident on TRN-087. `ambiguous` on site. Print the question. Simulate Erkki answering option 0. Re-run: `proposed`. Agent text cites Erkki, 1 case, avoid reboot. Print the counter: 12 messages, 1 assertion, 0 forms, 1 tap.
 4. **Decline.** Incident on TRN-101. `declined`, reason names the failing model candidate and the year beyond the known edge.

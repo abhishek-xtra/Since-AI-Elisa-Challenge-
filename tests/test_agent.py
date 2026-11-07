@@ -9,7 +9,7 @@ import pytest
 from agent.get_context import get_context
 from agent.outcomes import record_outcome
 from agent.questions import answer
-from agent.stand_in import propose, proposal_text
+from agent.stand_in import NO_CONTEXT, propose, proposal_text
 from pipeline import ingest, load_topology
 from store.json_store import JsonStore
 
@@ -97,8 +97,8 @@ def test_core_question_answer_and_proposal(make_store, out_dir):
 
 def test_stand_in_without_context():
     p = propose([], "TRN-087", "sfp_replaced", SYMPTOMS)
-    assert p.action in ("node.reboot", "sfp.replace")
-    assert proposal_text([], p).startswith("No captured context applies")
+    assert p.action == "other" and p.cites == []  # nothing captured: the layer must not invent a procedure
+    assert proposal_text([], p) == NO_CONTEXT
 
 
 def test_newer_other_model_declined(make_store):

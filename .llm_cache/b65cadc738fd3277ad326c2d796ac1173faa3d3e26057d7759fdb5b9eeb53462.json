@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"action\": \"other\", \"action_text\": \"No captured context applies to this incident.\", \"avoid\": [], \"cites\": []}",
+  "input_tokens": 541,
+  "output_tokens": 45
+}

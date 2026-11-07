@@ -13,7 +13,7 @@ Written by the orchestrator (Claude Fable) for Mikael. Everything below is on br
 
 ## What the demo shows now
 
-1. No context: the stand-in proposes a reboot or another SFP swap.
+1. No context: the stand-in says no captured context applies and adds nothing (it used to recite a scripted "reboot or swap the SFP", which was unsourced).
 2. Capture: 12 messages + 1 email become one assertion, one case, two sources, five candidates, trust verified, 0 questions.
 3. First use: TRN-087 is ambiguous on site; one question; Erkki taps "All older units"; proposed; "12 messages · 1 assertion · 0 forms · 1 tap".
 4. Decline: TRN-101 (2023) is beyond the known edge; the edge question; Erkki taps "No"; declined naming `install_year`. Line: "No cutoff was invented. 2019 was only the newest unit it had worked on; Erkki set the boundary."

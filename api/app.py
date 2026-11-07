@@ -15,7 +15,7 @@ import llm
 from agent import out_path, read_json_list
 from agent.get_context import get_context
 from agent.questions import answer as apply_answer
-from agent.stand_in import AgentProposal, propose, proposal_text
+from agent.stand_in import AgentProposal, propose, proposal_text, NO_CONTEXT
 from contracts.vocabulary import Event, Symptom
 
 app = FastAPI(title="Elisa context layer")
@@ -75,7 +75,7 @@ def agent_text(results, body: Incident) -> str:
     except llm.OfflineMiss:  # not a demo input and LLM_OFFLINE=1: the same text, built without the model
         proposed = [r.assertion for r in results if r.outcome == "proposed"]
         if not proposed:
-            return "No captured context applies; default field procedure."
+            return NO_CONTEXT
         a = proposed[0]
         return proposal_text(results, AgentProposal(action=a.action, action_text=a.action_text, avoid=a.avoid,
                                                     cites=[x.id for x in proposed]))
