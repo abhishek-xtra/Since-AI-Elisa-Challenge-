@@ -334,7 +334,7 @@
           "node.reboot"
         ],
         "trust": "verified_by_outcome",
-        "status": "decided",
+        "status": "review",
         "said_by": "Erkki Expert",
         "valid_from": "2026-11-01T09:14:00+02:00",
         "valid_to": null,
@@ -351,6 +351,12 @@
     {
       "id": "email:email-001",
       "label": "email:email-001",
+      "kind": "source",
+      "attrs": {}
+    },
+    {
+      "id": "teams:thread-15_retraction",
+      "label": "teams:thread-15_retraction",
       "kind": "source",
       "attrs": {}
     },
@@ -397,6 +403,29 @@
     {
       "id": "teams:thread-12b_barrier_update",
       "label": "teams:thread-12b_barrier_update",
+      "kind": "source",
+      "attrs": {}
+    },
+    {
+      "id": "CA-0004",
+      "label": "use the forest track",
+      "kind": "assertion",
+      "attrs": {
+        "action": "other",
+        "action_text": "use the forest track from the north side",
+        "avoid": [],
+        "trust": "stated",
+        "status": "open",
+        "said_by": "Kalle Niskanen",
+        "valid_from": "2026-11-09T07:40:00+02:00",
+        "valid_to": "2026-11-20T23:59:59+02:00",
+        "superseded_by": null,
+        "cases": 1
+      }
+    },
+    {
+      "id": "teams:thread-14_road_closed",
+      "label": "teams:thread-14_road_closed",
       "kind": "source",
       "attrs": {}
     }
@@ -679,6 +708,11 @@
     },
     {
       "from": "CA-0001",
+      "to": "teams:thread-15_retraction",
+      "kind": "EVIDENCED_BY"
+    },
+    {
+      "from": "CA-0001",
       "to": "TRN-042",
       "kind": "CASE"
     },
@@ -718,6 +752,25 @@
     {
       "from": "CA-0003",
       "to": "OULU-03",
+      "kind": "CASE"
+    },
+    {
+      "from": "CA-0004",
+      "to": "OULU-11",
+      "kind": "SCOPED_BY",
+      "predicate": "site == 'OULU-11'",
+      "support": 1,
+      "against": 0,
+      "edge": "closed"
+    },
+    {
+      "from": "CA-0004",
+      "to": "teams:thread-14_road_closed",
+      "kind": "EVIDENCED_BY"
+    },
+    {
+      "from": "CA-0004",
+      "to": "OULU-11",
       "kind": "CASE"
     }
   ]

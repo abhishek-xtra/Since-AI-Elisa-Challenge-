@@ -1,6 +1,6 @@
-"""Module 8: the six demo beats (BACKEND_PROMPT section 7). Runs fully from the LLM cache (LLM_OFFLINE=1 works).
+"""Module 8: the demo beats (BACKEND_PROMPT section 7, plus beats 7 to 9). Runs fully from the LLM cache (LLM_OFFLINE=1 works).
 
-py -3.14 demo.py            all seven beats on a fresh out/ (OUT_DIR overrides out/)
+py -3.14 demo.py            all nine beats on a fresh out/ (OUT_DIR overrides out/)
 py -3.14 demo.py --beat N   one beat on the state the previous beats left in out/ (beat 1 starts fresh)
 py -3.14 demo.py --clean    wipe out/
 
@@ -28,6 +28,9 @@ H = timezone(timedelta(hours=2))
 INCIDENT_AT = datetime(2026, 11, 7, 10, tzinfo=H)   # TRN-087 and TRN-101 (DECISIONS item 11)
 DISPATCH_AT = datetime(2026, 11, 8, 8, tzinfo=H)    # barrier dispatch
 SECOND_AT = datetime(2026, 11, 8, 14, tzinfo=H)     # Sami on TRN-105 (beat 7)
+ROAD_BEFORE = datetime(2026, 11, 15, 8, tzinfo=H)   # dispatch to OULU-11 while the road is closed (beat 8)
+ROAD_AFTER = datetime(2026, 11, 21, 8, tzinfo=H)    # the day after the stated end date
+RETRACTED_AT = datetime(2026, 11, 11, 10, tzinfo=H)  # TRN-087 after Erkki took the tip back (beat 9)
 RECORDED_AT = datetime(2026, 11, 6, tzinfo=timezone.utc)
 SFP = "sfp_replaced"
 SYMPTOMS = ["link_up", "optics_normal", "alarms_cleared", "counters_zero"]
@@ -35,6 +38,8 @@ CORE = [ROOT / "data/elisa_examples/teams_chat.json", ROOT / "data/elisa_example
 BARRIER = ROOT / "data/scenarios/12_barrier/email.txt"
 UPDATE = ROOT / "data/scenarios/12b_barrier_update/thread.json"
 SECOND = ROOT / "data/scenarios/13_second_technician/thread.json"
+ROAD = ROOT / "data/scenarios/14_road_closed/thread.json"
+RETRACTION = ROOT / "data/scenarios/15_retraction/thread.json"
 VIDEO_LINE = ("Nobody edited anything. The newer message replaced the old fact, "
               "and the old one is kept with the date it stopped being true.")
 TOPO = load_topology()
@@ -123,7 +128,7 @@ def question_lines(q) -> list[str]:
     return [f"Question to {q.to} in {q.thread_id}: {q.text}", *[f"  [{i}] {o.label}" for i, o in enumerate(q.options)]]
 
 
-# ---------- the seven beats ----------
+# ---------- the beats ----------
 
 def beat1(s: JsonStore):
     results = get_context(s, TOPO, "TRN-087", SFP, SYMPTOMS, INCIDENT_AT)
@@ -239,7 +244,36 @@ def beat7(s: JsonStore):
                                                      "notifications": notes, "questions_new": 0}, [chat]
 
 
-BEATS = {1: beat1, 2: beat2, 3: beat3, 4: beat4, 5: beat5, 6: beat6, 7: beat7}
+def beat8(s: JsonStore):
+    """A temporary fact ends on the date its speaker gave; nobody has to retract it."""
+    threads = ingest_files(s, [ROAD])
+    before = get_context(s, TOPO, "OULU-11", "dispatch_created", [], ROAD_BEFORE)
+    after = get_context(s, TOPO, "OULU-11", "dispatch_created", [], ROAD_AFTER)
+    road = [a for a in s.all() if any(src.endswith("14_road_closed") for src in a.evidence.sources)]
+    lines = [f"Ingested {ROAD.parent.name}/{ROAD.name} ({threads[0][0].timestamp.date().isoformat()})",
+             *[f"{a.id}: \"{a.action_text}\" said by {a.evidence.said_by}, valid_to {a.valid_to.isoformat() if a.valid_to else None}"
+               for a in road],
+             f"dispatch_created for OULU-11 at {ROAD_BEFORE.isoformat()}", *map(result_line, before),
+             *[f"Route before the drive: {r.assertion.action_text}" for r in before if r.outcome == "proposed"],
+             f"dispatch_created for OULU-11 at {ROAD_AFTER.isoformat()}", *map(result_line, after),
+             "Nobody retracted it; it expired on the date the engineer gave."]
+    return "Stale by itself", lines, {"assertions": [dump(a) for a in road], "results_before": [dump(r) for r in before],
+                                      "results_after": [dump(r) for r in after]}, threads
+
+
+def beat9(s: JsonStore):
+    """The expert takes the tip back: the assertion goes under review, nothing is deleted."""
+    threads = ingest_files(s, [RETRACTION])
+    a = s.get("CA-0001")
+    results = get_context(s, TOPO, "TRN-087", SFP, SYMPTOMS, RETRACTED_AT)
+    lines = [f"{m.author} ({m.thread_id}): {m.text}" for m in threads[0]]
+    lines += [f"{a.id}: status {a.status}, sources {', '.join(a.evidence.sources)}, {len(s.all())} assertions kept",
+              f"Incident: {SFP} on TRN-087 at {RETRACTED_AT.isoformat()}", *map(result_line, results),
+              f"{a.evidence.said_by.split()[0]} took it back; the tip is under review, not deleted."]
+    return "Retracted", lines, {"assertion": dump(a), "results": [dump(r) for r in results]}, threads
+
+
+BEATS = {1: beat1, 2: beat2, 3: beat3, 4: beat4, 5: beat5, 6: beat6, 7: beat7, 8: beat8, 9: beat9}
 
 
 def run(n: int) -> None:

@@ -70,14 +70,15 @@
         ],
         "sources": [
           "teams:thread-001",
-          "email:email-001"
+          "email:email-001",
+          "teams:thread-15_retraction"
         ],
         "excerpt": "Disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
         "said_by_role": "expert",
         "said_by": "Erkki Expert"
       },
       "trust": "verified_by_outcome",
-      "status": "decided",
+      "status": "review",
       "questions_asked": [
         "firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
         "install_year <= 2019=unknown"
@@ -183,6 +184,54 @@
       "recorded_at": "2026-11-06T00:00:00Z",
       "valid_from": "2026-11-07T10:15:00+02:00",
       "valid_to": null,
+      "valid_while": null
+    },
+    {
+      "id": "CA-0004",
+      "trigger": {
+        "kind": "workflow",
+        "event": "dispatch_created",
+        "symptoms": []
+      },
+      "applies_to": {
+        "entity_type": "site",
+        "candidates": [
+          {
+            "predicate": "site == 'OULU-11'",
+            "edge": "closed",
+            "support": 1,
+            "against": 0,
+            "basis": "attribute of OULU-11; stated condition 'access road closed for roadworks' did not parse"
+          }
+        ],
+        "decided": null
+      },
+      "action": "other",
+      "action_text": "use the forest track from the north side",
+      "avoid": [],
+      "evidence": {
+        "cases": [
+          {
+            "entity": "OULU-11",
+            "at": "2026-11-09T07:40:00+02:00",
+            "outcome": null
+          }
+        ],
+        "sources": [
+          "teams:thread-14_road_closed"
+        ],
+        "excerpt": "Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side.",
+        "said_by_role": "field_engineer",
+        "said_by": "Kalle Niskanen"
+      },
+      "trust": "stated",
+      "status": "open",
+      "questions_asked": [],
+      "supersedes": null,
+      "superseded_by": null,
+      "recorded_at": "2026-11-06T00:00:00Z",
+      "valid_from": "2026-11-09T07:40:00+02:00",
+      "valid_to": "2026-11-20T23:59:59+02:00",
       "valid_while": null
     }
   ]

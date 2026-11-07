@@ -25,7 +25,7 @@ def test_gets(client):
     assert t.status_code == 200 and {"messages", "questions", "notifications", "captured"} <= set(t.json())
     b = client.get("/beats/3")
     assert b.status_code == 200 and set(b.json()) == {"beat", "title", "lines", "data"}
-    assert client.get("/threads/nope").status_code == 404 and client.get("/beats/9").status_code == 404
+    assert client.get("/threads/nope").status_code == 404 and client.get("/beats/10").status_code == 404
 
 
 def test_incident_declined(client):

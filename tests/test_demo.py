@@ -25,8 +25,8 @@ def out(tmp_path_factory):
     return run_demo(tmp_path_factory.mktemp("demo") / "out")
 
 
-def test_six_beats(out):
-    for n in range(1, 8):
+def test_nine_beats(out):
+    for n in range(1, 10):
         b = load(out, f"beat_{n}.json")
         assert b["beat"] == n and b["title"] and b["lines"] and isinstance(b["data"], dict)
     assert load(out, "beat_1.json")["data"]["results"] == []
@@ -62,6 +62,21 @@ def test_beat6_superseded(out):
     assert all(r["question"] is None for r in results)
 
 
+def test_beat8_expires_on_the_stated_date(out):
+    d = load(out, "beat_8.json")["data"]
+    road = [r for r in d["results_before"] if "forest track" in r["assertion"]["action_text"]]
+    assert [r["outcome"] for r in road] == ["proposed"]
+    r, = [r for r in d["results_after"] if r["assertion"]["id"] == road[0]["assertion"]["id"]]
+    assert r["outcome"] == "declined" and r["reason"] == "expired 2026-11-20"
+
+
+def test_beat9_retracted_is_under_review(out):
+    b = load(out, "beat_9.json")
+    assert b["data"]["assertion"]["status"] == "review" and b["data"]["assertion"]["superseded_by"] is None
+    assert [(r["assertion"]["id"], r["outcome"], r["reason"]) for r in b["data"]["results"]] ==         [("CA-0001", "declined", "under review")]
+    assert b["lines"][-1] == "Erkki took it back; the tip is under review, not deleted."
+
+
 def test_graph_edge_kinds(out):
     kinds = {e["kind"] for e in load(out, "graph.json")["edges"]}
     assert {"SCOPED_BY", "EVIDENCED_BY", "CASE", "IN_SITE", "IN_REGION", "OF_MODEL"} <= kinds
@@ -80,5 +95,5 @@ def test_thread_001(out):
 
 def test_deterministic(out, tmp_path):
     again = run_demo(tmp_path / "out")
-    for n in range(1, 8):
+    for n in range(1, 10):
         assert (out / f"beat_{n}.json").read_bytes() == (again / f"beat_{n}.json").read_bytes(), n
