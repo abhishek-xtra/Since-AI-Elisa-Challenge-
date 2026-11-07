@@ -1,0 +1,28 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Break A7: the same rule in field-engineer Finnish. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "12:31",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Moi Erkki, vaihdoin SFP:n TRN-087:ään. Linkki on ylhäällä ja hälytykset kuittaantu, mutta liikenne ei palaa. Laskurit nollassa."
+    },
+    {
+      "seq": 2,
+      "time": "12:33",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "Tuttu juttu noissa vanhemmissa laitteissa. Ota portti alas, odota hetki ja nosta takaisin ylös. Älä buuttaa koko laitetta."
+    },
+    {
+      "seq": 3,
+      "time": "12:38",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Tehty, liikenne kulkee taas 👍"
+    }
+  ]
+}

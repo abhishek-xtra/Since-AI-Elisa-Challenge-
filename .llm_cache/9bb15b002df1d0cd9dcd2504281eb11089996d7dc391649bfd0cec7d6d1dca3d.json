@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash",
+  "model_version": "gemini-3.5-flash",
+  "text": "{\"messages\":[{\"time\":\"09:15\",\"author\":\"Veikko Vikkelä\",\"role\":\"Field Engineer\",\"text\":\"Hey Timo, are you heading to OULU-03 today? I heard some rumor that the access road barrier key might be in the cabinet now, but I haven't been there myself to check so not 100% sure.\"},{\"time\":\"09:18\",\"author\":\"Timo Laine\",\"role\":\"Field Engineer\",\"text\":\"Hi Veikko. Yes, driving there now. Thanks for the tip, but I think I'll check the farm first anyway just in case, since that's where it usually is.\"}]}",
+  "input_tokens": 608,
+  "output_tokens": 1107
+}

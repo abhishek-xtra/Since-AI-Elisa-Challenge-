@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"alarms_cleared\",\n      \"optics_normal\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"older units\",\n    \"condition_is_relative\": true,\n    \"action\": \"node.reboot\",\n    \"action_text\": \"reboot the whole node\",\n    \"avoid\": [\n      \"interface.bounce\"\n    ],\n    \"excerpt\": \"No, don't bounce these, it makes it worse on the older units. Just reboot the whole node.\",\n    \"said_by\": \"Sanna Senior\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"An expert gives a reusable rule for older units experiencing zero counters after an SFP replacement, recommending a full node reboot instead of bouncing the interface.\"\n}",
+  "input_tokens": 3029,
+  "output_tokens": 290
+}

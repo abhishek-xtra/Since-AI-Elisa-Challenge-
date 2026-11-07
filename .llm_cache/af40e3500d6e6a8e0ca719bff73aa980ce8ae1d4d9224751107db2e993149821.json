@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash",
+  "model_version": "gemini-3.5-flash",
+  "text": "{\"subject\": \"Access road barrier at OULU-03\", \"body\": \"Hi team,\\n\\nI was visiting site OULU-03 yesterday and noticed that the private access road now has a locked barrier.\\n\\nThe key for the barrier is at the neighbouring farm, ask for Mäkelä. He says to call ahead or just knock, and that it saves a wasted drive.\\n\\nBest regards,\\nKalle\"}",
+  "input_tokens": 504,
+  "output_tokens": 1253
+}

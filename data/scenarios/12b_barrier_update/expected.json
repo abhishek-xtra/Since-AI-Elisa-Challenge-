@@ -1,0 +1,59 @@
+{
+  "scenario": "12b_barrier_update",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/12b_barrier_update/thread.json"
+  ],
+  "ingest_first": [
+    "12_barrier"
+  ],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "workflow",
+      "event": "dispatch_created"
+    },
+    "action": "site.access_key",
+    "trust": "stated",
+    "valid_from": "2026-11-07T10:15:00+02:00"
+  },
+  "checks": {
+    "assertion_count": 2,
+    "action_text_contains": "cabinet",
+    "supersedes_old": true,
+    "old_valid_to": "2026-11-07T10:15:00+02:00"
+  },
+  "incidents": [
+    {
+      "entity": "OULU-03",
+      "event": "dispatch_created",
+      "symptoms": [],
+      "at": "2026-11-08T08:00:00+02:00",
+      "expect": "proposed",
+      "select": {
+        "action_text_contains": "cabinet"
+      }
+    },
+    {
+      "entity": "OULU-03",
+      "event": "dispatch_created",
+      "symptoms": [],
+      "at": "2026-11-08T08:00:00+02:00",
+      "expect": "declined",
+      "reason_contains": "superseded",
+      "select": {
+        "action_text_contains": "farm"
+      }
+    },
+    {
+      "entity": "OULU-03",
+      "event": "dispatch_created",
+      "symptoms": [],
+      "at": "2026-10-05T08:00:00+02:00",
+      "expect": "proposed",
+      "select": {
+        "action_text_contains": "farm"
+      }
+    }
+  ]
+}

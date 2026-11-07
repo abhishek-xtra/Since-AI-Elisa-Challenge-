@@ -1,0 +1,731 @@
+[
+  {
+    "scenario": "01_core",
+    "trap": "chat and email are one case, two sources; \"older units\" is relative (open edge at 2019).",
+    "lane": "spine",
+    "placeholder": false,
+    "inputs": [
+      "data/elisa_examples/teams_chat.json",
+      "data/elisa_examples/email.txt"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0001'], changed []"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "bind include install_year <= 2019",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind include model == 'TX-200'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind include firmware == '4.1'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind include site == 'OULU-07'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind include region == 'north'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind exclude id == 'TRN-042'",
+        "passed": true,
+        "why": "absent"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "case_count",
+        "passed": true,
+        "why": "CA-0001: 1, want 1"
+      },
+      {
+        "name": "source_count",
+        "passed": true,
+        "why": "CA-0001: 2, want 2"
+      },
+      {
+        "name": "origin_entity",
+        "passed": true,
+        "why": "CA-0001: 'TRN-042', want 'TRN-042'"
+      },
+      {
+        "name": "questions_asked",
+        "passed": true,
+        "why": "CA-0001: 0, want 0"
+      },
+      {
+        "name": "candidate install_year <= 2019",
+        "passed": true,
+        "why": "install_year <= 2019 support=1 against=0 edge=open"
+      },
+      {
+        "name": "step 1 TRN-087 sfp_replaced @2026-11-07 -> ambiguous",
+        "passed": true,
+        "why": "CA-0001 ambiguous: site OULU-11 fails site == 'OULU-07'; but install_year 2018 holds install_year <= 2019; model TX-200 holds model == 'TX-200'; firmware 4.1 holds firmware == '4.1'; region north holds region == 'north'; question: Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site."
+      },
+      {
+        "name": "step 2 answer 'All older units'",
+        "passed": true,
+        "why": "CA-0001 status=decided decided=install_year <= 2019"
+      },
+      {
+        "name": "step 3 TRN-087 sfp_replaced @2026-11-07 -> proposed",
+        "passed": true,
+        "why": "CA-0001 proposed: all hold: install_year <= 2019"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "02_newer_unit",
+    "trap": "newer unit, other model. Expected: declined, the model candidate named as failing, the year beyond the known edge.",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [],
+    "checks": [
+      {
+        "name": "step 1 TRN-101 sfp_replaced @2026-11-07 -> declined",
+        "passed": true,
+        "why": "CA-0001 declined: model TX-300 fails model == 'TX-200'; firmware 5.2 fails firmware == '4.1'; site HEL-02 fails site == 'OULU-07'; region south fails region == 'north'. Unknown: install year 2023 is beyond the known edge 2019"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "03_other_model_2018",
+    "trap": "old enough, but another model and another site. Expected: ambiguous (model and site fail, install_year/firmware/region hold).",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [],
+    "checks": [
+      {
+        "name": "step 1 TRN-063 sfp_replaced @2026-11-07 -> ambiguous",
+        "passed": true,
+        "why": "CA-0001 ambiguous: model TX-250 fails model == 'TX-200'; site OULU-11 fails site == 'OULU-07'; but install_year 2018 holds install_year <= 2019; firmware 4.1 holds firmware == '4.1'; region north holds region == 'north'; question: Your TRN-042 tip: does it apply to TRN-063 too? Different model, installed 2018, different site."
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "04_chitchat",
+    "trap": "none of it is a reusable rule. Do not have anyone give a tip, a fix, or a \"next time do X\".",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/04_chitchat/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "nothing created or changed"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "0 assertion(s), want 0"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "05_mentioned_in_passing",
+    "trap": "TRN-034 is mentioned only in passing and must not look like the subject. Mention TRN-087 by ID at least twice.",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/05_mentioned_in_passing/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0001'], changed []"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "bind include model == 'TX-200'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind include site == 'OULU-11'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind include firmware == '4.1'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind exclude id == 'TRN-034'",
+        "passed": true,
+        "why": "absent"
+      },
+      {
+        "name": "bind exclude id == 'TRN-087'",
+        "passed": true,
+        "why": "absent"
+      },
+      {
+        "name": "bind exclude site == 'OULU-03'",
+        "passed": true,
+        "why": "absent"
+      },
+      {
+        "name": "bind exclude model == 'TX-250'",
+        "passed": true,
+        "why": "absent"
+      },
+      {
+        "name": "bind exclude firmware == '4.2'",
+        "passed": true,
+        "why": "absent"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "origin_entity",
+        "passed": true,
+        "why": "CA-0001: 'TRN-087', want 'TRN-087'"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "06_hunch",
+    "trap": "the advice is a hunch, not a verified fix. Do not add a confirmation.",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/06_hunch/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0001'], changed []"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "origin_entity",
+        "passed": true,
+        "why": "CA-0001: 'TRN-033', want 'TRN-033'"
+      },
+      {
+        "name": "step 1 TRN-033 sfp_replaced @2026-11-07 -> declined",
+        "passed": true,
+        "why": "CA-0001 declined: hunch, not verified"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "07_reworded_other_model",
+    "trap": "same fix as Erkki's original \"disable the interface, wait, enable it\", but in different words (\"shut / no shut\"). Use the words \"shut / no shut\". Outcome confirmed.",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/07_reworded_other_model/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created [], changed ['CA-0001']"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "case_count",
+        "passed": true,
+        "why": "CA-0001: 2, want 2"
+      },
+      {
+        "name": "candidate model ==",
+        "passed": true,
+        "why": "model == 'TX-200' support=1 against=1 edge=closed"
+      },
+      {
+        "name": "candidate install_year <=",
+        "passed": true,
+        "why": "install_year <= 2019 support=2 against=0 edge=open"
+      },
+      {
+        "name": "candidate site ==",
+        "passed": true,
+        "why": "site == 'OULU-07' support=1 against=1 edge=closed"
+      },
+      {
+        "name": "step 1 TRN-087 sfp_replaced @2026-11-07 -> proposed",
+        "passed": true,
+        "why": "CA-0001 proposed: all hold: install_year <= 2019, firmware == '4.1', region == 'north'"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "08_conflict",
+    "trap": "a different remedy from a different expert for the same symptoms. No confirmation. Do not mention disabling/enabling the interface as the fix.",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/08_conflict/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0002'], changed ['CA-0001']"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0002 matches"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "2 assertion(s), want 2"
+      },
+      {
+        "name": "status interface.bounce",
+        "passed": true,
+        "why": "['disputed'], want disputed"
+      },
+      {
+        "name": "status sfp.replace",
+        "passed": true,
+        "why": "['disputed'], want disputed"
+      },
+      {
+        "name": "step 1 TRN-042 sfp_replaced @2026-11-07 -> proposed [interface.bounce]",
+        "passed": true,
+        "why": "CA-0001 proposed: disputed: Jari Korhonen's swap the SFP again, stated"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "09_failed_2016",
+    "trap": "the bounce fix was tried and FAILED on this unit; the reboot fixed it. Make the failure explicit.",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/09_failed_2016/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created [], changed ['CA-0001']"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "case_count",
+        "passed": true,
+        "why": "CA-0001: 2, want 2"
+      },
+      {
+        "name": "candidate install_year <=",
+        "passed": true,
+        "why": "install_year <= 2019 support=1 against=1 edge=open"
+      },
+      {
+        "name": "step 1 TRN-087 sfp_replaced @2026-11-07 -> declined",
+        "passed": true,
+        "why": "CA-0001 declined: under review"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "10_typos",
+    "trap": "the device ID only appears with typos. Copy \"trn 87\" and \"TRN087\" exactly.",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/10_typos/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0001'], changed []"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "bind include model == 'TX-200'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind include site == 'OULU-11'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind exclude id == 'TRN-087'",
+        "passed": true,
+        "why": "absent"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "origin_entity",
+        "passed": true,
+        "why": "CA-0001: 'TRN-087', want 'TRN-087'"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "11_counters_rising",
+    "trap": "symptoms almost match, but counters are rising, so the trigger does not match. Expected: the assertion is not returned at all, no question.",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [],
+    "checks": [
+      {
+        "name": "step 1 TRN-087 sfp_replaced @2026-11-07 -> absent",
+        "passed": true,
+        "why": "not returned"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "12_barrier",
+    "trap": "none; this is the rule (whenever someone is dispatched to OULU-03, get the key at the neighbouring farm from Mäkelä). Write the key location in those words: \"at the neighbouring farm, ask for Mäkelä\".",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/12_barrier/email.txt"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0001'], changed []"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "bind include site == 'OULU-03'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "bind exclude site == 'OULU-07'",
+        "passed": true,
+        "why": "absent"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "origin_entity",
+        "passed": true,
+        "why": "CA-0001: 'OULU-03', want 'OULU-03'"
+      },
+      {
+        "name": "action_text_contains",
+        "passed": true,
+        "why": "CA-0001: 'at the neighbouring farm, ask for Mäkelä', want 'farm'"
+      },
+      {
+        "name": "step 1 OULU-03 dispatch_created @2026-11-08 -> proposed",
+        "passed": true,
+        "why": "CA-0001 proposed: all hold: site == 'OULU-03'"
+      },
+      {
+        "name": "step 2 OULU-07 dispatch_created @2026-11-08 -> declined",
+        "passed": true,
+        "why": "CA-0001 declined: site OULU-07 fails site == 'OULU-03'"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "12b_barrier_update",
+    "trap": "a newer fact replacing the old key location. Veikko states it from his own observation, not hedged.",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/12b_barrier_update/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0002'], changed ['CA-0001']"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0002 matches"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "2 assertion(s), want 2"
+      },
+      {
+        "name": "action_text_contains",
+        "passed": true,
+        "why": "CA-0002: 'in the site cabinet', want 'cabinet'"
+      },
+      {
+        "name": "supersedes_old",
+        "passed": true,
+        "why": "CA-0002: True, want True"
+      },
+      {
+        "name": "old_valid_to",
+        "passed": true,
+        "why": "CA-0002: '2026-11-07T10:15:00+02:00', want '2026-11-07T10:15:00+02:00'"
+      },
+      {
+        "name": "step 1 OULU-03 dispatch_created @2026-11-08 -> proposed [cabinet]",
+        "passed": true,
+        "why": "CA-0002 proposed: all hold: site == 'OULU-03'"
+      },
+      {
+        "name": "step 2 OULU-03 dispatch_created @2026-11-08 -> declined [farm]",
+        "passed": true,
+        "why": "CA-0001 declined: superseded by CA-0002 on 2026-11-07"
+      },
+      {
+        "name": "step 3 OULU-03 dispatch_created @2026-10-05 -> proposed [farm]",
+        "passed": true,
+        "why": "CA-0001 proposed: all hold: site == 'OULU-03'"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "12c_barrier_hedged",
+    "trap": "12c_barrier_hedged",
+    "lane": "spine",
+    "placeholder": true,
+    "inputs": [
+      "data/scenarios/12b_barrier_update/thread_hedged.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0002'], changed []"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0002 matches"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "2 assertion(s), want 2"
+      },
+      {
+        "name": "action_text_contains",
+        "passed": true,
+        "why": "CA-0002: 'in the cabinet', want 'cabinet'"
+      },
+      {
+        "name": "step 1 OULU-03 dispatch_created @2026-11-08 -> proposed [farm]",
+        "passed": true,
+        "why": "CA-0001 proposed: all hold: site == 'OULU-03'"
+      },
+      {
+        "name": "step 2 OULU-03 dispatch_created @2026-11-08 -> declined [cabinet]",
+        "passed": true,
+        "why": "CA-0002 declined: hunch, not verified"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "14_road_closed",
+    "trap": "a temporary fact. It must stop applying after the date the engineer gave, with nobody retracting it: valid_to 2026-11-20 end of day Helsinki, parsed in code from the stated \"until 20 Nov\".",
+    "lane": "spine",
+    "placeholder": false,
+    "inputs": [
+      "data/scenarios/14_road_closed/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created ['CA-0001'], changed []"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "bind include site == 'OULU-11'",
+        "passed": true,
+        "why": "present"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "origin_entity",
+        "passed": true,
+        "why": "CA-0001: 'OULU-11', want 'OULU-11'"
+      },
+      {
+        "name": "action_text_contains",
+        "passed": true,
+        "why": "CA-0001: 'use the forest track from the north side', want 'forest track'"
+      },
+      {
+        "name": "step 1 OULU-11 dispatch_created @2026-11-15 -> proposed",
+        "passed": true,
+        "why": "CA-0001 proposed: all hold: site == 'OULU-11'"
+      },
+      {
+        "name": "step 2 OULU-11 dispatch_created @2026-11-21 -> declined",
+        "passed": true,
+        "why": "CA-0001 declined: expired 2026-11-20"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "15_retraction",
+    "trap": "a retraction, not a new rule and not a deletion. Ingested after 01_core, CA-0001 goes to status review (nothing deleted, nothing superseded) and gains this thread as a source; TRN-087 is then declined \"under review\".",
+    "lane": "spine",
+    "placeholder": false,
+    "inputs": [
+      "data/scenarios/15_retraction/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "created [], changed ['CA-0001']"
+      },
+      {
+        "name": "assertion",
+        "passed": true,
+        "why": "CA-0001 matches"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "1 assertion(s), want 1"
+      },
+      {
+        "name": "case_count",
+        "passed": true,
+        "why": "CA-0001: 1, want 1"
+      },
+      {
+        "name": "source_count",
+        "passed": true,
+        "why": "CA-0001: 3, want 3"
+      },
+      {
+        "name": "step 1 TRN-087 sfp_replaced @2026-11-11 -> declined",
+        "passed": true,
+        "why": "CA-0001 declined: under review"
+      }
+    ],
+    "passed": true
+  },
+  {
+    "scenario": "16_one_off",
+    "trap": "a one-off instruction that looks like a rule (an action on a device). No condition, nothing reusable: extracted false, no assertion.",
+    "lane": "spine",
+    "placeholder": false,
+    "inputs": [
+      "data/scenarios/16_one_off/thread.json"
+    ],
+    "checks": [
+      {
+        "name": "extracted",
+        "passed": true,
+        "why": "nothing created or changed"
+      },
+      {
+        "name": "assertion_count",
+        "passed": true,
+        "why": "0 assertion(s), want 0"
+      }
+    ],
+    "passed": true
+  }
+]

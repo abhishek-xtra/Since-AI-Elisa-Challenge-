@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": false,\n  \"rule\": null,\n  \"reason\": \"The expert gives a one-off instruction for the current incident without stating a general condition or reusable rule.\"\n}",
+  "input_tokens": 3188,
+  "output_tokens": 60
+}

@@ -1,0 +1,24 @@
+{
+  "scenario": "02_newer_unit",
+  "placeholder": true,
+  "inputs": [],
+  "ingest_first": [
+    "01_core"
+  ],
+  "extracted": null,
+  "incidents": [
+    {
+      "entity": "TRN-101",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "at": "2026-11-07T10:00:00+02:00",
+      "expect": "declined",
+      "reason_contains": "model"
+    }
+  ]
+}

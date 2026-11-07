@@ -1,0 +1,86 @@
+{
+  "scenario": "01_core",
+  "placeholder": false,
+  "inputs": [
+    "data/elisa_examples/teams_chat.json",
+    "data/elisa_examples/email.txt"
+  ],
+  "ingest_first": [],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "incident",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "counters_zero"
+      ]
+    },
+    "action": "interface.bounce",
+    "trust": "verified_by_outcome",
+    "evidence": {
+      "said_by": "Erkki Expert",
+      "said_by_role": "expert"
+    }
+  },
+  "checks": {
+    "assertion_count": 1,
+    "case_count": 1,
+    "source_count": 2,
+    "origin_entity": "TRN-042",
+    "questions_asked": 0,
+    "candidates": [
+      {
+        "predicate": "install_year <= 2019",
+        "edge": "open",
+        "support": 1,
+        "against": 0
+      }
+    ]
+  },
+  "bind": {
+    "candidates_include": [
+      "install_year <= 2019",
+      "model == 'TX-200'",
+      "firmware == '4.1'",
+      "site == 'OULU-07'",
+      "region == 'north'"
+    ],
+    "candidates_exclude": [
+      "id == 'TRN-042'"
+    ]
+  },
+  "incidents": [
+    {
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "at": "2026-11-07T10:00:00+02:00",
+      "expect": "ambiguous",
+      "reason_contains": "site"
+    },
+    {
+      "answer": {
+        "assertion_action": "interface.bounce",
+        "option_label": "All older units"
+      }
+    },
+    {
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "at": "2026-11-07T10:00:00+02:00",
+      "expect": "proposed"
+    }
+  ]
+}

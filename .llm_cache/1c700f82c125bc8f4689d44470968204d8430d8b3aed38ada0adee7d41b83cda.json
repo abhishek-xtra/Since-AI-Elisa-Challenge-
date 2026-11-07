@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"alarms_cleared\",\n      \"optics_normal\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"old TX-200 units from 2016\",\n    \"condition_is_relative\": false,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"disable the interface, wait about 30 seconds, and then enable it again\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Try to disable the interface, wait about 30 seconds, and then enable it again. Don't reboot the node, the port bounce usually does the trick.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"failed\",\n    \"outcome_excerpt\": \"Tried the bounce, didn't help. Counters still stuck at zero after the disable/enable.\",\n    \"about_entity\": \"TRN-019\"\n  },\n  \"reason\": \"An expert states a rule to bounce the interface instead of rebooting when traffic counters remain at zero after an SFP replacement on old TX-200 units, though the recommended action failed in this instance.\"\n}",
+  "input_tokens": 3277,
+  "output_tokens": 356
+}

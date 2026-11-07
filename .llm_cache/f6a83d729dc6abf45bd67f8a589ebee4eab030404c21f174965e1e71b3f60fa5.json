@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"alarms_cleared\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"stopped after firmware 5.0\",\n    \"condition_is_relative\": false,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"Bounce the interface\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Bounce the interface, don't reboot. FYI this stopped after firmware 5.0, so once your boxes are upgraded you won't see it anymore.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Did it, traffic back.\",\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"An expert provides a reusable fix (bounce interface, don't reboot) for zero traffic counters after an SFP swap on firmware prior to 5.0.\"\n}",
+  "input_tokens": 3031,
+  "output_tokens": 307
+}

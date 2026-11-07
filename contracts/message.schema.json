@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "message.schema.json",
+  "$defs": {
+    "Incident": {
+      "additionalProperties": false,
+      "description": "Present only when the message is a reply inside the agent's own escalation thread; the binder then skips entity resolution and uses these fields.",
+      "properties": {
+        "entity_id": {
+          "description": "Topology node or site ID the incident is on.",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "event": {
+          "description": "Event from contracts/vocabulary.md.",
+          "enum": [
+            "sfp_replaced",
+            "dispatch_created",
+            "alarm_raised",
+            "other"
+          ],
+          "title": "Event",
+          "type": "string"
+        },
+        "symptoms": {
+          "description": "Observed symptoms from contracts/vocabulary.md.",
+          "items": {
+            "enum": [
+              "link_up",
+              "link_down",
+              "optics_normal",
+              "optics_low",
+              "counters_zero",
+              "counters_rising",
+              "alarms_cleared",
+              "other"
+            ],
+            "type": "string"
+          },
+          "title": "Symptoms",
+          "type": "array"
+        }
+      },
+      "required": [
+        "entity_id",
+        "event",
+        "symptoms"
+      ],
+      "title": "Incident",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One message from any channel. Ticket IDs are never modelled; a ticket number in text is free text.",
+  "properties": {
+    "id": {
+      "description": "Unique message ID, e.g. 'teams:thread-001:1'.",
+      "title": "Id",
+      "type": "string"
+    },
+    "author": {
+      "description": "Display name of the speaker.",
+      "title": "Author",
+      "type": "string"
+    },
+    "role": {
+      "description": "Speaker's role, mapped from the source's free-text role.",
+      "enum": [
+        "field_engineer",
+        "expert",
+        "agent",
+        "other"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "ISO 8601. Elisa's chat has times only; the adapter attaches the synthetic date 2026-11-01 and documents it.",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "channel": {
+      "description": "Where the message came from.",
+      "enum": [
+        "teams",
+        "email",
+        "agent_thread"
+      ],
+      "title": "Channel",
+      "type": "string"
+    },
+    "thread_id": {
+      "description": "Conversation the message belongs to; questions are posted back into this thread.",
+      "title": "Thread Id",
+      "type": "string"
+    },
+    "text": {
+      "description": "Message text, verbatim.",
+      "title": "Text",
+      "type": "string"
+    },
+    "incident": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Incident"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Only in the agent's own escalation thread. Absent everywhere else."
+    }
+  },
+  "required": [
+    "id",
+    "author",
+    "role",
+    "timestamp",
+    "channel",
+    "thread_id",
+    "text"
+  ],
+  "title": "Message",
+  "type": "object"
+}

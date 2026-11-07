@@ -1,0 +1,47 @@
+{
+  "scenario": "12c_barrier_hedged",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/12b_barrier_update/thread_hedged.json"
+  ],
+  "ingest_first": [
+    "12_barrier"
+  ],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "workflow",
+      "event": "dispatch_created"
+    },
+    "action": "site.access_key",
+    "trust": "hunch",
+    "supersedes": null
+  },
+  "checks": {
+    "assertion_count": 2,
+    "action_text_contains": "cabinet"
+  },
+  "incidents": [
+    {
+      "entity": "OULU-03",
+      "event": "dispatch_created",
+      "symptoms": [],
+      "at": "2026-11-08T08:00:00+02:00",
+      "expect": "proposed",
+      "select": {
+        "action_text_contains": "farm"
+      }
+    },
+    {
+      "entity": "OULU-03",
+      "event": "dispatch_created",
+      "symptoms": [],
+      "at": "2026-11-08T08:00:00+02:00",
+      "expect": "declined",
+      "reason_contains": "hunch",
+      "select": {
+        "action_text_contains": "cabinet"
+      }
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "scenario": "09_failed_2016",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/09_failed_2016/thread.json"
+  ],
+  "ingest_first": [
+    "01_core"
+  ],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "incident",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "counters_zero"
+      ]
+    },
+    "action": "interface.bounce",
+    "status": "review"
+  },
+  "checks": {
+    "assertion_count": 1,
+    "case_count": 2,
+    "candidates": [
+      {
+        "predicate_prefix": "install_year <=",
+        "against_min": 1
+      }
+    ]
+  },
+  "incidents": [
+    {
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "at": "2026-11-07T10:00:00+02:00",
+      "expect": "declined",
+      "reason_contains": "review"
+    }
+  ]
+}

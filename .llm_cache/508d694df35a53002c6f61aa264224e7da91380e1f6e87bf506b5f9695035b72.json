@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"older units\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"disable the interface and enable it again\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"On the older units, disable the interface and enable it again before rebooting anything.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"An expert states a reusable rule to bounce the interface instead of rebooting on older units when traffic counters remain at zero with the interface up after an SFP replacement.\"\n}",
+  "input_tokens": 2991,
+  "output_tokens": 277
+}

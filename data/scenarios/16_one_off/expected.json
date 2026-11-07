@@ -1,0 +1,12 @@
+{
+  "scenario": "16_one_off",
+  "placeholder": false,
+  "inputs": [
+    "data/scenarios/16_one_off/thread.json"
+  ],
+  "ingest_first": [],
+  "extracted": false,
+  "checks": {
+    "assertion_count": 0
+  }
+}

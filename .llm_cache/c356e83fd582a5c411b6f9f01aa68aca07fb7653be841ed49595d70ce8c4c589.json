@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"on the TX-250s\",\n    \"condition_is_relative\": false,\n    \"action\": \"node.reboot\",\n    \"action_text\": \"always reboot the whole node\",\n    \"avoid\": [\n      \"interface.bounce\"\n    ],\n    \"excerpt\": \"Speaking as the senior network expert on this: on the TX-250s, always reboot the whole node, never bounce the port.\",\n    \"said_by\": \"Veikko Vikkelä\",\n    \"said_by_role\": \"field_engineer\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"TRN-088\",\n    \"retracts\": false\n  },\n  \"reason\": \"Veikko states a general rule for handling traffic loss with link up and zero counters after an SFP swap on TX-250 devices, though his header role is field_engineer.\"\n}",
+  "input_tokens": 3088,
+  "output_tokens": 309
+}

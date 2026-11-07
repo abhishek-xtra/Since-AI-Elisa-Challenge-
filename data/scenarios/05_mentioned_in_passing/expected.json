@@ -1,0 +1,43 @@
+{
+  "scenario": "05_mentioned_in_passing",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/05_mentioned_in_passing/thread.json"
+  ],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "incident",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero"
+      ]
+    },
+    "action": "interface.bounce",
+    "evidence": {
+      "said_by": "Erkki Expert"
+    }
+  },
+  "checks": {
+    "assertion_count": 1,
+    "origin_entity": "TRN-087"
+  },
+  "bind": {
+    "candidates_include": [
+      "model == 'TX-200'",
+      "site == 'OULU-11'",
+      "firmware == '4.1'"
+    ],
+    "candidates_exclude": [
+      "id == 'TRN-034'",
+      "id == 'TRN-087'",
+      "site == 'OULU-03'",
+      "model == 'TX-250'",
+      "firmware == '4.2'"
+    ]
+  },
+  "incidents": [],
+  "ingest_first": []
+}

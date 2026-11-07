@@ -1,0 +1,15 @@
+{
+  "channel": "teams",
+  "note": "Written by hand for demo beat 7 (docs/DEMO_CHAT.md scene 3). Synthetic; shown in the demo, never ingested: Sami states no rule.",
+  "date": "2026-11-08",
+  "placeholder": false,
+  "participants": [
+    {"name": "Sami Korhonen", "role": "Field Engineer"}
+  ],
+  "messages": [
+    {"seq": 1, "time": "14:00", "author": "Sami Korhonen", "role": "Field Engineer",
+     "text": "TRN-105 at HEL-02 not passing traffic after an SFP change. Interface up, optics fine, alarms clear, counters zero. Thinking of swapping the SFP again."},
+    {"seq": 2, "time": "14:03", "author": "Sami Korhonen", "role": "Field Engineer",
+     "text": "That did it, counters moving. Who's Erkki?"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "scenario": "04_chitchat",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/04_chitchat/thread.json"
+  ],
+  "extracted": false,
+  "checks": {
+    "assertion_count": 0
+  },
+  "incidents": [],
+  "ingest_first": []
+}

@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"sfp.replace\",\n    \"action_text\": \"try another vendor\",\n    \"avoid\": [],\n    \"excerpt\": \"I think it might be the SFP batch, maybe try another vendor.\",\n    \"said_by\": \"Pirjo Heikkinen\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": true,\n    \"first_hand\": false,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"TRN-033\"\n  },\n  \"reason\": \"The expert suggests a hedged fix (replacing the SFP with another vendor's) for a post-SFP-replacement fault where the link is up but counters are at zero.\"\n}",
+  "input_tokens": 3173,
+  "output_tokens": 265
+}

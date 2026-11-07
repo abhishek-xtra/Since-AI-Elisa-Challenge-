@@ -1,0 +1,43 @@
+{
+  "scenario": "06_hunch",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/06_hunch/thread.json"
+  ],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "incident",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "counters_zero"
+      ]
+    },
+    "action": "sfp.replace",
+    "trust": "hunch",
+    "evidence": {
+      "said_by": "Pirjo Heikkinen"
+    }
+  },
+  "checks": {
+    "assertion_count": 1,
+    "origin_entity": "TRN-033"
+  },
+  "incidents": [
+    {
+      "entity": "TRN-033",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "at": "2026-11-07T10:00:00+02:00",
+      "expect": "declined",
+      "reason_contains": "hunch"
+    }
+  ],
+  "ingest_first": []
+}

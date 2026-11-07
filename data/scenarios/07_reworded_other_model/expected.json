@@ -1,0 +1,55 @@
+{
+  "scenario": "07_reworded_other_model",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/07_reworded_other_model/thread.json"
+  ],
+  "ingest_first": [
+    "01_core"
+  ],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "incident",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "counters_zero"
+      ]
+    },
+    "action": "interface.bounce",
+    "trust": "verified_by_outcome"
+  },
+  "checks": {
+    "assertion_count": 1,
+    "case_count": 2,
+    "candidates": [
+      {
+        "predicate_prefix": "model ==",
+        "against_min": 1
+      },
+      {
+        "predicate_prefix": "install_year <=",
+        "support": 2
+      },
+      {
+        "predicate_prefix": "site ==",
+        "against_min": 1
+      }
+    ]
+  },
+  "incidents": [
+    {
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "at": "2026-11-07T10:00:00+02:00",
+      "expect": "proposed"
+    }
+  ]
+}

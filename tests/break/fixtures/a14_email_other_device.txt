@@ -1,0 +1,12 @@
+From: Erkki Expert
+To: Veikko Vikkelä
+Subject: TRN-087 traffic not recovering after SFP replacement
+Date: Sun, 01 Nov 2026 15:00:00 +0200
+
+Hi Veikko,
+
+About TRN-087 at OULU-11 this afternoon: interface UP, optical levels OK, alarms cleared, counters at zero.
+On the older units, disable the interface and enable it again before rebooting anything.
+
+Regards,
+Erkki

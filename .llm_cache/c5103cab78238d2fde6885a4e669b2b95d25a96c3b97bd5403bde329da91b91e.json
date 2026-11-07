@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": false,\n  \"rule\": null,\n  \"reason\": \"The expert only offers a hedged one-off troubleshooting suggestion for this specific incident rather than stating a reusable operational rule with a condition and action.\"\n}",
+  "input_tokens": 3123,
+  "output_tokens": 67
+}

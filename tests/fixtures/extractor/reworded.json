@@ -1,0 +1,11 @@
+{
+  "channel": "teams",
+  "date": "2026-11-05",
+  "note": "Extractor test fixture: Erkki's rule in other words (shut / no shut) on TRN-063. Written by hand.",
+  "messages": [
+    {"seq": 1, "time": "13:40", "author": "Veikko Vikkelä", "role": "Field Engineer", "text": "Erkki, new SFP in TRN-063 at OULU-11. Port is up, alarms gone, rx light ok, but counters sit at zero. no traffic"},
+    {"seq": 2, "time": "13:43", "author": "Erkki Expert", "role": "Network Expert", "text": "Classic on the old boxes. Do a shut / no shut on the port before you touch anything else, no need to reload the node."},
+    {"seq": 3, "time": "13:47", "author": "Veikko Vikkelä", "role": "Field Engineer", "text": "did a shut / no shut on the port, came back"},
+    {"seq": 4, "time": "13:48", "author": "Erkki Expert", "role": "Network Expert", "text": "👍"}
+  ]
+}

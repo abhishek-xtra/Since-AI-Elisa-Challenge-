@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"vanhemmissa laitteissa\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"Ota portti alas, odota hetki ja nosta takaisin ylös\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Tuttu juttu noissa vanhemmissa laitteissa. Ota portti alas, odota hetki ja nosta takaisin ylös. Älä buuttaa koko laitetta.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Tehty, liikenne kulkee taas 👍\",\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"The expert identifies a recurring issue on older devices after an SFP replacement where the link is up but counters remain at zero, recommending bouncing the port rather than rebooting the device.\"\n}",
+  "input_tokens": 3034,
+  "output_tokens": 326
+}

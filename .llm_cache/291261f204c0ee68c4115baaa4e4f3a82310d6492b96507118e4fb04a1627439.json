@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"found\":false,\"rule\":null,\"reason\":\"The conversation is social chat about lunch and scheduling a meeting, with no operational rule.\"}",
+  "input_tokens": 3194,
+  "output_tokens": 44
+}

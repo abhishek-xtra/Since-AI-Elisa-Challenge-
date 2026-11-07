@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"workflow\",\n    \"event\": \"dispatch_created\",\n    \"symptoms\": [],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"site.access_key\",\n    \"action_text\": \"at the neighbouring farm, ask for Mäkelä\",\n    \"avoid\": [],\n    \"excerpt\": \"If you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä.\",\n    \"said_by\": \"Kalle Niskanen\",\n    \"said_by_role\": \"other\",\n    \"hedged\": false,\n    \"first_hand\": true,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"OULU-03\",\n    \"retracts\": false\n  },\n  \"reason\": \"The message provides a reusable site-access rule on where to obtain the barrier key when dispatched to the site, based on first-hand experience.\"\n}",
+  "input_tokens": 3163,
+  "output_tokens": 272
+}

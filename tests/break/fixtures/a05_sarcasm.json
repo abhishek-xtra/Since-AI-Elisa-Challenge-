@@ -1,0 +1,35 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Break A5: the only 'advice' is a sarcastic joke. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "16:01",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "TRN-045 again, new SFP, link up, counters zero. Ideas?"
+    },
+    {
+      "seq": 2,
+      "time": "16:02",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "sure, reboot it, that always works 😄 (don't)"
+    },
+    {
+      "seq": 3,
+      "time": "16:03",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "haha. I'll wait for you to get back from the meeting then"
+    },
+    {
+      "seq": 4,
+      "time": "16:04",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "yep, 20 min"
+    }
+  ]
+}

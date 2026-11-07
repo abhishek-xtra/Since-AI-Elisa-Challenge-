@@ -1,0 +1,28 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Break A8: the expert states an explicit year boundary. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "14:00",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "TRN-019 at OULU-03, new SFP, link up, counters zero."
+    },
+    {
+      "seq": 2,
+      "time": "14:02",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "That happens on units installed before 2018. Disable the interface and enable it again, don't reboot."
+    },
+    {
+      "seq": 3,
+      "time": "14:06",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Did that, traffic is back."
+    }
+  ]
+}

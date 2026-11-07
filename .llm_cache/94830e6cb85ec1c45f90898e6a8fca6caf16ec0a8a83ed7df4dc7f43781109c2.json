@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": false,\n  \"rule\": null,\n  \"reason\": \"The conversation is casual chat about lunch, a meeting change, and a coffee machine, with no operational rule stated.\"\n}",
+  "input_tokens": 3288,
+  "output_tokens": 62
+}

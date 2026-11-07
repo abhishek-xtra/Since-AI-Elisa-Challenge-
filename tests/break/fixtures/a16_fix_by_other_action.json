@@ -1,0 +1,35 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Break A16: the bounce did not help, a reboot did. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "17:00",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "TRN-120 new SFP, link up, alarms cleared, counters zero."
+    },
+    {
+      "seq": 2,
+      "time": "17:02",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "On the older units: disable the interface and enable it again. Don't reboot unless that fails."
+    },
+    {
+      "seq": 3,
+      "time": "17:08",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Bounced it, no change. Rebooted the whole node and traffic is back."
+    },
+    {
+      "seq": 4,
+      "time": "17:09",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "Hm, interesting."
+    }
+  ]
+}

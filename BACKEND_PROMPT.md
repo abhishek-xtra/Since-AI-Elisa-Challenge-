@@ -1,4 +1,4 @@
-# BACKEND PROMPT: Elisa hidden-knowledge context layer
+﻿# BACKEND PROMPT: Elisa hidden-knowledge context layer
 
 You are building the backend of a hackathon entry for Elisa's "hidden knowledge" challenge. The full plan is `HANDOFF.md` in this repo (the merged team handoff; `MIKAEL_HANDOFF.md` and `ABHISHEK_HANDOFF.md` are history). This prompt is the build spec distilled from it, and it already includes Part A and item B1 of `BACKEND_PROMPT_ADDENDUM.md` (supersede rule, first-hand trust, beat 6, graph shape); do not read the addendum for anything else. Where this prompt and the handoff disagree, this prompt wins for the build. Read `HANDOFF.md` sections 4, 5, 12 and Appendix A before writing code. Read `TRANSCRIPT_RECORDING.md` only if a design question comes up.
 
@@ -19,6 +19,7 @@ What this is: candidate elimination over the topology. No numeric confidence, no
 5. **Python 3.12 or newer (the machine has 3.14 via `py -3.14`), `pytest`, `pydantic` for the contracts, `google-genai`, `neo4j` driver, `pyvis` for the fallback export, `fastapi` and `uvicorn` only for the thin read API in section 8.** No other dependencies without asking. The submission form has a "Generative AI in your project" field and a Gemini prize category: `README.md` must state which Gemini models were used for what.
 6. **Build nothing from the "stretch" or "pending" lists in section 9.** Leave the named hooks, nothing more.
 7. **Honest reporting.** If a gate fails, say which assertion failed and why. Do not weaken a test to pass it.
+8. **Rollback is always possible.** Build on the `backend` branch, never on `main`. One commit per module, after its gate, and a tag `gate-N` on each. `main` only receives the branch by merge when a human says so. Behaviour rules that came in late and might change again (the open edge in 4.4/4.5, the supersede rule in 5.2, first-hand trust in 4.4) each live in one clearly named function with its own test file, so reverting one is deleting one function and one test, not editing the pipeline. No feature flags.
 
 ## 2b. LLM rules: Gemini on Google Cloud Vertex AI
 
@@ -48,18 +49,19 @@ Both IDs are constants at the top of `llm.py` and nowhere else. At step 0 make o
 - Retry 429 and 503 with exponential backoff, five attempts, then raise.
 - **Cache**: key = SHA-256 of (model, system, user, schema JSON). Store under `.llm_cache/<key>.json` with the raw response text. Read before calling. Commit the directory. A `LLM_OFFLINE=1` environment variable makes a cache miss raise instead of calling, so CI and the demo prove they run offline.
 - Log model, token usage from `response.usage_metadata`, and cache hit or miss, one line per call.
+- **Hard spend cap, in our code.** `llm.py` keeps a running estimated cost in `.llm_cache/_spend.json` (EUR, from `usage_metadata` tokens and a conservative price table at the top of `llm.py`: assume 5 EUR per million input tokens and 20 EUR per million output tokens for both models until real prices are pasted in). Before every live call it reads `LLM_BUDGET_EUR` (default `50`) and raises `BudgetExceeded` if the total would pass it. Cache hits cost nothing. The Google Cloud budget alert is only an email; this counter is the stop.
 
 **Schema rules that keep Gemini's structured output stable.** Gemini's `response_schema` accepts a subset of JSON Schema. Follow these or the call fails or drifts:
 
 - Define every output type as a pydantic model with flat, explicit fields. No `dict[str, Any]`, no `additionalProperties`, no recursive models, no `anyOf` unions other than `Optional[X]`.
 - Controlled values are `Literal[...]` or `Enum` built from `contracts/vocabulary.md`, so the model cannot invent a symptom or action. Include `"other"` in every enum.
 - Lists have item types that are themselves flat models or literals.
-- Keep output models small: the extractor's output is `ExtractedRule` (trigger kind, event, symptoms, stated_condition as text, condition_is_relative: bool, action, action_text, avoid, excerpt, said_by, said_by_role, hedged: bool, first_hand: bool, outcome_confirmed: bool, outcome_excerpt), or `null` via a wrapper `ExtractionResult { found: bool, rule: Optional[ExtractedRule], reason: str }`. Binding, trust, candidates, dates and IDs are **not** produced by the model; `binder/` and `extractor/` derive them deterministically from the output.
+- Keep output models small: the extractor's output is `ExtractedRule` (trigger kind, event, symptoms, stated_condition as text, condition_is_relative: bool, action, action_text, avoid, excerpt, said_by, said_by_role, hedged: bool, first_hand: bool, outcome: recovered|failed|unknown, outcome_excerpt), or `null` via a wrapper `ExtractionResult { found: bool, rule: Optional[ExtractedRule], reason: str }`. Binding, trust, candidates, dates and IDs are **not** produced by the model; `binder/` and `extractor/` derive them deterministically from the output.
 - Put field descriptions in `Field(description=...)`. They are sent to the model and they matter.
 
 **Prompt rules for the extractor.**
 
-- System prompt: the role (an assistant that spots reusable operational rules in network-operations conversations), the vocabulary lists verbatim, the definition of a reusable rule (a condition plus an action that would apply to a future incident, not a one-off instruction), and the hard rules: `excerpt` must be copied character for character from the conversation; `found=false` when the thread contains no reusable rule; one rule per thread, the one most strongly stated; `hedged=true` when the speaker says "maybe", "I think", "might"; `first_hand=true` only when the speaker reports something they did or saw themselves ("I moved it", "it's in the cabinet now", "I'm at the site and the gate is open"), not something they were told; `condition_is_relative=true` when the stated condition is a comparative with no number stated by the rule's speaker ("older units", "the big sites"), even if someone else in the thread guessed a number; `outcome_confirmed=true` only if a later message reports the action worked.
+- System prompt: the role (an assistant that spots reusable operational rules in network-operations conversations), the vocabulary lists verbatim, the definition of a reusable rule (a condition plus an action that would apply to a future incident, not a one-off instruction), and the hard rules: `excerpt` must be copied character for character from the conversation; `found=false` when the thread contains no reusable rule; one rule per thread, the one most strongly stated; `hedged=true` when the speaker says "maybe", "I think", "might"; `first_hand=true` only when the speaker reports something they did or saw themselves ("I moved it", "it's in the cabinet now", "I'm at the site and the gate is open"), not something they were told; `condition_is_relative=true` when the stated condition is a comparative with no number stated by the rule's speaker ("older units", "the big sites"), even if someone else in the thread guessed a number; `outcome=recovered` only if a later message reports the action worked; `outcome=failed` only if a later message reports the action was tried and did not work; otherwise `unknown`.
 - User prompt: the thread as `[time] Name (role): text` lines, nothing else.
 - One worked example in the system prompt, from a **different domain than the fixture** (a power-supply fan rule, not the SFP rule), so the test on Erkki's thread is not circular.
 - The evidence check in `extractor/` re-verifies the excerpt as a substring after whitespace normalisation, regardless of what the model claims.
@@ -240,7 +242,7 @@ For two or more `disputed` assertions matching the same incident, order by: trus
 
 ### 5.7 Expert notification
 
-When an assertion is `proposed`, append `{"to": said_by, "text": "Your tip from <date> was used on <entity> today."}` to `out/notifications.json`. Nothing else.
+When an assertion is `proposed`, append `{"to": said_by, "text": "Your tip from <date> was proposed for <entity> today."}` to `out/notifications.json`. Nothing else.
 
 ## 6. Build order, tests and gates
 
@@ -266,7 +268,7 @@ Scenario folders must exist for Appendix A rows 1 to 12 (the spine) plus `12b_ba
 
 Each beat prints a short human-readable block and writes `out/beat_N.json`. Runs fully from the LLM cache. Order:
 
-1. **No context.** Incident on TRN-087 with an empty store. The stand-in agent (one prompt, one tool call, cached) proposes a reboot or another SFP swap. Show the empty `get_context` result and the agent text.
+1. **No context.** Incident on TRN-087 with an empty store. The stand-in agent (one prompt, one tool call, cached) says no captured context applies and adds nothing; it must not invent a procedure. Show the empty `get_context` result and the agent text.
 2. **Capture and link.** Ingest the chat and the email. Print the assertion, the candidates with support counts, the trust, and "0 questions asked". Write `out/graph.json` (nodes, edges with `kind: SCOPED_BY|EVIDENCED_BY`).
 3. **First use and the one question.** Same incident on TRN-087. `ambiguous` on site. Print the question. Simulate Erkki answering option 0. Re-run: `proposed`. Agent text cites Erkki, 1 case, avoid reboot. Print the counter: 12 messages, 1 assertion, 0 forms, 1 tap.
 4. **Decline.** Incident on TRN-101. `declined`, reason names the failing model candidate and the year beyond the known edge.

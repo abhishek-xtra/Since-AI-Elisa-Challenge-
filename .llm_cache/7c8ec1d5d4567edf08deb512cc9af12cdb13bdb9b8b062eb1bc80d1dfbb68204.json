@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"units installed before 2018\",\n    \"condition_is_relative\": false,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"Disable the interface and enable it again\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"That happens on units installed before 2018. Disable the interface and enable it again, don't reboot.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Did that, traffic is back.\"\n  },\n  \"reason\": \"An expert states a reusable rule for handling zero counters after an SFP replacement on units installed before a specific year.\"\n}",
+  "input_tokens": 2712,
+  "output_tokens": 272
+}

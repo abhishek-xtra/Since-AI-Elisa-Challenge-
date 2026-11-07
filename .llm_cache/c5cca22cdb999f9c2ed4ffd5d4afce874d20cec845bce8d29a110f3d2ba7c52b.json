@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"workflow\",\n    \"event\": \"dispatch_created\",\n    \"symptoms\": [],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"site.access_key\",\n    \"action_text\": \"in the site cabinet\",\n    \"avoid\": [],\n    \"excerpt\": \"Just a heads up that the key moved, it's in the site cabinet now. No need to go to the farm any more to open the access road barrier.\",\n    \"said_by\": \"Veikko Vikkelä\",\n    \"said_by_role\": \"field_engineer\",\n    \"hedged\": false,\n    \"first_hand\": true,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"OULU-03\"\n  },\n  \"reason\": \"A field engineer at the site reports first-hand that the access road barrier key is now kept in the site cabinet, which is a reusable site access workflow rule.\"\n}",
+  "input_tokens": 3010,
+  "output_tokens": 267
+}

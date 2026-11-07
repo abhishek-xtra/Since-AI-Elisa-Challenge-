@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"older boxes\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"bounce the port\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Link was up, counters at zero. Erkki told me last time that on these older boxes you just bounce the port instead of rebooting, so I did that and it worked.\",\n    \"said_by\": \"Veikko Vikkelä\",\n    \"said_by_role\": \"field_engineer\",\n    \"hedged\": false,\n    \"first_hand\": true,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Link was up, counters at zero. Erkki told me last time that on these older boxes you just bounce the port instead of rebooting, so I did that and it worked.\",\n    \"about_entity\": \"TRN-063\",\n    \"retracts\": false\n  },\n  \"reason\": \"The field engineer states a reusable rule for when a link is up with zero counters after an SFP change on older boxes: bounce the port instead of rebooting, which worked.\"\n}",
+  "input_tokens": 3097,
+  "output_tokens": 343
+}

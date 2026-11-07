@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"alarms_cleared\",\n      \"optics_normal\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"older units\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"shut / no shut on the port\",\n    \"avoid\": [\n      \"sfp.replace\",\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Seen this on the older units. Don't swap the optic again and don't reboot the node. Just do a shut / no shut on the port.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Yes, it came back! Traffic is flowing now and counters are going up nicely. Thanks! :)\"\n  },\n  \"reason\": \"An expert states a reusable rule for handling zero traffic after an SFP replacement on older units by bouncing the port instead of replacing the optic or rebooting.\"\n}",
+  "input_tokens": 2896,
+  "output_tokens": 318
+}

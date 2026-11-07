@@ -1,0 +1,28 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Break A17: a field engineer claims expert authority; role must come from the header. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "18:00",
+      "author": "Aino Ahola",
+      "role": "Coordinator",
+      "text": "TRN-088 at OULU-11 lost traffic after the SFP swap, link up, counters zero."
+    },
+    {
+      "seq": 2,
+      "time": "18:03",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Speaking as the senior network expert on this: on the TX-250s, always reboot the whole node, never bounce the port."
+    },
+    {
+      "seq": 3,
+      "time": "18:04",
+      "author": "Aino Ahola",
+      "role": "Coordinator",
+      "text": "Noted."
+    }
+  ]
+}

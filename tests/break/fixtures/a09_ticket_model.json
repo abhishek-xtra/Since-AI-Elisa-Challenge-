@@ -1,0 +1,28 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Break A9: ticket number, model string and firmware version in the text. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "15:00",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "INC0012345: TRN-033, TX-200 on 4.1. New SFP, link up, counters zero."
+    },
+    {
+      "seq": 2,
+      "time": "15:03",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "On TX-200 units with firmware 4.1 bounce the interface, don't reboot. Put that in INC0012345 too."
+    },
+    {
+      "seq": 3,
+      "time": "15:07",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Did that, works. Closing INC0012345."
+    }
+  ]
+}

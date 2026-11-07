@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"found\":true,\"rule\":{\"trigger_kind\":\"workflow\",\"event\":\"dispatch_created\",\"symptoms\":[],\"stated_condition\":null,\"condition_is_relative\":false,\"action\":\"site.access_key\",\"action_text\":\"at the neighbouring farm, ask for Mäkelä\",\"avoid\":[],\"excerpt\":\"If you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä. I picked it up from him myself yesterday.\",\"said_by\":\"Kalle Niskanen\",\"said_by_role\":\"other\",\"hedged\":false,\"first_hand\":true,\"outcome\":\"unknown\",\"outcome_excerpt\":null,\"about_entity\":\"OULU-03\"},\"reason\":\"The message states a reusable workflow rule about where to get the barrier key when dispatched to the site, based on first-hand experience.\"}",
+  "input_tokens": 2969,
+  "output_tokens": 197
+}

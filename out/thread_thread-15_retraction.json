@@ -1,0 +1,29 @@
+{
+  "thread_id": "thread-15_retraction",
+  "channel": "teams",
+  "messages": [
+    {
+      "id": "teams:thread-15_retraction:1",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "timestamp": "2026-11-10T16:20:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-15_retraction",
+      "text": "Correction on the SFP swap thing where the link comes up but the counters stay at zero: ignore what I said about the bounce on the older units, that was a different issue, don't rely on it.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-15_retraction:2",
+      "author": "Pirjo Virtanen",
+      "role": "expert",
+      "timestamp": "2026-11-10T16:24:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-15_retraction",
+      "text": "Ok, noted. Let us know when you know more.",
+      "incident": null
+    }
+  ],
+  "questions": [],
+  "notifications": [],
+  "captured": []
+}

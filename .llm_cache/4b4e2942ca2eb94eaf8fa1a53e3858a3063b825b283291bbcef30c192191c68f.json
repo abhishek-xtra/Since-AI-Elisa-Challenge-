@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"optics_normal\",\n      \"counters_zero\",\n      \"other\"\n    ],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"disable the interface, wait a bit, enable it again\",\n    \"avoid\": [\n      \"node.reboot\",\n      \"sfp.replace\"\n    ],\n    \"excerpt\": \"No, disable the interface, wait a bit, enable it again; don't reboot it and don't swap the SFP again.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Done on TRN087, traffic is back. Looks like it did the trick! :)\"\n  },\n  \"reason\": \"An expert gives an action to bounce the interface (and avoid rebooting or replacing the SFP) when traffic does not flow despite link up and normal optics after an SFP replacement.\"\n}",
+  "input_tokens": 2921,
+  "output_tokens": 318
+}

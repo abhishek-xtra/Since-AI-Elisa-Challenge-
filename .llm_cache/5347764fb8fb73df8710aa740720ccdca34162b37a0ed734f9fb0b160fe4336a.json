@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"found\":true,\"rule\":{\"trigger_kind\":\"incident\",\"event\":\"sfp_replaced\",\"symptoms\":[\"link_up\",\"counters_zero\"],\"stated_condition\":null,\"condition_is_relative\":false,\"action\":\"sfp.replace\",\"action_text\":\"swap the SFP again\",\"avoid\":[\"interface.bounce\",\"node.reboot\"],\"excerpt\":\"Just swap the SFP again, it's always the optic in these cases. Don't bother with bouncing the interface or rebooting the node, a second SFP always fixes it.\",\"said_by\":\"Jari Korhonen\",\"said_by_role\":\"expert\",\"hedged\":false,\"first_hand\":false,\"outcome\":\"unknown\",\"outcome_excerpt\":null,\"about_entity\":\"TRN-042\"},\"reason\":\"An expert gives a reusable fix (replace the SFP again and avoid bouncing the interface or rebooting) for a reported fault where the link is up after an SFP replacement but traffic counters stay at zero.\"}",
+  "input_tokens": 3157,
+  "output_tokens": 217
+}

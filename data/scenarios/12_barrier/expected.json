@@ -1,0 +1,49 @@
+{
+  "scenario": "12_barrier",
+  "placeholder": true,
+  "inputs": [
+    "data/scenarios/12_barrier/email.txt"
+  ],
+  "extracted": true,
+  "assertion": {
+    "trigger": {
+      "kind": "workflow",
+      "event": "dispatch_created"
+    },
+    "action": "site.access_key",
+    "trust": "stated",
+    "applies_to": {
+      "entity_type": "site"
+    }
+  },
+  "checks": {
+    "assertion_count": 1,
+    "origin_entity": "OULU-03",
+    "action_text_contains": "farm"
+  },
+  "bind": {
+    "candidates_include": [
+      "site == 'OULU-03'"
+    ],
+    "candidates_exclude": [
+      "site == 'OULU-07'"
+    ]
+  },
+  "incidents": [
+    {
+      "entity": "OULU-03",
+      "event": "dispatch_created",
+      "symptoms": [],
+      "at": "2026-11-08T08:00:00+02:00",
+      "expect": "proposed"
+    },
+    {
+      "entity": "OULU-07",
+      "event": "dispatch_created",
+      "symptoms": [],
+      "at": "2026-11-08T08:00:00+02:00",
+      "expect": "declined"
+    }
+  ],
+  "ingest_first": []
+}

@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"bounce the interface\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Then bounce the interface. No reboot.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"ok works now\",\n    \"about_entity\": \"TRN-033\",\n    \"retracts\": false\n  },\n  \"reason\": \"The expert diagnoses the reported fault after an SFP swap (link up, counters at zero) and gives a reusable fix to bounce the interface rather than reboot.\"\n}",
+  "input_tokens": 3161,
+  "output_tokens": 271
+}

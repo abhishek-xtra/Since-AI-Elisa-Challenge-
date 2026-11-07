@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash",
+  "model_version": "gemini-3.5-flash",
+  "text": "{\n  \"messages\": [\n    {\n      \"time\": \"14:15\",\n      \"author\": \"Timo Laine\",\n      \"role\": \"Field Engineer\",\n      \"text\": \"Hi Pirjo, I just changed the SFP on TRN-033 at site OULU-03. The link is up and optics look normal, but the counters are at zero and there is no traffic passing through.\"\n    },\n    {\n      \"time\": \"14:18\",\n      \"author\": \"Pirjo Heikkinen\",\n      \"role\": \"Network Expert\",\n      \"text\": \"Hi Timo. That is weird if the optical levels are fine. Did you try a hard shut/no shut on the port?\"\n    },\n    {\n      \"time\": \"14:20\",\n      \"author\": \"Timo Laine\",\n      \"role\": \"Field Engineer\",\n      \"text\": \"Yes, tried that and also bounced the interface, but still same. Link is green but zero packets moving.\"\n    },\n    {\n      \"time\": \"14:23\",\n      \"author\": \"Pirjo Heikkinen\",\n      \"role\": \"Network Expert\",\n      \"text\": \"I think it might be the SFP batch, maybe try another vendor. I am not 100% sure though, I have not seen this behavior myself before.\"\n    },\n    {\n      \"time\": \"14:26\",\n      \"author\": \"Timo Laine\",\n      \"role\": \"Field Engineer\",\n      \"text\": \"Ok, I don't have other brands with me today. I will look for another vendor's SFP tomorrow from the warehouse and try that. Thanks!\"\n    }\n  ]\n}",
+  "input_tokens": 671,
+  "output_tokens": 1755
+}

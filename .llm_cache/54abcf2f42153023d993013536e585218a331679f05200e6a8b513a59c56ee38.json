@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"workflow\",\n    \"event\": \"dispatch_created\",\n    \"symptoms\": [],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"site.access_key\",\n    \"action_text\": \"the barrier has a keypad now, gate code is 1234, no key needed\",\n    \"avoid\": [],\n    \"excerpt\": \"I was there yesterday: the barrier has a keypad now, gate code is 1234, no key needed.\",\n    \"said_by\": \"Veikko Vikkelä\",\n    \"said_by_role\": \"field_engineer\",\n    \"hedged\": false,\n    \"first_hand\": true,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null\n  },\n  \"reason\": \"A field engineer reports first-hand how to get through the site gate for future dispatches.\"\n}",
+  "input_tokens": 2701,
+  "output_tokens": 244
+}
