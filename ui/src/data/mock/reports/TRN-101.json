@@ -1,0 +1,16 @@
+{
+  "channel": "teams",
+  "note": "Hand-written for the UI (docs/DEMO_CHAT.md scene 4). Synthetic; no backend fixture exists for this report. Shown only, never ingested.",
+  "entity_id": "TRN-101",
+  "date": "2026-11-07",
+  "placeholder": false,
+  "participants": [
+    {"name": "Sami Korhonen", "role": "Field Engineer"}
+  ],
+  "messages": [
+    {"seq": 1, "time": "10:30", "author": "Sami Korhonen", "role": "Field Engineer",
+     "text": "TRN-101 at HEL-02, same symptoms after an SFP swap."},
+    {"seq": 2, "time": "10:30", "author": "Sami Korhonen", "role": "Field Engineer",
+     "text": "It's the TX-300, installed 2023."}
+  ]
+}

@@ -1,0 +1,31 @@
+:root {
+  /* handoff section 0 */
+  --bg: #1E1F22;
+  --panel: #2A2C31;
+  --line: #3A3D44;
+  --line-strong: #4A4E57;
+  --text: #E4E7EC;
+  --text-muted: #A9B0BA;
+  --context: #FF3D7F;
+  --context-text: #FFD1E0;
+  --focus: #FFFFFF;
+  --r-control: 8px;
+  --r-panel: 12px;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px;
+
+  /* Teams chrome, handoff section 3 */
+  --t-chrome: #1F1F1F;
+  --t-divider: #3B3B3B;
+  --t-posts: #1A1A1A;
+  --t-card: #292929;
+  --t-selected: #2B2B2B;
+  --t-hover: #333333;
+  --t-brand: #7F85F5;
+  --t-brand-strong: #5B5FC7;
+  --t-muted: #ADADAD;
+  --t-white: #FFFFFF;
+  --t-badge: #C4314B;
+
+  --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
+}
