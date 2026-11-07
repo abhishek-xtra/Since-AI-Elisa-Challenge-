@@ -217,6 +217,7 @@ NOT_DEMO = {"05_mentioned_in_passing", "06_hunch", "07_reworded_other_model", "0
 
 
 VARIANTS = {
+    "all": set(),  # every synthetic thread: the fullest honest state (changes the outcome, docs/DECISIONS.md)
     "dispute": NOT_DEMO - {"08_conflict"},
     "hunch": (NOT_DEMO - {"12c_barrier_hedged", "12b_barrier_update/thread_hedged.json"}) | {"12b_barrier_update/thread.json"},
 }
