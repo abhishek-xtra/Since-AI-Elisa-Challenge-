@@ -1,6 +1,6 @@
 # BACKEND PROMPT ADDENDUM (proposed by Abhishek, for Mikael to approve)
 
-> **Status: PROPOSED.** Agents must **not** implement anything in this file until Mikael has approved it. He approves it by merging it into `BACKEND_PROMPT.md`, or by changing this line to "APPROVED".
+> **Status: MERGED (Saturday 7 November, ~02:30).** Part A (A1 to A3) and B1 are folded into `BACKEND_PROMPT.md` with two fixes: the merge key for value-carrying actions includes the bound entity and the normalised text, and the binder resolves site IDs. B2 is done by the frontend; B3 and B4 are stretch. Agents build from `BACKEND_PROMPT.md` only.
 >
 > **What it is.** It changes no code. It describes three changes to the backend's behaviour (Part A), and an optional list for the frontend extras (Part B).
 >
