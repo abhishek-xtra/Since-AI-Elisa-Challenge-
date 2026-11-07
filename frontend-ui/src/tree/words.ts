@@ -114,7 +114,7 @@ export function caption(e: TimelineEvent | undefined, events: TimelineEvent[], t
     case "supersede": return "Key moved: old fact replaced";
     case "expire": return "Expired on its own";
     case "retract": return "Taken back";
-    case "dispute": return "Two experts disagree: kept both, ranked, not guessed";
+    case "dispute": return "Two experts disagree: kept both, not guessed";
     case "incident": {
       const r = primary(e, visible);
       if (!r) return "Nothing saved fits this";
