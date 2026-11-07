@@ -15,6 +15,7 @@
       "avoid": [],
       "cites": []
     },
-    "agent_text": "No captured context applies to this incident; nothing to add."
+    "agent_text": "No captured context applies to this incident; nothing to add.",
+    "prior_knowledge": "none"
   }
 }

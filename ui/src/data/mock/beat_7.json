@@ -131,6 +131,7 @@
       ]
     },
     "agent_text": "[CA-0001] Disable the interface, wait a little, then enable it again. Avoid: sfp.replace, node.reboot. Source: Erkki Expert (teams, email), 1 case, verified_by_outcome.",
+    "prior_knowledge": "found",
     "notifications": [
       {
         "to": "Erkki Expert",

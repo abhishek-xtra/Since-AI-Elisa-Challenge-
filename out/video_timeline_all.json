@@ -1867,6 +1867,7 @@
             "assertion_id": "CA-0003",
             "key": "firmware == '4.1'=holds | model == 'TX-200'=fails | region == 'north'=holds",
             "to": "Jari Korhonen",
+            "team": "network-experts",
             "thread_id": "thread-08_conflict",
             "text": "Your TRN-042 tip: does it apply to TRN-063 too? Different model.",
             "options": [
@@ -1919,6 +1920,7 @@
             "assertion_id": "CA-0004",
             "key": "firmware == '4.1'=holds | install_year == 2018=holds | model == 'TX-200'=fails | region == 'north'=holds | site == 'OULU-11'=holds",
             "to": "Erkki Expert",
+            "team": "network-experts",
             "thread_id": "thread-05_mentioned_in_passing",
             "text": "Your TRN-087 tip: does it apply to TRN-063 too? Different model, installed 2018.",
             "options": [
@@ -2040,6 +2042,7 @@
             "assertion_id": "CA-0004",
             "key": "firmware == '4.1'=holds | install_year == 2018=fails | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-11'=fails",
             "to": "Erkki Expert",
+            "team": "network-experts",
             "thread_id": "thread-05_mentioned_in_passing",
             "text": "Your TRN-087 tip: does it apply to TRN-033 too? Same model, installed 2017, different site.",
             "options": [
@@ -2170,6 +2173,7 @@
             "assertion_id": "CA-0004",
             "key": "firmware == '4.1'=holds | install_year == 2018=fails | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-11'=fails",
             "to": "Erkki Expert",
+            "team": "network-experts",
             "thread_id": "thread-05_mentioned_in_passing",
             "text": "Your TRN-087 tip: does it apply to TRN-042 too? Same model, installed 2019, different site.",
             "options": [
@@ -2537,6 +2541,7 @@
             "assertion_id": "CA-0003",
             "key": "firmware == '4.1'=holds | model == 'TX-200'=holds | region == 'north'=fails",
             "to": "Jari Korhonen",
+            "team": "network-experts",
             "thread_id": "thread-08_conflict",
             "text": "Your TRN-042 tip: does it apply to TRN-105 too? Same model, different region.",
             "options": [
@@ -2589,6 +2594,7 @@
             "assertion_id": "CA-0004",
             "key": "firmware == '4.1'=holds | install_year == 2018=fails | model == 'TX-200'=holds | region == 'north'=fails | site == 'OULU-11'=fails",
             "to": "Erkki Expert",
+            "team": "network-experts",
             "thread_id": "thread-05_mentioned_in_passing",
             "text": "Your TRN-087 tip: does it apply to TRN-105 too? Same model, installed 2019, different site, different region.",
             "options": [
