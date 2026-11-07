@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash",
+  "model_version": "gemini-3.5-flash",
+  "text": "{\"ok\":\"yes\"}",
+  "input_tokens": 67,
+  "output_tokens": 258
+}

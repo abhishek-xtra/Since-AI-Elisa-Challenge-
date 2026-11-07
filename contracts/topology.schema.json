@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "topology.schema.json",
+  "$defs": {
+    "Node": {
+      "additionalProperties": false,
+      "description": "A device in Elisa's network graph. Read-only: nothing in this system ever writes to a node.",
+      "properties": {
+        "id": {
+          "description": "Node ID, e.g. 'TRN-042'.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "description": "Device type.",
+          "enum": [
+            "transmission_node",
+            "router",
+            "other"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "model": {
+          "description": "Hardware model, e.g. 'TX-200'.",
+          "title": "Model",
+          "type": "string"
+        },
+        "install_year": {
+          "description": "Year the unit was installed.",
+          "title": "Install Year",
+          "type": "integer"
+        },
+        "firmware": {
+          "description": "Dotted version string, compared as a numeric tuple ('5.10' > '5.2').",
+          "pattern": "^\\d+(\\.\\d+)*$",
+          "title": "Firmware",
+          "type": "string"
+        },
+        "site": {
+          "description": "ID of the Site the node is in.",
+          "title": "Site",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "model",
+        "install_year",
+        "firmware",
+        "site"
+      ],
+      "title": "Node",
+      "type": "object"
+    },
+    "Site": {
+      "additionalProperties": false,
+      "description": "A physical site. Region is resolved for nodes through their site.",
+      "properties": {
+        "id": {
+          "description": "Site ID, e.g. 'OULU-03'.",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Human-readable name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "region": {
+          "description": "Region, e.g. 'north'.",
+          "title": "Region",
+          "type": "string"
+        },
+        "access": {
+          "description": "Free text about physical access, may be empty. The barrier key location is NOT stored here; it is captured as an assertion bound to the site.",
+          "title": "Access",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "region",
+        "access"
+      ],
+      "title": "Site",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Synthetic copy of Elisa's network graph. Links between devices are pending Elisa's answer and deliberately absent.",
+  "properties": {
+    "sites": {
+      "description": "All sites.",
+      "items": {
+        "$ref": "#/$defs/Site"
+      },
+      "title": "Sites",
+      "type": "array"
+    },
+    "nodes": {
+      "description": "All nodes. Each node's site must be one of the sites.",
+      "items": {
+        "$ref": "#/$defs/Node"
+      },
+      "title": "Nodes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "sites",
+    "nodes"
+  ],
+  "title": "Topology",
+  "type": "object",
+  "$comment": "PLACEHOLDER: links between devices (and peer.* predicates) are pending Elisa's answer. Do not add them until the human changes this contract."
+}

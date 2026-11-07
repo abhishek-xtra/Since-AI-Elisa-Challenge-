@@ -1,0 +1,426 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "assertion.schema.json",
+  "$defs": {
+    "AppliesTo": {
+      "additionalProperties": false,
+      "description": "Scope as a set of candidate predicates over topology attributes. Candidates are not ranked.",
+      "properties": {
+        "entity_type": {
+          "description": "Type of entity the assertion binds to; 'site' for a workflow trigger.",
+          "enum": [
+            "transmission_node",
+            "router",
+            "site"
+          ],
+          "title": "Entity Type",
+          "type": "string"
+        },
+        "candidates": {
+          "description": "Every plausible scope from the first case: the stated condition plus one per origin attribute (model, firmware, install_year if not already present, site, region). Never the device ID unless the text limits it to that unit.",
+          "items": {
+            "$ref": "#/$defs/Candidate"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "decided": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Decided"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Set by an answer to the one question; null while undecided."
+        }
+      },
+      "required": [
+        "entity_type",
+        "candidates",
+        "decided"
+      ],
+      "title": "AppliesTo",
+      "type": "object"
+    },
+    "Candidate": {
+      "additionalProperties": false,
+      "description": "One hypothesis for the assertion's scope, a predicate over topology attributes (contracts/predicates.md). The device ID is never a candidate: the device is the origin of the case in evidence.cases. Only if the text limits the rule to that unit ('only this one') is \"id == 'X'\" added. A candidate with against > 0 is eliminated.",
+      "properties": {
+        "predicate": {
+          "description": "'attr op value', grammar in contracts/predicates.md.",
+          "title": "Predicate",
+          "type": "string"
+        },
+        "edge": {
+          "default": "closed",
+          "description": "Open edge: 'open' when the stated condition is relative (condition_is_relative) and the predicate's number came from the origin node's attribute, not from the speaker. The number is then the newest value known to be in, not a boundary. Everything else is 'closed'. On a new entity an open <=/< candidate holds at or below its number, is unknown above it, and fails only for a missing attribute. A supporting case or a 'yes' answer on a newer entity raises the number; a 'no' answer closes the edge at the current number. Never invent a margin.",
+          "enum": [
+            "open",
+            "closed"
+          ],
+          "title": "Edge",
+          "type": "string"
+        },
+        "support": {
+          "description": "Number of cases (not sources) whose entity satisfied this predicate.",
+          "minimum": 0,
+          "title": "Support",
+          "type": "integer"
+        },
+        "against": {
+          "description": "Number of cases whose entity failed this predicate, or failed outcomes where it held. > 0 eliminates the candidate.",
+          "minimum": 0,
+          "title": "Against",
+          "type": "integer"
+        },
+        "basis": {
+          "description": "One sentence: where this candidate came from (speaker's words or the origin's attribute).",
+          "title": "Basis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "predicate",
+        "support",
+        "against",
+        "basis"
+      ],
+      "title": "Candidate",
+      "type": "object"
+    },
+    "Case": {
+      "additionalProperties": false,
+      "description": "A distinct incident: entity plus time. Chat and email about the same incident (same entity, same day) are one case.",
+      "properties": {
+        "entity": {
+          "description": "Node or site ID the case happened on (the origin, for the first case).",
+          "title": "Entity",
+          "type": "string"
+        },
+        "at": {
+          "description": "When the incident happened.",
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "enum": [
+                "recovered",
+                "failed"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "'recovered' from a thread confirmation ('traffic is back') or a telemetry event; 'failed' if the action did not work; null if not reported.",
+          "title": "Outcome"
+        }
+      },
+      "required": [
+        "entity",
+        "at",
+        "outcome"
+      ],
+      "title": "Case",
+      "type": "object"
+    },
+    "Decided": {
+      "additionalProperties": false,
+      "description": "The predicate a human answer (or evidence leaving one) fixed. Other candidates stay recorded but are not evaluated.",
+      "properties": {
+        "predicate": {
+          "description": "Predicate, same grammar as Candidate.predicate.",
+          "title": "Predicate",
+          "type": "string"
+        },
+        "edge": {
+          "default": "closed",
+          "description": "Edge of the decided predicate, carried over from the option chosen.",
+          "enum": [
+            "open",
+            "closed"
+          ],
+          "title": "Edge",
+          "type": "string"
+        }
+      },
+      "required": [
+        "predicate"
+      ],
+      "title": "Decided",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "description": "Provenance. cases are distinct incidents (entity + time); sources are documents. Erkki's chat and email are one case, two sources. support counts cases.",
+      "properties": {
+        "cases": {
+          "description": "Distinct incidents backing the assertion.",
+          "items": {
+            "$ref": "#/$defs/Case"
+          },
+          "title": "Cases",
+          "type": "array"
+        },
+        "sources": {
+          "description": "Documents, as '<channel>:<id>', e.g. 'teams:thread-001', 'email:001'.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "excerpt": {
+          "description": "Copied character for character from the source; re-verified as a substring after whitespace normalisation.",
+          "title": "Excerpt",
+          "type": "string"
+        },
+        "said_by_role": {
+          "description": "Role of the speaker of the rule.",
+          "enum": [
+            "field_engineer",
+            "expert",
+            "agent",
+            "other"
+          ],
+          "title": "Said By Role",
+          "type": "string"
+        },
+        "said_by": {
+          "description": "Name of the speaker of the rule; the one question and the notification go to this person.",
+          "title": "Said By",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cases",
+        "sources",
+        "excerpt",
+        "said_by_role",
+        "said_by"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Trigger": {
+      "additionalProperties": false,
+      "description": "When the assertion applies. kind 'incident': event plus every listed symptom must be present (checks the agent runs against telemetry). kind 'workflow': event only, e.g. 'dispatch_created' with the site as entity; the barrier key is a workflow trigger with action 'site.access_key' and action_text holding the key location.",
+      "properties": {
+        "kind": {
+          "description": "'incident' (event + symptoms) or 'workflow' (event only).",
+          "enum": [
+            "incident",
+            "workflow"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "event": {
+          "description": "Event from contracts/vocabulary.md.",
+          "enum": [
+            "sfp_replaced",
+            "dispatch_created",
+            "alarm_raised",
+            "other"
+          ],
+          "title": "Event",
+          "type": "string"
+        },
+        "symptoms": {
+          "description": "All must be present for an incident trigger to match. Empty for a workflow trigger.",
+          "items": {
+            "enum": [
+              "link_up",
+              "link_down",
+              "optics_normal",
+              "optics_low",
+              "counters_zero",
+              "counters_rising",
+              "alarms_cleared",
+              "other"
+            ],
+            "type": "string"
+          },
+          "title": "Symptoms",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "event",
+        "symptoms"
+      ],
+      "title": "Trigger",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A context assertion: a reusable operational rule captured from a conversation. Nothing is ever deleted.",
+  "properties": {
+    "id": {
+      "description": "'CA-' plus four digits.",
+      "pattern": "^CA-\\d{4}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "trigger": {
+      "$ref": "#/$defs/Trigger"
+    },
+    "applies_to": {
+      "$ref": "#/$defs/AppliesTo"
+    },
+    "action": {
+      "description": "Canonical action from contracts/vocabulary.md.",
+      "enum": [
+        "interface.bounce",
+        "node.reboot",
+        "sfp.replace",
+        "counters.check",
+        "site.access_key",
+        "other"
+      ],
+      "title": "Action",
+      "type": "string"
+    },
+    "action_text": {
+      "description": "The action in the speaker's words. For a value-carrying action (site.access_key) this is the fact itself, e.g. where the key is.",
+      "title": "Action Text",
+      "type": "string"
+    },
+    "avoid": {
+      "description": "Actions the speaker warned against.",
+      "items": {
+        "enum": [
+          "interface.bounce",
+          "node.reboot",
+          "sfp.replace",
+          "counters.check",
+          "site.access_key",
+          "other"
+        ],
+        "type": "string"
+      },
+      "title": "Avoid",
+      "type": "array"
+    },
+    "evidence": {
+      "$ref": "#/$defs/Evidence"
+    },
+    "trust": {
+      "description": "Derived deterministically, first rule that applies: (1) any case with outcome 'recovered' -> verified_by_outcome; (2) hedged -> hunch; (3) said_by_role == expert or first_hand -> stated; (4) otherwise hunch. A field engineer reporting what he did or saw on site is 'stated'. Trust and support are separate axes.",
+      "enum": [
+        "hunch",
+        "stated",
+        "verified_by_outcome"
+      ],
+      "title": "Trust",
+      "type": "string"
+    },
+    "status": {
+      "description": "open: candidates undecided; decided: answered or evidence left one; disputed: conflicts with another assertion; review: an outcome contradicted it.",
+      "enum": [
+        "open",
+        "decided",
+        "disputed",
+        "review"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "questions_asked": {
+      "description": "Question keys (contracts/get_context.md). A key is appended once and never removed.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Questions Asked",
+      "type": "array"
+    },
+    "supersedes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "ID of the assertion this one replaced. Set only by the supersede rule (BACKEND_PROMPT 5.2) for value-carrying actions.",
+      "title": "Supersedes"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "ID of the assertion that replaced this one. Set only by the supersede rule, together with valid_to. Nothing is ever deleted.",
+      "title": "Superseded By"
+    },
+    "recorded_at": {
+      "description": "When the system learned it (ingestion time).",
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "valid_from": {
+      "description": "When it became true (conversation time).",
+      "format": "date-time",
+      "title": "Valid From",
+      "type": "string"
+    },
+    "valid_to": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "null means still believed true.",
+      "title": "Valid To"
+    },
+    "valid_while": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Stated end condition, stored as text only. Nothing evaluates it (pending).",
+      "title": "Valid While"
+    }
+  },
+  "required": [
+    "id",
+    "trigger",
+    "applies_to",
+    "action",
+    "action_text",
+    "avoid",
+    "evidence",
+    "trust",
+    "status",
+    "questions_asked",
+    "supersedes",
+    "superseded_by",
+    "recorded_at",
+    "valid_from",
+    "valid_to",
+    "valid_while"
+  ],
+  "title": "Assertion",
+  "type": "object"
+}
