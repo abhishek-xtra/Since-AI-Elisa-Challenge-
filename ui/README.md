@@ -12,7 +12,7 @@ npm test
 npm run build
 ```
 
-- **Replay** (what the video records): `http://localhost:5173/?beat=N`, N = 1..7. Shows the cumulative state after beat N.
+- **Replay** (what the video records): `http://localhost:5173/?beat=N`, N = 1..9 (as many as there are beat files). Shows the cumulative state after beat N.
   Optional `&channel=faults|experts|site-access|field-chat|general` opens that channel first.
 - **Live**: no `?beat`. "Report fault" (channel header) and the question buttons call the API.
 
@@ -53,12 +53,19 @@ Beat 1 and beat 3 are the same TRN-087 incident against different stores; from b
 Same for the OULU-03 dispatch in beats 5 and 6. A notification whose `at` maps to an earlier beat than its thread appears with
 the thread (Veikko's OULU-03 notice: `at` says beat 5, thread-12b and CA-0003 exist from beat 6).
 
+Beat 8 adds thread-14 (road closed) to Site access and two OULU-11 dispatch posts: 15 Nov from `results_before` (proposal)
+and 21 Nov from `results_after` (declined, expired; the tip struck through with its `valid_to`). Those two posts show only the
+beat's own assertion (`data.assertions`, CA-0004); the unrelated CA-0002/CA-0003 declines in the same lists are left out.
+Beat 9 adds thread-15 (Erkki's retraction) to Experts as its own post, with the STATUS line of `beat_9.data.results` under
+Erkki's message, and a TRN-087 post on 11 Nov with the declined ("under review") card. The beat range comes from the beat files.
+
 ## Asked of the backend
 
-1. `agent_text` in `beat_5.data` and `beat_6.data`. Today the dispatch proposal shows `results[].assertion.action_text`
-   verbatim (still a backend string), because no `agent_text` exists for those beats.
-2. `incident {entity_id, event, symptoms, at}` in `beat_1/3/4/5/6.data` as in beat 7. The UI takes the time from the
-   report message or the notification and keeps a small beat-to-incident table in `src/model.ts`.
+1. `agent_text` in `beat_5.data`, `beat_6.data` and `beat_8.data`. Today the dispatch proposal shows
+   `results[].assertion.action_text` verbatim (still a backend string), because no `agent_text` exists for those beats.
+2. `incident {entity_id, event, symptoms, at}` in `beat_1/3/4/5/6/8/9.data` as in beat 7 (beat 8 needs one per result list).
+   The UI takes the time from the report message or the notification, and for beats 8 and 9 from a small table in
+   `src/model.ts` copied from the printed `lines`.
 3. A fixture for the TRN-087 and TRN-101 technician reports (currently hand-written in `src/data/mock/reports/`).
 4. The chosen `option_index` on answered questions in thread files (today only `answered: true`; the label comes from
    `beat_N.data.answer`, or from the click in live mode).

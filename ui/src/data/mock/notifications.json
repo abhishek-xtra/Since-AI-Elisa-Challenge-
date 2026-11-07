@@ -26,5 +26,12 @@
     "assertion_id": "CA-0001",
     "entity_id": "TRN-105",
     "at": "2026-11-08T14:00:00+02:00"
+  },
+  {
+    "to": "Kalle Niskanen",
+    "text": "Your tip from 2026-11-09 was proposed for OULU-11 today.",
+    "assertion_id": "CA-0004",
+    "entity_id": "OULU-11",
+    "at": "2026-11-15T08:00:00+02:00"
   }
 ]

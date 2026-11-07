@@ -1,13 +1,24 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { source as defaultSource, type DataSource, type IncidentBody, type Thread, type Topology } from './data';
+import { source as defaultSource, type Beat, type DataSource, type IncidentBody, type Thread, type Topology } from './data';
 import { buildChannels, itemsOf, type Item, type LiveIncident, type ModelInput } from './model';
 import { longDate, PostCard } from './Thread';
 import { ReportFault } from './ReportFault';
 import * as I from './icons';
 
-const THREAD_IDS = ['thread-001', 'email-001', 'email-12_barrier', 'thread-12b_barrier_update', 'thread-13_second_technician'];
+const THREAD_IDS = ['thread-001', 'email-001', 'email-12_barrier', 'thread-12b_barrier_update', 'thread-13_second_technician',
+  'thread-14_road_closed', 'thread-15_retraction'];
 const VIEWER = 'Erkki Expert'; // the demo is watched from Erkki's seat
-const DEFAULT_CHANNEL: Record<number, string> = { 1: 'faults', 2: 'experts', 3: 'faults', 4: 'faults', 5: 'site-access', 6: 'site-access', 7: 'faults' };
+const DEFAULT_CHANNEL: Record<number, string> = {
+  1: 'faults', 2: 'experts', 3: 'faults', 4: 'faults', 5: 'site-access', 6: 'site-access', 7: 'faults', 8: 'site-access', 9: 'experts',
+};
+
+/** beat_1, beat_2, ... until the first one the source does not have. */
+async function loadBeats(src: DataSource): Promise<Beat[]> {
+  const beats: Beat[] = [];
+  for (let n = 1; ; n++) {
+    try { beats.push(await src.getBeat(n)); } catch { return beats; }
+  }
+}
 
 // ?beat=3&channel=experts, or #beat-3-experts where only a hash reaches the page (the hosted copy)
 export function urlParams(search = window.location.search, hash = window.location.hash): { beat: string | null; channel: string | null } {
@@ -18,7 +29,7 @@ export function urlParams(search = window.location.search, hash = window.locatio
 
 export function beatFromUrl(search = window.location.search, hash = window.location.hash): number | null {
   const n = Number(urlParams(search, hash).beat);
-  return Number.isInteger(n) && n >= 1 && n <= 7 ? n : null;
+  return Number.isInteger(n) && n >= 1 ? n : null; // the upper bound is the number of beat files, checked after loading
 }
 
 const fetchThreads = async (src: DataSource) =>
@@ -33,7 +44,7 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
   const [topology, setTopology] = useState<Topology | null>(null);
   const [error, setError] = useState<string | null>(null);
   // ?channel=experts opens another channel first (for recording); otherwise the channel the beat is about
-  const [selected, setSelected] = useState(urlParams().channel ?? (beat ? DEFAULT_CHANNEL[beat] : 'faults'));
+  const [selected, setSelected] = useState(urlParams().channel ?? (beat ? DEFAULT_CHANNEL[beat] : undefined) ?? 'faults');
   const postsRef = useRef<HTMLDivElement>(null);
   const [seen, setSeen] = useState<Set<string> | null>(null);
   const [opened, setOpened] = useState<Set<string>>(new Set()); // items on screen this session (clears the Activity badge)
@@ -42,7 +53,7 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
   useEffect(() => {
     (async () => {
       const [beats, threads, fillers, reports, topo] = await Promise.all([
-        Promise.all([1, 2, 3, 4, 5, 6, 7].map((n) => source.getBeat(n))),
+        loadBeats(source),
         fetchThreads(source), source.listFillerThreads(), source.listReportThreads(), source.getTopology(),
       ]);
       const loaded: ModelInput = { beats: Object.fromEntries(beats.map((b) => [b.beat, b])), threads, fillers, reports, live: [], answers: {} };

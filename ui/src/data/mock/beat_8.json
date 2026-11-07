@@ -1,0 +1,392 @@
+{
+  "beat": 8,
+  "title": "Stale by itself",
+  "lines": [
+    "Ingested 14_road_closed/thread.json (2026-11-09)",
+    "CA-0004: \"use the forest track from the north side\" said by Kalle Niskanen, valid_to 2026-11-20T23:59:59+02:00",
+    "dispatch_created for OULU-11 at 2026-11-15T08:00:00+02:00",
+    "CA-0002 declined: superseded by CA-0003 on 2026-11-07",
+    "CA-0003 declined: site OULU-11 fails site == 'OULU-03'",
+    "CA-0004 proposed: all hold: site == 'OULU-11'",
+    "Route before the drive: use the forest track from the north side",
+    "dispatch_created for OULU-11 at 2026-11-21T08:00:00+02:00",
+    "CA-0002 declined: superseded by CA-0003 on 2026-11-07",
+    "CA-0003 declined: site OULU-11 fails site == 'OULU-03'",
+    "CA-0004 declined: expired 2026-11-20",
+    "Nobody retracted it; it expired on the date the engineer gave."
+  ],
+  "data": {
+    "assertions": [
+      {
+        "id": "CA-0004",
+        "trigger": {
+          "kind": "workflow",
+          "event": "dispatch_created",
+          "symptoms": []
+        },
+        "applies_to": {
+          "entity_type": "site",
+          "candidates": [
+            {
+              "predicate": "site == 'OULU-11'",
+              "edge": "closed",
+              "support": 1,
+              "against": 0,
+              "basis": "attribute of OULU-11; stated condition 'access road closed for roadworks' did not parse"
+            }
+          ],
+          "decided": null
+        },
+        "action": "other",
+        "action_text": "use the forest track from the north side",
+        "avoid": [],
+        "evidence": {
+          "cases": [
+            {
+              "entity": "OULU-11",
+              "at": "2026-11-09T07:40:00+02:00",
+              "outcome": null
+            }
+          ],
+          "sources": [
+            "teams:thread-14_road_closed"
+          ],
+          "excerpt": "Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side.",
+          "said_by_role": "field_engineer",
+          "said_by": "Kalle Niskanen"
+        },
+        "trust": "stated",
+        "status": "open",
+        "questions_asked": [],
+        "supersedes": null,
+        "superseded_by": null,
+        "recorded_at": "2026-11-06T00:00:00Z",
+        "valid_from": "2026-11-09T07:40:00+02:00",
+        "valid_to": "2026-11-20T23:59:59+02:00",
+        "valid_while": null
+      }
+    ],
+    "results_before": [
+      {
+        "assertion": {
+          "id": "CA-0002",
+          "trigger": {
+            "kind": "workflow",
+            "event": "dispatch_created",
+            "symptoms": []
+          },
+          "applies_to": {
+            "entity_type": "site",
+            "candidates": [
+              {
+                "predicate": "site == 'OULU-03'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of OULU-03"
+              }
+            ],
+            "decided": null
+          },
+          "action": "site.access_key",
+          "action_text": "at the neighbouring farm, ask for Mäkelä",
+          "avoid": [],
+          "evidence": {
+            "cases": [
+              {
+                "entity": "OULU-03",
+                "at": "2026-10-02T10:00:00+02:00",
+                "outcome": null
+              }
+            ],
+            "sources": [
+              "email:email-12_barrier"
+            ],
+            "excerpt": "If you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä.",
+            "said_by_role": "other",
+            "said_by": "Kalle Niskanen"
+          },
+          "trust": "stated",
+          "status": "open",
+          "questions_asked": [],
+          "supersedes": null,
+          "superseded_by": "CA-0003",
+          "recorded_at": "2026-11-06T00:00:00Z",
+          "valid_from": "2026-10-02T10:00:00+02:00",
+          "valid_to": "2026-11-07T10:15:00+02:00",
+          "valid_while": null
+        },
+        "outcome": "declined",
+        "reason": "superseded by CA-0003 on 2026-11-07",
+        "question": null
+      },
+      {
+        "assertion": {
+          "id": "CA-0003",
+          "trigger": {
+            "kind": "workflow",
+            "event": "dispatch_created",
+            "symptoms": []
+          },
+          "applies_to": {
+            "entity_type": "site",
+            "candidates": [
+              {
+                "predicate": "site == 'OULU-03'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of OULU-03"
+              }
+            ],
+            "decided": null
+          },
+          "action": "site.access_key",
+          "action_text": "in the site cabinet",
+          "avoid": [],
+          "evidence": {
+            "cases": [
+              {
+                "entity": "OULU-03",
+                "at": "2026-11-07T10:15:00+02:00",
+                "outcome": null
+              }
+            ],
+            "sources": [
+              "teams:thread-12b_barrier_update"
+            ],
+            "excerpt": "Just a heads up that the key moved, it's in the site cabinet now. No need to go to the farm any more to open the access road barrier.",
+            "said_by_role": "field_engineer",
+            "said_by": "Veikko Vikkelä"
+          },
+          "trust": "stated",
+          "status": "open",
+          "questions_asked": [],
+          "supersedes": "CA-0002",
+          "superseded_by": null,
+          "recorded_at": "2026-11-06T00:00:00Z",
+          "valid_from": "2026-11-07T10:15:00+02:00",
+          "valid_to": null,
+          "valid_while": null
+        },
+        "outcome": "declined",
+        "reason": "site OULU-11 fails site == 'OULU-03'",
+        "question": null
+      },
+      {
+        "assertion": {
+          "id": "CA-0004",
+          "trigger": {
+            "kind": "workflow",
+            "event": "dispatch_created",
+            "symptoms": []
+          },
+          "applies_to": {
+            "entity_type": "site",
+            "candidates": [
+              {
+                "predicate": "site == 'OULU-11'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of OULU-11; stated condition 'access road closed for roadworks' did not parse"
+              }
+            ],
+            "decided": null
+          },
+          "action": "other",
+          "action_text": "use the forest track from the north side",
+          "avoid": [],
+          "evidence": {
+            "cases": [
+              {
+                "entity": "OULU-11",
+                "at": "2026-11-09T07:40:00+02:00",
+                "outcome": null
+              }
+            ],
+            "sources": [
+              "teams:thread-14_road_closed"
+            ],
+            "excerpt": "Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side.",
+            "said_by_role": "field_engineer",
+            "said_by": "Kalle Niskanen"
+          },
+          "trust": "stated",
+          "status": "open",
+          "questions_asked": [],
+          "supersedes": null,
+          "superseded_by": null,
+          "recorded_at": "2026-11-06T00:00:00Z",
+          "valid_from": "2026-11-09T07:40:00+02:00",
+          "valid_to": "2026-11-20T23:59:59+02:00",
+          "valid_while": null
+        },
+        "outcome": "proposed",
+        "reason": "all hold: site == 'OULU-11'",
+        "question": null
+      }
+    ],
+    "results_after": [
+      {
+        "assertion": {
+          "id": "CA-0002",
+          "trigger": {
+            "kind": "workflow",
+            "event": "dispatch_created",
+            "symptoms": []
+          },
+          "applies_to": {
+            "entity_type": "site",
+            "candidates": [
+              {
+                "predicate": "site == 'OULU-03'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of OULU-03"
+              }
+            ],
+            "decided": null
+          },
+          "action": "site.access_key",
+          "action_text": "at the neighbouring farm, ask for Mäkelä",
+          "avoid": [],
+          "evidence": {
+            "cases": [
+              {
+                "entity": "OULU-03",
+                "at": "2026-10-02T10:00:00+02:00",
+                "outcome": null
+              }
+            ],
+            "sources": [
+              "email:email-12_barrier"
+            ],
+            "excerpt": "If you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä.",
+            "said_by_role": "other",
+            "said_by": "Kalle Niskanen"
+          },
+          "trust": "stated",
+          "status": "open",
+          "questions_asked": [],
+          "supersedes": null,
+          "superseded_by": "CA-0003",
+          "recorded_at": "2026-11-06T00:00:00Z",
+          "valid_from": "2026-10-02T10:00:00+02:00",
+          "valid_to": "2026-11-07T10:15:00+02:00",
+          "valid_while": null
+        },
+        "outcome": "declined",
+        "reason": "superseded by CA-0003 on 2026-11-07",
+        "question": null
+      },
+      {
+        "assertion": {
+          "id": "CA-0003",
+          "trigger": {
+            "kind": "workflow",
+            "event": "dispatch_created",
+            "symptoms": []
+          },
+          "applies_to": {
+            "entity_type": "site",
+            "candidates": [
+              {
+                "predicate": "site == 'OULU-03'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of OULU-03"
+              }
+            ],
+            "decided": null
+          },
+          "action": "site.access_key",
+          "action_text": "in the site cabinet",
+          "avoid": [],
+          "evidence": {
+            "cases": [
+              {
+                "entity": "OULU-03",
+                "at": "2026-11-07T10:15:00+02:00",
+                "outcome": null
+              }
+            ],
+            "sources": [
+              "teams:thread-12b_barrier_update"
+            ],
+            "excerpt": "Just a heads up that the key moved, it's in the site cabinet now. No need to go to the farm any more to open the access road barrier.",
+            "said_by_role": "field_engineer",
+            "said_by": "Veikko Vikkelä"
+          },
+          "trust": "stated",
+          "status": "open",
+          "questions_asked": [],
+          "supersedes": "CA-0002",
+          "superseded_by": null,
+          "recorded_at": "2026-11-06T00:00:00Z",
+          "valid_from": "2026-11-07T10:15:00+02:00",
+          "valid_to": null,
+          "valid_while": null
+        },
+        "outcome": "declined",
+        "reason": "site OULU-11 fails site == 'OULU-03'",
+        "question": null
+      },
+      {
+        "assertion": {
+          "id": "CA-0004",
+          "trigger": {
+            "kind": "workflow",
+            "event": "dispatch_created",
+            "symptoms": []
+          },
+          "applies_to": {
+            "entity_type": "site",
+            "candidates": [
+              {
+                "predicate": "site == 'OULU-11'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of OULU-11; stated condition 'access road closed for roadworks' did not parse"
+              }
+            ],
+            "decided": null
+          },
+          "action": "other",
+          "action_text": "use the forest track from the north side",
+          "avoid": [],
+          "evidence": {
+            "cases": [
+              {
+                "entity": "OULU-11",
+                "at": "2026-11-09T07:40:00+02:00",
+                "outcome": null
+              }
+            ],
+            "sources": [
+              "teams:thread-14_road_closed"
+            ],
+            "excerpt": "Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side.",
+            "said_by_role": "field_engineer",
+            "said_by": "Kalle Niskanen"
+          },
+          "trust": "stated",
+          "status": "open",
+          "questions_asked": [],
+          "supersedes": null,
+          "superseded_by": null,
+          "recorded_at": "2026-11-06T00:00:00Z",
+          "valid_from": "2026-11-09T07:40:00+02:00",
+          "valid_to": "2026-11-20T23:59:59+02:00",
+          "valid_while": null
+        },
+        "outcome": "declined",
+        "reason": "expired 2026-11-20",
+        "question": null
+      }
+    ]
+  }
+}

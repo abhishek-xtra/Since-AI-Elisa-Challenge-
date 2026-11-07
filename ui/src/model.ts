@@ -11,33 +11,51 @@ export const NOTIFICATION_BEAT: Record<string, number> = {
   '2026-11-07T10:00:00+02:00': 3,
   '2026-11-08T08:00:00+02:00': 5,
   '2026-11-08T14:00:00+02:00': 7,
+  '2026-11-15T08:00:00+02:00': 8,
 };
-export const CAPTURED_BEAT: Record<string, number> = { 'thread-001': 2, 'email-12_barrier': 5, 'thread-12b_barrier_update': 6 };
+export const CAPTURED_BEAT: Record<string, number> = {
+  'thread-001': 2, 'email-12_barrier': 5, 'thread-12b_barrier_update': 6, 'thread-14_road_closed': 8,
+};
 /** First beat a backend thread is on screen (beat 1: empty rail apart from the filler chats). */
-export const THREAD_BEAT: Record<string, number> = { 'thread-001': 2, 'email-001': 2, 'email-12_barrier': 5, 'thread-12b_barrier_update': 6 };
+export const THREAD_BEAT: Record<string, number> = {
+  'thread-001': 2, 'email-001': 2, 'email-12_barrier': 5, 'thread-12b_barrier_update': 6, 'thread-14_road_closed': 8, 'thread-15_retraction': 9,
+};
+/** A thread that changes a tip's status (retraction): its author's message gets the STATUS line of that beat's result. */
+export const REVIEW_BEAT: Record<string, number> = { 'thread-15_retraction': 9 };
+
+interface IncidentSpec {
+  entity: string; beat: number; until?: number; event: string; channel: string;
+  /** which result list of the beat this run is (beat 8 has two dispatches); default `results` with `results_before` as pre-answer */
+  list?: 'results_before' | 'results_after';
+  /** only the beat's own new assertions (`data.assertions`), not every unrelated decline */
+  ownOnly?: boolean;
+  /** incident time when the beat data has none; shortcut: beats 8 and 9 print it only in `lines`, ask the backend for `incident` */
+  at?: string;
+  noReport?: boolean;
+}
 
 /** Replay incidents. `until`: a later beat re-runs the same incident against a newer store and replaces it. */
-const REPLAY_INCIDENTS = [
+const REPLAY_INCIDENTS: IncidentSpec[] = [
   { entity: 'TRN-087', beat: 1, until: 1, event: 'sfp_replaced', channel: 'faults' },
   { entity: 'TRN-087', beat: 3, event: 'sfp_replaced', channel: 'faults' },
   { entity: 'TRN-101', beat: 4, event: 'sfp_replaced', channel: 'faults' },
   { entity: 'OULU-03', beat: 5, until: 5, event: 'dispatch_created', channel: 'site-access' },
   { entity: 'OULU-03', beat: 6, event: 'dispatch_created', channel: 'site-access' },
   { entity: 'TRN-105', beat: 7, event: 'sfp_replaced', channel: 'faults' },
+  { entity: 'OULU-11', beat: 8, event: 'dispatch_created', channel: 'site-access', list: 'results_before', ownOnly: true, at: '2026-11-15T08:00:00+02:00' },
+  { entity: 'OULU-11', beat: 8, event: 'dispatch_created', channel: 'site-access', list: 'results_after', ownOnly: true, at: '2026-11-21T08:00:00+02:00' },
+  { entity: 'TRN-087', beat: 9, event: 'sfp_replaced', channel: 'faults', at: '2026-11-11T10:00:00+02:00', noReport: true },
 ];
 const SECOND_TECHNICIAN = 'thread-13_second_technician'; // Sami's report for beat_7.data.incident
 
 export const questionBeat = (q: Question) => (q.entity_id ? QUESTION_BEAT[q.entity_id] : undefined);
 export const notificationBeat = (n: Notification) => NOTIFICATION_BEAT[n.at];
 
-/** beat null = live mode: everything the backend has, plus replay incidents as of beat 7. */
-const shows = (b: number | undefined, beat: number | null) => (b === undefined ? beat === null : b <= (beat ?? 7));
-
 // ---- View model --------------------------------------------------------------------------------------
 export type AgentKind = 'proposal' | 'question' | 'notice';
 
 export type Item =
-  | { kind: 'message'; id: string; ts: string; author: string; text: string; captured: boolean; email: boolean }
+  | { kind: 'message'; id: string; ts: string; author: string; text: string; captured: boolean; email: boolean; note?: string }
   | { kind: 'agent'; agent: AgentKind; id: string; ts: string; text: string; to?: string; question?: Question; answeredLabel?: string | null }
   | { kind: 'status'; id: string; ts: string; text: string; outcome: ContextResult['outcome']; lead: string; reason: string;
       struck?: { text: string; until: string | null } }
@@ -71,6 +89,7 @@ export const CHANNELS: [string, string][] = [
 ];
 const CHANNEL_OF: Record<string, string> = {
   'thread-001': 'experts', 'email-001': 'experts', 'email-12_barrier': 'site-access', 'thread-12b_barrier_update': 'site-access',
+  'thread-14_road_closed': 'site-access', 'thread-15_retraction': 'experts',
 };
 
 const firstName = (s: string) => s.split(' ')[0];
@@ -90,7 +109,9 @@ export const statusText = (r: ContextResult, question?: Question | null) => stat
 const statusItem = (id: string, ts: string, r: ContextResult, question?: Question): Item | null => {
   const parts = statusParts(r, question);
   if (!parts) return null;
-  const struck = r.assertion.superseded_by ? { text: r.assertion.action_text, until: r.assertion.valid_to } : undefined;
+  // superseded, or expired before this incident: the old fact shown struck through with its valid_to
+  const a = r.assertion;
+  const struck = a.superseded_by || (r.outcome === 'declined' && a.valid_to && a.valid_to < ts) ? { text: a.action_text, until: a.valid_to } : undefined;
   return { kind: 'status', id, ts, outcome: r.outcome, reason: r.reason, struck, ...parts };
 };
 
@@ -140,18 +161,25 @@ export function buildChannels(input: ModelInput, beat: number | null): Channel[]
     input.reports.find((r) => r.entity_id === entity)?.messages
     ?? (sami && input.beats[7]?.data.incident?.entity_id === entity ? sami.messages : []);
   const atFor: Record<string, string> = {};
+  // Live mode shows everything as of the last beat on file.
+  const upTo = beat ?? Math.max(0, ...Object.keys(input.beats).map(Number));
+  /** b undefined: not a replay item, so only live mode shows it */
+  const shows = (b: number | undefined) => (b === undefined ? beat === null : b <= upTo);
 
   // Fault and dispatch posts
   const runs: IncidentRun[] = [];
   for (const spec of REPLAY_INCIDENTS) {
     const b = input.beats[spec.beat];
-    if (!b || spec.beat > (beat ?? 7) || (spec.until !== undefined && (beat ?? 7) > spec.until)) continue;
+    if (!b || spec.beat > upTo || (spec.until !== undefined && upTo > spec.until)) continue;
     const d = b.data;
-    const report = reportFor(spec.entity);
-    const at = d.incident?.at ?? report[0]?.timestamp ?? allNotifications.find((n) => n.entity_id === spec.entity)?.at ?? '';
+    const report = spec.noReport ? [] : reportFor(spec.entity);
+    const at = spec.at ?? d.incident?.at ?? report[0]?.timestamp ?? allNotifications.find((n) => n.entity_id === spec.entity)?.at ?? '';
+    const own = new Set((d.assertions ?? []).map((a) => a.id));
+    const pick = (rs: ContextResult[] = []) => (spec.ownOnly ? rs.filter((r) => own.has(r.assertion.id)) : rs);
     runs.push({
-      id: `beat${spec.beat}:${spec.entity}`, entity: spec.entity, event: spec.event, at, channel: spec.channel, report,
-      resultsBefore: d.results_before ?? [], results: d.results ?? [], agentText: d.agent_text, question: d.question,
+      id: `beat${spec.beat}:${spec.entity}${spec.list ? `:${spec.list}` : ''}`, entity: spec.entity, event: spec.event, at, channel: spec.channel, report,
+      resultsBefore: spec.list ? [] : pick(d.results_before), results: pick(spec.list ? d[spec.list] as ContextResult[] : d.results),
+      agentText: d.agent_text, question: d.question,
     });
   }
   if (beat === null) {
@@ -164,7 +192,7 @@ export function buildChannels(input: ModelInput, beat: number | null): Channel[]
     }
   }
   for (const run of runs) {
-    atFor[run.entity] = run.at;
+    atFor[run.entity] ??= run.at; // a question sits at the first incident on its entity
     posts[run.channel].push(incidentPost(run));
   }
 
@@ -173,11 +201,18 @@ export function buildChannels(input: ModelInput, beat: number | null): Channel[]
     input.answers[q.key] ?? Object.values(input.beats).find((b) => b.data.question?.key === q.key)?.data.answer?.option_index;
   for (const [id, channel] of Object.entries(CHANNEL_OF)) {
     const t = input.threads[id];
-    if (!t || !shows(THREAD_BEAT[id], beat)) continue;
-    const capturedIds = new Set(shows(CAPTURED_BEAT[id], beat) ? t.captured.map((c) => c.message_id) : []);
+    if (!t || !shows(THREAD_BEAT[id])) continue;
+    const capturedIds = new Set(shows(CAPTURED_BEAT[id]) ? t.captured.map((c) => c.message_id) : []);
     const items: Item[] = t.messages.map((m) => messageItem(m, capturedIds.has(m.id)));
+    if (REVIEW_BEAT[id] && shows(REVIEW_BEAT[id])) {
+      // the retraction: the STATUS of that beat's result for a tip sourced from this thread, under its author's message
+      const r = (input.beats[REVIEW_BEAT[id]]?.data.results ?? []).find((x) => x.assertion.evidence.sources.includes(`${t.channel}:${id}`));
+      const msg = r && items.find((m) => m.kind === 'message' && m.author === r.assertion.evidence.said_by);
+      const note = r && statusText(r);
+      if (msg && msg.kind === 'message' && note) msg.note = note;
+    }
     t.questions.forEach((q, i) => {
-      if (!shows(questionBeat(q), beat)) return;
+      if (!shows(questionBeat(q))) return;
       const idx = answerFor(q);
       items.push({
         kind: 'agent', agent: 'question', id: `${id}:q:${i}`, ts: (q.entity_id && atFor[q.entity_id]) || '9999', text: q.text, to: q.to, question: q,
@@ -185,7 +220,7 @@ export function buildChannels(input: ModelInput, beat: number | null): Channel[]
       });
     });
     t.notifications.forEach((n, i) => {
-      if (shows(notificationBeat(n), beat)) items.push({ kind: 'agent', agent: 'notice', id: `${id}:n:${i}`, ts: n.at, text: n.text, to: n.to });
+      if (shows(notificationBeat(n))) items.push({ kind: 'agent', agent: 'notice', id: `${id}:n:${i}`, ts: n.at, text: n.text, to: n.to });
     });
     posts[channel].push(toPost(items));
   }

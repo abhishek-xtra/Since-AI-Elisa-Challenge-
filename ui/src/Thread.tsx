@@ -91,6 +91,7 @@ function ItemView({ item, onAnswer, isRoot, day }: { item: Item; onAnswer?: Answ
         ) : <p className="msg-text">{item.text}</p>}
         {item.text.includes('Traffic is back') && !isRoot && <span className="reaction" aria-label="1 like reaction">👍 1</span>}
         {item.captured && <p className="capture-line"><BookmarkIcon /> {CAPTURE_LINE}</p>}
+        {item.note && <p className="capture-line" data-kind="status"><InfoIcon /> {item.note}</p>}
       </div>
     </div>
   );

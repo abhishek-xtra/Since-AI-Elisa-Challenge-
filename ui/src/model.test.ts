@@ -1,16 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { createMockSource } from './data/mockSource';
-import type { Beat, Notification, Question, Thread } from './data/types';
+import type { Beat, ContextResult, Notification, Question, Thread } from './data/types';
 import { AGENT_NAME, buildChannels, itemsOf, notificationBeat, questionBeat, type Item, type ModelInput } from './model';
 import questions from './data/mock/questions.json';
 import notifications from './data/mock/notifications.json';
 
 const src = createMockSource();
-const THREADS = ['thread-001', 'email-001', 'email-12_barrier', 'thread-12b_barrier_update', 'thread-13_second_technician'];
+const THREADS = ['thread-001', 'email-001', 'email-12_barrier', 'thread-12b_barrier_update', 'thread-13_second_technician',
+  'thread-14_road_closed', 'thread-15_retraction'];
+const BEATS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 async function input(): Promise<ModelInput> {
   const beats: Record<number, Beat> = {};
-  for (const n of [1, 2, 3, 4, 5, 6, 7]) beats[n] = await src.getBeat(n);
+  for (const n of BEATS) beats[n] = await src.getBeat(n);
   const threads: Record<string, Thread> = {};
   for (const id of THREADS) threads[id] = await src.getThread(id);
   return { beats, threads, fillers: await src.listFillerThreads(), reports: await src.listReportThreads(), live: [], answers: {} };
@@ -22,7 +24,7 @@ const agents = (items: Item[], kind: string) => items.filter((i): i is Extract<I
 describe('replay filters', () => {
   it('maps questions to beats by entity_id and notifications by at', () => {
     expect((questions as Question[]).map(questionBeat)).toEqual([3, 4]);
-    expect((notifications as Notification[]).map(notificationBeat)).toEqual([3, 5, 5, 7]);
+    expect((notifications as Notification[]).map(notificationBeat)).toEqual([3, 5, 5, 7, 8]);
   });
 
   it('beat 1: only the TRN-087 fault with the no-context line, plus the filler chats', async () => {
@@ -81,18 +83,55 @@ describe('replay filters', () => {
   });
 });
 
+describe('beats 8 and 9', () => {
+  it('beat 8: road-closed thread captured, OULU-11 dispatch proposed on 15 Nov and declined as expired on 21 Nov', async () => {
+    const inp = await input();
+    expect(channel(inp, 7, 'site-access').posts).toHaveLength(3);
+    const site = channel(inp, 8, 'site-access');
+    const items = itemsOf(site);
+    expect(items.filter((i) => i.kind === 'message' && i.captured).map((i) => i.id)).toContain('teams:thread-14_road_closed:1');
+    expect(agents(items, 'notice').map((n) => n.text)).toContain('Your tip from 2026-11-09 was proposed for OULU-11 today.');
+    const [d15, d21] = site.posts.filter((p) => p.entity === 'OULU-11');
+    expect(d15.root.ts).toBe('2026-11-15T08:00:00+02:00');
+    expect(agents(d15.replies, 'proposal').map((p) => p.text)).toEqual(['use the forest track from the north side']);
+    expect(d15.replies.filter((r) => r.kind === 'status')).toHaveLength(0); // unrelated CA-0002/CA-0003 declines are not this beat's story
+    expect(d21.root.ts).toBe('2026-11-21T08:00:00+02:00');
+    expect(agents(d21.replies, 'proposal')).toHaveLength(0);
+    const status = d21.replies.filter((r) => r.kind === 'status');
+    expect(status.map((s) => s.kind === 'status' && [s.reason, s.struck])).toEqual([
+      ['expired 2026-11-20', { text: 'use the forest track from the north side', until: '2026-11-20T23:59:59+02:00' }],
+    ]);
+  });
+
+  it('beat 9: retraction thread in Experts with the under-review line, and a declined TRN-087 post on 11 Nov', async () => {
+    const inp = await input();
+    expect(itemsOf(channel(inp, 8, 'experts')).some((i) => i.id.startsWith('teams:thread-15'))).toBe(false);
+    const experts = channel(inp, 9, 'experts');
+    const retraction = experts.posts.find((p) => p.root.id === 'teams:thread-15_retraction:1')!;
+    expect(retraction.root.kind === 'message' && retraction.root.note).toBe("Erkki's tip does not apply: under review.");
+    const faults = channel(inp, 9, 'faults');
+    const last = faults.posts.at(-1)!;
+    expect([last.entity, last.root.ts]).toEqual(['TRN-087', '2026-11-11T10:00:00+02:00']);
+    expect(last.replies.map((r) => r.kind === 'status' && [r.outcome, r.reason])).toEqual([['declined', 'under review']]);
+    // question 0 stays at its own incident, not the later one
+    expect(agents(itemsOf(experts), 'question')[0].ts).toBe('2026-11-07T10:00:00+02:00');
+    expect(agents(itemsOf(experts), 'notice')).toHaveLength(2);
+  });
+});
+
 describe('the agent posts only three message kinds, all backend strings', () => {
   it('holds for every beat and for live mode', async () => {
     const inp = await input();
     const backend = new Set<string>();
     for (const b of Object.values(inp.beats)) {
       if (b.data.agent_text) backend.add(b.data.agent_text);
-      for (const r of [...(b.data.results ?? []), ...(b.data.results_before ?? [])]) backend.add(r.assertion.action_text);
+      const after = (b.data.results_after ?? []) as ContextResult[];
+      for (const r of [...(b.data.results ?? []), ...(b.data.results_before ?? []), ...after]) backend.add(r.assertion.action_text);
     }
     for (const q of questions as Question[]) backend.add(q.text);
     for (const n of notifications as Notification[]) backend.add(n.text);
 
-    for (const beat of [1, 2, 3, 4, 5, 6, 7, null]) {
+    for (const beat of [...BEATS, null]) {
       for (const item of buildChannels(inp, beat).flatMap(itemsOf)) {
         if (item.kind === 'message') expect(item.author).not.toBe(AGENT_NAME);
         if (item.kind !== 'agent') continue;
