@@ -106,6 +106,7 @@ export function caption(e: TimelineEvent | undefined, events: TimelineEvent[], t
     case "message": return e.channel === "email" ? "Reading an email" : "Reading the team chat";
     case "no_capture": return "Just chat: nothing saved";
     case "capture":
+      if (e.how === "new" && e.trust === "hunch") return "Heard second-hand: kept, never relayed";
       if (e.how === "new") return e.candidates.length > 1 ? "Filed under every scope it might be" : `${first(e.said_by)}'s tip, filed`;
       return e.how === "new_source" ? "Same fix, said twice: one tip" : "Seen again: one more case";
     case "answer": return `${first(e.to)} tapped: ${e.option_label}`;
@@ -113,7 +114,7 @@ export function caption(e: TimelineEvent | undefined, events: TimelineEvent[], t
     case "supersede": return "Key moved: old fact replaced";
     case "expire": return "Expired on its own";
     case "retract": return "Taken back";
-    case "dispute": return "Two experts disagree";
+    case "dispute": return "Two experts disagree: kept both, ranked, not guessed";
     case "incident": {
       const r = primary(e, visible);
       if (!r) return "Nothing saved fits this";

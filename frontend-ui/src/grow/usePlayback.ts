@@ -7,7 +7,9 @@ import { duration, type TimelineEvent } from "./timeline";
 
 export function usePlayback(stepMs: (e: TimelineEvent) => number = duration) {
   const q = useQuery();
-  const [state] = useAsync(() => getSource().getVideoTimeline!(), "video");
+  // ?src=<name> loads out/video_timeline_<name>.json (a short-clip variant); only plain names reach the data layer
+  const src = /^[a-z]+$/.test(q.get("src") ?? "") ? q.get("src")! : undefined;
+  const [state] = useAsync(() => getSource().getVideoTimeline!(src), `video:${src ?? ""}`);
   const events = state.status === "ready" ? state.value.events : [];
   const start = Number(q.get("t") ?? 0);
   const [t, setT] = useState(Number.isFinite(start) ? start : 0);

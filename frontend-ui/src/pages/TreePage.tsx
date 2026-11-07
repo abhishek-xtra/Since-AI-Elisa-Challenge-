@@ -30,7 +30,7 @@ const SKELETON: Record<string, { x: number; y: number; dir?: number; label?: "la
 const TIP_DIST: Record<string, number> = { sfp_replaced: 230, alarm_raised: 230, fault_other: 230, keys: 200, route: 200, unsorted: 200 };
 const LEAF_DIST: Record<string, number> = { sfp_replaced: 190, alarm_raised: 190, fault_other: 190, keys: 150, route: 150, unsorted: 150 };
 const LEAF_STEP = 14;
-const TIP_SPREAD = 150; // two tips in one sub-branch sit side by side across its direction
+const TIP_SPREAD = 150; // two tips in one sub-branch sit side by side across its direction, further apart with big fans
 const FOOTER = "Visualisation for the video. The tree is drawn from the stored assertions; the system itself has no tree.";
 const step = (e: TimelineEvent) => (e.kind === "message" ? 900 : e.kind === "notification" ? 1800 : 3400);
 
@@ -51,10 +51,13 @@ function placeAll(tips: Tip[], t: number, events: TimelineEvent[]) {
     const s = SKELETON[sub.id];
     pos.push({ id: sub.id, a: s.dir!, parent: sub.parent, x: s.x, y: s.y });
     const mine = shown.filter((x) => branchOf(x) === sub.id).sort((a, b) => a.bornAt - b.bornAt);
+    const spread = Math.max(TIP_SPREAD, 52 * Math.max(0, ...mine.map((x) => x.candidates.length)));
     mine.forEach((tip, k) => {
       const base = toward(s, s.dir!, TIP_DIST[sub.id]);
-      const tp = toward(base, s.dir! + 90, (k - (mine.length - 1) / 2) * TIP_SPREAD);
-      pos.push({ id: tip.assertion_id, a: s.dir!, parent: sub.id, label: s.label, ...tp });
+      const off = (k - (mine.length - 1) / 2) * spread;
+      const tp = toward(base, s.dir! + 90, off);
+      // the lower of two side-by-side tips puts its label below, away from the sub-branch label
+      pos.push({ id: tip.assertion_id, a: s.dir!, parent: sub.id, label: off > 0 && s.label === "lab-u" ? "lab-d" : s.label, ...tp });
       const tapped = cur?.kind === "answer" && cur.assertion_id === tip.assertion_id;
       const live = tip.candidates.filter((c) => c.against === 0);
       const list = tip.decided && !tapped ? live.filter((c) => c.predicate === tip.decided!.predicate) : live;
@@ -164,13 +167,13 @@ export function TreePage() {
             const gone = x.expired ? `expired ${day(x.valid_to!)}` : retracted.has(x.assertion_id) ? `${x.said_by.split(" ")[0]} took it back` : "";
             const isTarget = target?.assertion_id === x.assertion_id;
             const tag = isTarget && r!.outcome === "proposed" ? sourceTag(x) : "";
-            const line = gone || (isTarget && reason && !stopLeaf ? reason : "") || tag;
+            const line = gone || (isTarget && reason && !stopLeaf ? reason : "") || tag || (x.status === "disputed" ? "disputed" : x.trust === "hunch" ? "hunch" : "");
             return (
-              <div key={x.assertion_id} className={`t-node t-tip ${tipSide(p)}${gone ? " gone" : ""}${x.superseded_by ? " replaced" : ""}${isTarget ? ` hit ${r!.outcome}` : ""}${dim(x.assertion_id)}`}
+              <div key={x.assertion_id} className={`t-node t-tip ${tipSide(p)}${x.trust === "hunch" ? " hunch" : ""}${x.status === "disputed" ? " disputed" : ""}${gone ? " gone" : ""}${x.superseded_by ? " replaced" : ""}${isTarget ? ` hit ${r!.outcome}` : ""}${dim(x.assertion_id)}`}
                 style={{ transform: `translate(${p.x}px, ${p.y}px)` }}>
                 <span className="t-dot" />
                 <span className="t-sources">{x.sources.map((s) => <i key={s} />)}</span>
-                <span className="t-name">{tipWords(x)}{line && <span key={line} className={`t-status${tag && line === tag ? " tag" : ""}`}>{line}</span>}</span>
+                <span className="t-name">{tipWords(x)}{line && <span key={line} className={`t-status${tag && line === tag ? " tag" : line === "disputed" || line === "hunch" ? ` mark ${line}` : ""}`}>{line}</span>}</span>
               </div>
             );
           })}

@@ -64,6 +64,13 @@
 .t-tip.replaced .t-name { text-decoration: line-through; }
 .t-tip.replaced { animation: t-fade calc(var(--slow) * 2) var(--ease-in) forwards; }
 .t-tip.dim { opacity: 0.22; }
+.t-tip.hunch { opacity: 0.5; }
+.t-tip.hunch .t-dot { width: 18px; height: 18px; left: -9px; top: -9px; background: var(--hunch); box-shadow: var(--hunch-glow); }
+.t-tip.hunch .t-name { font-size: 26px; font-weight: 400; }
+.t-tip.disputed .t-dot { box-shadow: 0 0 26px 10px rgba(240, 180, 76, 0.55); }
+.t-status.mark { border: 2px solid currentColor; border-radius: var(--radius-round); padding: 0 12px; font-size: 26px; }
+.t-status.disputed { color: var(--unknown); }
+.t-status.hunch { color: #e7a9be; }
 .t-tip.hit .t-dot { animation: t-glow 1600ms var(--ease-out) 1800ms both; }
 
 /* leaves: a fan at the end of the tip, label outward */

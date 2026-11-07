@@ -1,0 +1,2241 @@
+{
+  "note": "Visualisation for the video. The tree is drawn from the stored assertions; the system itself has no tree.",
+  "events": [
+    {
+      "kind": "message",
+      "at": "2026-10-02T10:00:00+02:00",
+      "id": "email:12_barrier",
+      "author": "Kalle Niskanen",
+      "role": "other",
+      "channel": "email",
+      "thread_id": "email-12_barrier",
+      "timestamp": "2026-10-02T10:00:00+02:00",
+      "text": "Subject: Access road barrier at OULU-03\n\nHi team,\n\nI was visiting site OULU-03 yesterday and noticed that the private access road now has a locked barrier.\n\nIf you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä. I picked it up from him myself yesterday. Call ahead or just knock, it saves a wasted drive.\n\nBest regards,\nKalle",
+      "index": 0
+    },
+    {
+      "kind": "capture",
+      "at": "2026-10-02T10:00:00+02:00",
+      "how": "new",
+      "thread_id": "email-12_barrier",
+      "source": "data/scenarios/12_barrier/email.txt",
+      "this_excerpt": "If you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä.",
+      "message_ids": [
+        "email:12_barrier"
+      ],
+      "status_before": null,
+      "dispute_with": [],
+      "assertion_id": "CA-0001",
+      "trigger": {
+        "kind": "workflow",
+        "event": "dispatch_created",
+        "symptoms": []
+      },
+      "action": "site.access_key",
+      "action_text": "at the neighbouring farm, ask for Mäkelä",
+      "avoid": [],
+      "excerpt": "If you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä.",
+      "said_by": "Kalle Niskanen",
+      "said_by_role": "other",
+      "trust": "stated",
+      "status": "open",
+      "entity_type": "site",
+      "candidates": [
+        {
+          "predicate": "site == 'OULU-03'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of OULU-03"
+        }
+      ],
+      "decided": null,
+      "cases": [
+        {
+          "entity": "OULU-03",
+          "at": "2026-10-02T10:00:00+02:00",
+          "outcome": null
+        }
+      ],
+      "sources": [
+        "email:email-12_barrier"
+      ],
+      "valid_from": "2026-10-02T10:00:00+02:00",
+      "valid_to": null,
+      "supersedes": null,
+      "superseded_by": null,
+      "index": 1
+    },
+    {
+      "kind": "incident",
+      "at": "2026-10-05T08:00:00+02:00",
+      "entity": "OULU-03",
+      "event": "dispatch_created",
+      "entity_site": "OULU-03",
+      "entity_region": "north",
+      "symptoms": [],
+      "source": "12b_barrier_update",
+      "results": [
+        {
+          "assertion_id": "CA-0001",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "site == 'OULU-03'": "holds"
+          },
+          "decided": null,
+          "outcome": "proposed",
+          "reason": "all hold: site == 'OULU-03'",
+          "question": null,
+          "action_text": "at the neighbouring farm, ask for Mäkelä",
+          "said_by": "Kalle Niskanen",
+          "trust": "stated",
+          "status": "open"
+        }
+      ],
+      "not_matched": [],
+      "agent_text": "[CA-0001] at the neighbouring farm, ask for Mäkelä. Source: Kalle Niskanen (email), 1 case, stated.",
+      "index": 2
+    },
+    {
+      "kind": "notification",
+      "to": "Kalle Niskanen",
+      "text": "Your tip from 2026-10-02 was proposed for OULU-03 today.",
+      "assertion_id": "CA-0001",
+      "entity_id": "OULU-03",
+      "at": "2026-10-05T08:00:00+02:00",
+      "index": 3
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:14:00+02:00",
+      "id": "teams:thread-001:1",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:14:00+02:00",
+      "text": "Hi Erkki, I'm at the site now. Changed the SFP on transmission node TRN-042.\nLink is up and alarms cleared, but traffic is still not coming back. Have you seen this before?",
+      "index": 4
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:16:00+02:00",
+      "id": "teams:thread-001:2",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:16:00+02:00",
+      "text": "Yes. Is this one of the older units?",
+      "index": 5
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:16:00+02:00",
+      "id": "teams:thread-001:3",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:16:00+02:00",
+      "text": "Yes, installed around 2019 I think.",
+      "index": 6
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:18:00+02:00",
+      "id": "teams:thread-001:4",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:18:00+02:00",
+      "text": "Ok. Don't trust the green link status on those.\nSometimes after changing the SFP the interface comes up normally, but the forwarding state doesn't recover correctly.",
+      "index": 7
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:18:00+02:00",
+      "id": "teams:thread-001:5",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:18:00+02:00",
+      "text": "So another SFP?",
+      "index": 8
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:19:00+02:00",
+      "id": "teams:thread-001:6",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:19:00+02:00",
+      "text": "No. Usually the SFP is fine.\nCheck whether the traffic counters are actually increasing. If they stay at zero even though the interface is UP, it's probably the issue I've seen before.",
+      "index": 9
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:21:00+02:00",
+      "id": "teams:thread-001:7",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:21:00+02:00",
+      "text": "Yes. Link UP. RX power looks normal. Counters basically zero.",
+      "index": 10
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:22:00+02:00",
+      "id": "teams:thread-001:8",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:22:00+02:00",
+      "text": "That's it.\nDisable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
+      "index": 11
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:25:00+02:00",
+      "id": "teams:thread-001:9",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:25:00+02:00",
+      "text": "Did that. Traffic is back 👍",
+      "index": 12
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:25:00+02:00",
+      "id": "teams:thread-001:10",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:25:00+02:00",
+      "text": "Good. These old units sometimes behave like this after an optical module replacement.",
+      "index": 13
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:26:00+02:00",
+      "id": "teams:thread-001:11",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:26:00+02:00",
+      "text": "Is this documented somewhere?",
+      "index": 14
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T09:27:00+02:00",
+      "id": "teams:thread-001:12",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-001",
+      "timestamp": "2026-11-01T09:27:00+02:00",
+      "text": "Not that I know of 😄\nWe've just learned it over the years.",
+      "index": 15
+    },
+    {
+      "kind": "capture",
+      "at": "2026-11-01T09:27:00+02:00",
+      "how": "new",
+      "thread_id": "thread-001",
+      "source": "data/elisa_examples/teams_chat.json",
+      "this_excerpt": "Disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
+      "message_ids": [
+        "teams:thread-001:8"
+      ],
+      "status_before": null,
+      "dispute_with": [],
+      "assertion_id": "CA-0002",
+      "trigger": {
+        "kind": "incident",
+        "event": "sfp_replaced",
+        "symptoms": [
+          "counters_zero",
+          "link_up"
+        ]
+      },
+      "action": "interface.bounce",
+      "action_text": "Disable the interface, wait a little, then enable it again",
+      "avoid": [
+        "sfp.replace",
+        "node.reboot"
+      ],
+      "excerpt": "Disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
+      "said_by": "Erkki Expert",
+      "said_by_role": "expert",
+      "trust": "verified_by_outcome",
+      "status": "open",
+      "entity_type": "transmission_node",
+      "candidates": [
+        {
+          "predicate": "install_year <= 2019",
+          "edge": "open",
+          "support": 1,
+          "against": 0,
+          "basis": "Erkki Expert: 'older units'; 2019 is TRN-042's install_year, not a stated boundary"
+        },
+        {
+          "predicate": "model == 'TX-200'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "firmware == '4.1'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "site == 'OULU-07'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "region == 'north'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042's site"
+        }
+      ],
+      "decided": null,
+      "cases": [
+        {
+          "entity": "TRN-042",
+          "at": "2026-11-01T09:22:00+02:00",
+          "outcome": "recovered"
+        }
+      ],
+      "sources": [
+        "teams:thread-001"
+      ],
+      "valid_from": "2026-11-01T09:14:00+02:00",
+      "valid_to": null,
+      "supersedes": null,
+      "superseded_by": null,
+      "index": 16
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-01T10:00:00+02:00",
+      "id": "email:001",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "channel": "email",
+      "thread_id": "email-001",
+      "timestamp": "2026-11-01T10:00:00+02:00",
+      "text": "Subject: RE: TRN-042 traffic not recovering after SFP replacement\n\nHi Veikko,\n\nThat sounds like the behaviour we have seen with some of the older transmission units.\n\nThe confusing part is that everything can look normal after replacing the optical module:\n\n- interface status = UP\n- optical levels = OK\n- alarms = cleared\n\n...but traffic still doesn't recover.\n\nBefore replacing the SFP again or rebooting the unit, check the traffic counters.\n\nIf the interface is UP but the counters remain at zero, try disabling and enabling the interface once.\n\nThis has solved the issue in several cases I've seen.\n\nI don't think this is written in the normal field instructions. It is one of those things we have learned from experience.\n\nRegards,\nErkki",
+      "index": 17
+    },
+    {
+      "kind": "capture",
+      "at": "2026-11-01T10:00:00+02:00",
+      "how": "new_source",
+      "thread_id": "email-001",
+      "source": "data/elisa_examples/email.txt",
+      "this_excerpt": "Before replacing the SFP again or rebooting the unit, check the traffic counters. If the interface is UP but the counters remain at zero, try disabling and enabling the interface once.",
+      "message_ids": [
+        "email:001"
+      ],
+      "status_before": "open",
+      "dispute_with": [],
+      "assertion_id": "CA-0002",
+      "trigger": {
+        "kind": "incident",
+        "event": "sfp_replaced",
+        "symptoms": [
+          "counters_zero",
+          "link_up"
+        ]
+      },
+      "action": "interface.bounce",
+      "action_text": "Disable the interface, wait a little, then enable it again",
+      "avoid": [
+        "sfp.replace",
+        "node.reboot"
+      ],
+      "excerpt": "Disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
+      "said_by": "Erkki Expert",
+      "said_by_role": "expert",
+      "trust": "verified_by_outcome",
+      "status": "open",
+      "entity_type": "transmission_node",
+      "candidates": [
+        {
+          "predicate": "install_year <= 2019",
+          "edge": "open",
+          "support": 1,
+          "against": 0,
+          "basis": "Erkki Expert: 'older units'; 2019 is TRN-042's install_year, not a stated boundary"
+        },
+        {
+          "predicate": "model == 'TX-200'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "firmware == '4.1'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "site == 'OULU-07'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "region == 'north'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042's site"
+        }
+      ],
+      "decided": null,
+      "cases": [
+        {
+          "entity": "TRN-042",
+          "at": "2026-11-01T09:22:00+02:00",
+          "outcome": "recovered"
+        }
+      ],
+      "sources": [
+        "teams:thread-001",
+        "email:email-001"
+      ],
+      "valid_from": "2026-11-01T09:14:00+02:00",
+      "valid_to": null,
+      "supersedes": null,
+      "superseded_by": null,
+      "index": 18
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-03T10:45:00+02:00",
+      "id": "teams:thread-04_chitchat:1",
+      "author": "Timo Laine",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-04_chitchat",
+      "timestamp": "2026-11-03T10:45:00+02:00",
+      "text": "Just driving back from OULU-07 after a quick routine check near TRN-045. Are you up for some lunch today Anu?",
+      "index": 19
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-03T10:48:00+02:00",
+      "id": "teams:thread-04_chitchat:2",
+      "author": "Anu Virtanen",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-04_chitchat",
+      "timestamp": "2026-11-03T10:48:00+02:00",
+      "text": "Hey Timo! Yes, definitely. By the way, just heard that our Thursday planning meeting got moved to Friday at 13:00.",
+      "index": 20
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-03T10:51:00+02:00",
+      "id": "teams:thread-04_chitchat:3",
+      "author": "Timo Laine",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-04_chitchat",
+      "timestamp": "2026-11-03T10:51:00+02:00",
+      "text": "Oh thanks for the heads up, Friday afternoon is always a classic time for planning. How about we head to the canteen at 11:30? It's soup day today!",
+      "index": 21
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-03T10:53:00+02:00",
+      "id": "teams:thread-04_chitchat:4",
+      "author": "Anu Virtanen",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-04_chitchat",
+      "timestamp": "2026-11-03T10:53:00+02:00",
+      "text": "Perfect, 11:30 works great. I really need a break, been fighting with the office coffee machine again.",
+      "index": 22
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-03T10:55:00+02:00",
+      "id": "teams:thread-04_chitchat:5",
+      "author": "Timo Laine",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-04_chitchat",
+      "timestamp": "2026-11-03T10:55:00+02:00",
+      "text": "Haha, that coffee machine is easily the least reliable device on our entire network. It needs a complete hardware swap.",
+      "index": 23
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-03T10:58:00+02:00",
+      "id": "teams:thread-04_chitchat:6",
+      "author": "Anu Virtanen",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-04_chitchat",
+      "timestamp": "2026-11-03T10:58:00+02:00",
+      "text": "Absolutely, it has a 90% packet loss on espresso delivery! See you at 11:30 at the canteen :)",
+      "index": 24
+    },
+    {
+      "kind": "no_capture",
+      "at": "2026-11-03T10:58:00+02:00",
+      "thread_id": "thread-04_chitchat",
+      "source": "data/scenarios/04_chitchat/thread.json",
+      "reason": "no rule: The conversation is casual chat about lunch, a meeting change, and a coffee machine, with no operational rule stated.",
+      "log": [
+        "no rule: The conversation is casual chat about lunch, a meeting change, and a coffee machine, with no operational rule stated.",
+        "no rule: The conversation is casual chat about lunch, a meeting change, and a coffee machine, with no operational rule stated.",
+        "<repo>\\data\\scenarios\\04_chitchat\\thread.json: not extracted"
+      ],
+      "index": 25
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-04T10:15:00+02:00",
+      "id": "teams:thread-08_conflict:1",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-08_conflict",
+      "timestamp": "2026-11-04T10:15:00+02:00",
+      "text": "Moi Jari, I just changed the SFP on TRN-042 at site OULU-07. The link is showing up, alarms cleared and optics levels look totally normal, but there is absolutely no traffic passing through.",
+      "index": 26
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-04T10:17:00+02:00",
+      "id": "teams:thread-08_conflict:2",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-08_conflict",
+      "timestamp": "2026-11-04T10:17:00+02:00",
+      "text": "Traffic counters are at zero too. Any ideas what could be wrong here?",
+      "index": 27
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-04T10:20:00+02:00",
+      "id": "teams:thread-08_conflict:3",
+      "author": "Jari Korhonen",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-08_conflict",
+      "timestamp": "2026-11-04T10:20:00+02:00",
+      "text": "Moi Veikko. Just swap the SFP again, it's always the optic in these cases.",
+      "index": 28
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-04T10:22:00+02:00",
+      "id": "teams:thread-08_conflict:4",
+      "author": "Jari Korhonen",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-08_conflict",
+      "timestamp": "2026-11-04T10:22:00+02:00",
+      "text": "Don't bother with bouncing the interface or rebooting the node, a second SFP always fixes it.",
+      "index": 29
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-04T10:25:00+02:00",
+      "id": "teams:thread-08_conflict:5",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-08_conflict",
+      "timestamp": "2026-11-04T10:25:00+02:00",
+      "text": "Okay, sounds simple enough. I will grab another SFP from the van and put it in now.",
+      "index": 30
+    },
+    {
+      "kind": "capture",
+      "at": "2026-11-04T10:25:00+02:00",
+      "how": "new",
+      "thread_id": "thread-08_conflict",
+      "source": "data/scenarios/08_conflict/thread.json",
+      "this_excerpt": "Just swap the SFP again, it's always the optic in these cases. Don't bother with bouncing the interface or rebooting the node, a second SFP always fixes it.",
+      "message_ids": [
+        "teams:thread-08_conflict:4"
+      ],
+      "status_before": null,
+      "dispute_with": [
+        "CA-0002"
+      ],
+      "assertion_id": "CA-0003",
+      "trigger": {
+        "kind": "incident",
+        "event": "sfp_replaced",
+        "symptoms": [
+          "counters_zero",
+          "link_up"
+        ]
+      },
+      "action": "sfp.replace",
+      "action_text": "swap the SFP again",
+      "avoid": [
+        "interface.bounce",
+        "node.reboot"
+      ],
+      "excerpt": "Just swap the SFP again, it's always the optic in these cases. Don't bother with bouncing the interface or rebooting the node, a second SFP always fixes it.",
+      "said_by": "Jari Korhonen",
+      "said_by_role": "expert",
+      "trust": "stated",
+      "status": "disputed",
+      "entity_type": "transmission_node",
+      "candidates": [
+        {
+          "predicate": "model == 'TX-200'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "firmware == '4.1'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "install_year == 2019",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "site == 'OULU-07'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "region == 'north'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042's site"
+        }
+      ],
+      "decided": null,
+      "cases": [
+        {
+          "entity": "TRN-042",
+          "at": "2026-11-04T10:15:00+02:00",
+          "outcome": null
+        }
+      ],
+      "sources": [
+        "teams:thread-08_conflict"
+      ],
+      "valid_from": "2026-11-04T10:15:00+02:00",
+      "valid_to": null,
+      "supersedes": null,
+      "superseded_by": null,
+      "index": 31
+    },
+    {
+      "kind": "dispute",
+      "at": "2026-11-04T10:25:00+02:00",
+      "assertions": [
+        "CA-0002",
+        "CA-0003"
+      ],
+      "action_texts": [
+        "Disable the interface, wait a little, then enable it again",
+        "swap the SFP again"
+      ],
+      "said_by": [
+        "Erkki Expert",
+        "Jari Korhonen"
+      ],
+      "trust": [
+        "verified_by_outcome",
+        "stated"
+      ],
+      "index": 32
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-07T10:00:00+02:00",
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "alarms_cleared",
+        "counters_zero"
+      ],
+      "source": "beat 3",
+      "results": [
+        {
+          "assertion_id": "CA-0002",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "install_year <= 2019": "holds",
+            "model == 'TX-200'": "holds",
+            "firmware == '4.1'": "holds",
+            "site == 'OULU-07'": "fails",
+            "region == 'north'": "holds"
+          },
+          "decided": null,
+          "outcome": "ambiguous",
+          "reason": "site OULU-11 fails site == 'OULU-07'; but install_year 2018 holds install_year <= 2019; model TX-200 holds model == 'TX-200'; firmware 4.1 holds firmware == '4.1'; region north holds region == 'north'",
+          "question": {
+            "assertion_id": "CA-0002",
+            "key": "firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+            "to": "Erkki Expert",
+            "thread_id": "thread-001",
+            "text": "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site.",
+            "options": [
+              {
+                "label": "All older units",
+                "sets_decided": "install_year <= 2019",
+                "edge": "open",
+                "edge_answer": null
+              },
+              {
+                "label": "All TX-200 units",
+                "sets_decided": "model == 'TX-200'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All on firmware 4.1",
+                "sets_decided": "firmware == '4.1'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All of the north region",
+                "sets_decided": "region == 'north'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only OULU-07",
+                "sets_decided": "site == 'OULU-07'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "No",
+                "sets_decided": "id == 'TRN-042'",
+                "edge": null,
+                "edge_answer": null
+              }
+            ]
+          },
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "said_by": "Erkki Expert",
+          "trust": "verified_by_outcome",
+          "status": "disputed"
+        },
+        {
+          "assertion_id": "CA-0003",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "model == 'TX-200'": "holds",
+            "firmware == '4.1'": "holds",
+            "install_year == 2019": "fails",
+            "site == 'OULU-07'": "fails",
+            "region == 'north'": "holds"
+          },
+          "decided": null,
+          "outcome": "ambiguous",
+          "reason": "install_year 2018 fails install_year == 2019; site OULU-11 fails site == 'OULU-07'; but model TX-200 holds model == 'TX-200'; firmware 4.1 holds firmware == '4.1'; region north holds region == 'north'",
+          "question": {
+            "assertion_id": "CA-0003",
+            "key": "firmware == '4.1'=holds | install_year == 2019=fails | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+            "to": "Jari Korhonen",
+            "thread_id": "thread-08_conflict",
+            "text": "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site.",
+            "options": [
+              {
+                "label": "All TX-200 units",
+                "sets_decided": "model == 'TX-200'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All on firmware 4.1",
+                "sets_decided": "firmware == '4.1'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All of the north region",
+                "sets_decided": "region == 'north'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only 2019",
+                "sets_decided": "install_year == 2019",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only OULU-07",
+                "sets_decided": "site == 'OULU-07'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "No",
+                "sets_decided": "id == 'TRN-042'",
+                "edge": null,
+                "edge_answer": null
+              }
+            ]
+          },
+          "action_text": "swap the SFP again",
+          "said_by": "Jari Korhonen",
+          "trust": "stated",
+          "status": "disputed"
+        }
+      ],
+      "not_matched": [
+        "CA-0001"
+      ],
+      "agent_text": null,
+      "index": 33
+    },
+    {
+      "kind": "answer",
+      "at": "2026-11-07T10:00:00+02:00",
+      "assertion_id": "CA-0002",
+      "to": "Erkki Expert",
+      "thread_id": "thread-001",
+      "key": "firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+      "option_index": 0,
+      "option_label": "All older units",
+      "source": "beat 3",
+      "decided": {
+        "predicate": "install_year <= 2019",
+        "edge": "open"
+      },
+      "status": "decided",
+      "candidates": [
+        {
+          "predicate": "install_year <= 2019",
+          "edge": "open"
+        },
+        {
+          "predicate": "model == 'TX-200'",
+          "edge": "closed"
+        },
+        {
+          "predicate": "firmware == '4.1'",
+          "edge": "closed"
+        },
+        {
+          "predicate": "site == 'OULU-07'",
+          "edge": "closed"
+        },
+        {
+          "predicate": "region == 'north'",
+          "edge": "closed"
+        }
+      ],
+      "index": 34
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-07T10:00:00+02:00",
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "alarms_cleared",
+        "counters_zero"
+      ],
+      "source": "beat 3",
+      "results": [
+        {
+          "assertion_id": "CA-0002",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "install_year <= 2019": "holds"
+          },
+          "decided": "install_year <= 2019",
+          "outcome": "proposed",
+          "reason": "all hold: install_year <= 2019",
+          "question": null,
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "said_by": "Erkki Expert",
+          "trust": "verified_by_outcome",
+          "status": "decided"
+        },
+        {
+          "assertion_id": "CA-0003",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "model == 'TX-200'": "holds",
+            "firmware == '4.1'": "holds",
+            "install_year == 2019": "fails",
+            "site == 'OULU-07'": "fails",
+            "region == 'north'": "holds"
+          },
+          "decided": null,
+          "outcome": "ambiguous",
+          "reason": "install_year 2018 fails install_year == 2019; site OULU-11 fails site == 'OULU-07'; but model TX-200 holds model == 'TX-200'; firmware 4.1 holds firmware == '4.1'; region north holds region == 'north'",
+          "question": {
+            "assertion_id": "CA-0003",
+            "key": "firmware == '4.1'=holds | install_year == 2019=fails | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+            "to": "Jari Korhonen",
+            "thread_id": "thread-08_conflict",
+            "text": "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site.",
+            "options": [
+              {
+                "label": "All TX-200 units",
+                "sets_decided": "model == 'TX-200'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All on firmware 4.1",
+                "sets_decided": "firmware == '4.1'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All of the north region",
+                "sets_decided": "region == 'north'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only 2019",
+                "sets_decided": "install_year == 2019",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only OULU-07",
+                "sets_decided": "site == 'OULU-07'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "No",
+                "sets_decided": "id == 'TRN-042'",
+                "edge": null,
+                "edge_answer": null
+              }
+            ]
+          },
+          "action_text": "swap the SFP again",
+          "said_by": "Jari Korhonen",
+          "trust": "stated",
+          "status": "disputed"
+        }
+      ],
+      "not_matched": [
+        "CA-0001"
+      ],
+      "agent_text": "[CA-0002] Disable the interface, wait a little, then enable it again. Avoid: sfp.replace, node.reboot. Source: Erkki Expert (teams, email), 1 case, verified_by_outcome.",
+      "index": 35
+    },
+    {
+      "kind": "notification",
+      "to": "Erkki Expert",
+      "text": "Your tip from 2026-11-01 was proposed for TRN-087 today.",
+      "assertion_id": "CA-0002",
+      "entity_id": "TRN-087",
+      "at": "2026-11-07T10:00:00+02:00",
+      "index": 36
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-07T10:00:00+02:00",
+      "entity": "TRN-101",
+      "event": "sfp_replaced",
+      "entity_site": "HEL-02",
+      "entity_region": "south",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "alarms_cleared",
+        "counters_zero"
+      ],
+      "source": "beat 4",
+      "results": [
+        {
+          "assertion_id": "CA-0002",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "install_year <= 2019": "unknown"
+          },
+          "decided": "install_year <= 2019",
+          "outcome": "ambiguous",
+          "reason": "install year 2023 is beyond the known edge 2019",
+          "question": {
+            "assertion_id": "CA-0002",
+            "key": "install_year <= 2019=unknown",
+            "to": "Erkki Expert",
+            "thread_id": "thread-001",
+            "text": "Your TRN-042 tip: does it apply to TRN-101 too? Installed 2023, newer than any unit it has worked on.",
+            "options": [
+              {
+                "label": "Yes",
+                "sets_decided": null,
+                "edge": null,
+                "edge_answer": "raise"
+              },
+              {
+                "label": "No",
+                "sets_decided": null,
+                "edge": null,
+                "edge_answer": "close"
+              }
+            ]
+          },
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "said_by": "Erkki Expert",
+          "trust": "verified_by_outcome",
+          "status": "decided"
+        },
+        {
+          "assertion_id": "CA-0003",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "model == 'TX-200'": "fails",
+            "firmware == '4.1'": "fails",
+            "install_year == 2019": "fails",
+            "site == 'OULU-07'": "fails",
+            "region == 'north'": "fails"
+          },
+          "decided": null,
+          "outcome": "declined",
+          "reason": "model TX-300 fails model == 'TX-200'; firmware 5.2 fails firmware == '4.1'; install_year 2023 fails install_year == 2019; site HEL-02 fails site == 'OULU-07'; region south fails region == 'north'",
+          "question": null,
+          "action_text": "swap the SFP again",
+          "said_by": "Jari Korhonen",
+          "trust": "stated",
+          "status": "disputed"
+        }
+      ],
+      "not_matched": [
+        "CA-0001"
+      ],
+      "agent_text": null,
+      "index": 37
+    },
+    {
+      "kind": "answer",
+      "at": "2026-11-07T10:00:00+02:00",
+      "assertion_id": "CA-0002",
+      "to": "Erkki Expert",
+      "thread_id": "thread-001",
+      "key": "install_year <= 2019=unknown",
+      "option_index": 1,
+      "option_label": "No",
+      "source": "beat 4",
+      "decided": {
+        "predicate": "install_year <= 2019",
+        "edge": "closed"
+      },
+      "status": "decided",
+      "candidates": [
+        {
+          "predicate": "install_year <= 2019",
+          "edge": "closed"
+        },
+        {
+          "predicate": "model == 'TX-200'",
+          "edge": "closed"
+        },
+        {
+          "predicate": "firmware == '4.1'",
+          "edge": "closed"
+        },
+        {
+          "predicate": "site == 'OULU-07'",
+          "edge": "closed"
+        },
+        {
+          "predicate": "region == 'north'",
+          "edge": "closed"
+        }
+      ],
+      "index": 38
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-07T10:00:00+02:00",
+      "entity": "TRN-101",
+      "event": "sfp_replaced",
+      "entity_site": "HEL-02",
+      "entity_region": "south",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "alarms_cleared",
+        "counters_zero"
+      ],
+      "source": "beat 4",
+      "results": [
+        {
+          "assertion_id": "CA-0002",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "install_year <= 2019": "fails"
+          },
+          "decided": "install_year <= 2019",
+          "outcome": "declined",
+          "reason": "install_year 2023 fails install_year <= 2019",
+          "question": null,
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "said_by": "Erkki Expert",
+          "trust": "verified_by_outcome",
+          "status": "decided"
+        },
+        {
+          "assertion_id": "CA-0003",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "model == 'TX-200'": "fails",
+            "firmware == '4.1'": "fails",
+            "install_year == 2019": "fails",
+            "site == 'OULU-07'": "fails",
+            "region == 'north'": "fails"
+          },
+          "decided": null,
+          "outcome": "declined",
+          "reason": "model TX-300 fails model == 'TX-200'; firmware 5.2 fails firmware == '4.1'; install_year 2023 fails install_year == 2019; site HEL-02 fails site == 'OULU-07'; region south fails region == 'north'",
+          "question": null,
+          "action_text": "swap the SFP again",
+          "said_by": "Jari Korhonen",
+          "trust": "stated",
+          "status": "disputed"
+        }
+      ],
+      "not_matched": [
+        "CA-0001"
+      ],
+      "agent_text": null,
+      "index": 39
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-07T10:00:00+02:00",
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "source": "01_core",
+      "results": [
+        {
+          "assertion_id": "CA-0002",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "install_year <= 2019": "holds"
+          },
+          "decided": "install_year <= 2019",
+          "outcome": "proposed",
+          "reason": "all hold: install_year <= 2019",
+          "question": null,
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "said_by": "Erkki Expert",
+          "trust": "verified_by_outcome",
+          "status": "decided"
+        },
+        {
+          "assertion_id": "CA-0003",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "model == 'TX-200'": "holds",
+            "firmware == '4.1'": "holds",
+            "install_year == 2019": "fails",
+            "site == 'OULU-07'": "fails",
+            "region == 'north'": "holds"
+          },
+          "decided": null,
+          "outcome": "ambiguous",
+          "reason": "install_year 2018 fails install_year == 2019; site OULU-11 fails site == 'OULU-07'; but model TX-200 holds model == 'TX-200'; firmware 4.1 holds firmware == '4.1'; region north holds region == 'north'",
+          "question": {
+            "assertion_id": "CA-0003",
+            "key": "firmware == '4.1'=holds | install_year == 2019=fails | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+            "to": "Jari Korhonen",
+            "thread_id": "thread-08_conflict",
+            "text": "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site.",
+            "options": [
+              {
+                "label": "All TX-200 units",
+                "sets_decided": "model == 'TX-200'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All on firmware 4.1",
+                "sets_decided": "firmware == '4.1'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All of the north region",
+                "sets_decided": "region == 'north'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only 2019",
+                "sets_decided": "install_year == 2019",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only OULU-07",
+                "sets_decided": "site == 'OULU-07'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "No",
+                "sets_decided": "id == 'TRN-042'",
+                "edge": null,
+                "edge_answer": null
+              }
+            ]
+          },
+          "action_text": "swap the SFP again",
+          "said_by": "Jari Korhonen",
+          "trust": "stated",
+          "status": "disputed"
+        }
+      ],
+      "not_matched": [
+        "CA-0001"
+      ],
+      "agent_text": "[CA-0002] Disable the interface, wait a little, then enable it again. Avoid: sfp.replace, node.reboot. Source: Erkki Expert (teams, email), 1 case, verified_by_outcome.",
+      "index": 40
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-07T10:00:00+02:00",
+      "entity": "TRN-063",
+      "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "source": "03_other_model_2018",
+      "results": [
+        {
+          "assertion_id": "CA-0002",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "install_year <= 2019": "holds"
+          },
+          "decided": "install_year <= 2019",
+          "outcome": "proposed",
+          "reason": "all hold: install_year <= 2019",
+          "question": null,
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "said_by": "Erkki Expert",
+          "trust": "verified_by_outcome",
+          "status": "decided"
+        },
+        {
+          "assertion_id": "CA-0003",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "model == 'TX-200'": "fails",
+            "firmware == '4.1'": "holds",
+            "install_year == 2019": "fails",
+            "site == 'OULU-07'": "fails",
+            "region == 'north'": "holds"
+          },
+          "decided": null,
+          "outcome": "ambiguous",
+          "reason": "model TX-250 fails model == 'TX-200'; install_year 2018 fails install_year == 2019; site OULU-11 fails site == 'OULU-07'; but firmware 4.1 holds firmware == '4.1'; region north holds region == 'north'",
+          "question": {
+            "assertion_id": "CA-0003",
+            "key": "firmware == '4.1'=holds | install_year == 2019=fails | model == 'TX-200'=fails | region == 'north'=holds | site == 'OULU-07'=fails",
+            "to": "Jari Korhonen",
+            "thread_id": "thread-08_conflict",
+            "text": "Your TRN-042 tip: does it apply to TRN-063 too? Different model, installed 2018, different site.",
+            "options": [
+              {
+                "label": "All on firmware 4.1",
+                "sets_decided": "firmware == '4.1'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All of the north region",
+                "sets_decided": "region == 'north'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only TX-200",
+                "sets_decided": "model == 'TX-200'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only 2019",
+                "sets_decided": "install_year == 2019",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only OULU-07",
+                "sets_decided": "site == 'OULU-07'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "No",
+                "sets_decided": "id == 'TRN-042'",
+                "edge": null,
+                "edge_answer": null
+              }
+            ]
+          },
+          "action_text": "swap the SFP again",
+          "said_by": "Jari Korhonen",
+          "trust": "stated",
+          "status": "disputed"
+        }
+      ],
+      "not_matched": [
+        "CA-0001"
+      ],
+      "agent_text": "[CA-0002] Disable the interface, wait a little, then enable it again. Avoid: sfp.replace, node.reboot. Source: Erkki Expert (teams, email), 1 case, verified_by_outcome.",
+      "index": 41
+    },
+    {
+      "kind": "notification",
+      "to": "Erkki Expert",
+      "text": "Your tip from 2026-11-01 was proposed for TRN-063 today.",
+      "assertion_id": "CA-0002",
+      "entity_id": "TRN-063",
+      "at": "2026-11-07T10:00:00+02:00",
+      "index": 42
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-07T10:00:00+02:00",
+      "entity": "TRN-042",
+      "event": "sfp_replaced",
+      "entity_site": "OULU-07",
+      "entity_region": "north",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_zero",
+        "alarms_cleared"
+      ],
+      "source": "08_conflict",
+      "results": [
+        {
+          "assertion_id": "CA-0002",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "install_year <= 2019": "holds"
+          },
+          "decided": "install_year <= 2019",
+          "outcome": "proposed",
+          "reason": "all hold: install_year <= 2019",
+          "question": null,
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "said_by": "Erkki Expert",
+          "trust": "verified_by_outcome",
+          "status": "decided"
+        },
+        {
+          "assertion_id": "CA-0003",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "model == 'TX-200'": "holds",
+            "firmware == '4.1'": "holds",
+            "install_year == 2019": "holds",
+            "site == 'OULU-07'": "holds",
+            "region == 'north'": "holds"
+          },
+          "decided": null,
+          "outcome": "proposed",
+          "reason": "all hold: model == 'TX-200', firmware == '4.1', install_year == 2019, site == 'OULU-07', region == 'north'",
+          "question": null,
+          "action_text": "swap the SFP again",
+          "said_by": "Jari Korhonen",
+          "trust": "stated",
+          "status": "disputed"
+        }
+      ],
+      "not_matched": [
+        "CA-0001"
+      ],
+      "agent_text": "[CA-0002] Disable the interface, wait a little, then enable it again. Avoid: sfp.replace, node.reboot. Source: Erkki Expert (teams, email), 1 case, verified_by_outcome.",
+      "index": 43
+    },
+    {
+      "kind": "notification",
+      "to": "Erkki Expert",
+      "text": "Your tip from 2026-11-01 was proposed for TRN-042 today.",
+      "assertion_id": "CA-0002",
+      "entity_id": "TRN-042",
+      "at": "2026-11-07T10:00:00+02:00",
+      "index": 44
+    },
+    {
+      "kind": "notification",
+      "to": "Jari Korhonen",
+      "text": "Your tip from 2026-11-04 was proposed for TRN-042 today.",
+      "assertion_id": "CA-0003",
+      "entity_id": "TRN-042",
+      "at": "2026-11-07T10:00:00+02:00",
+      "index": 45
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-07T10:00:00+02:00",
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "counters_rising",
+        "alarms_cleared"
+      ],
+      "source": "11_counters_rising",
+      "results": [],
+      "not_matched": [
+        "CA-0001",
+        "CA-0002",
+        "CA-0003"
+      ],
+      "agent_text": null,
+      "index": 46
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-07T10:15:00+02:00",
+      "id": "teams:thread-12b_barrier_update:1",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-12b_barrier_update",
+      "timestamp": "2026-11-07T10:15:00+02:00",
+      "text": "Moi Timo, I am at OULU-03 right now. Just a heads up that the key moved, it's in the site cabinet now. No need to go to the farm any more to open the access road barrier.",
+      "index": 47
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-07T10:17:00+02:00",
+      "id": "teams:thread-12b_barrier_update:2",
+      "author": "Timo Laine",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-12b_barrier_update",
+      "timestamp": "2026-11-07T10:17:00+02:00",
+      "text": "Ah nice, thanks, good to know. That saves some driving next time 👍",
+      "index": 48
+    },
+    {
+      "kind": "capture",
+      "at": "2026-11-07T10:17:00+02:00",
+      "how": "new",
+      "thread_id": "thread-12b_barrier_update",
+      "source": "data/scenarios/12b_barrier_update/thread.json",
+      "this_excerpt": "Just a heads up that the key moved, it's in the site cabinet now. No need to go to the farm any more to open the access road barrier.",
+      "message_ids": [
+        "teams:thread-12b_barrier_update:1"
+      ],
+      "status_before": null,
+      "dispute_with": [],
+      "assertion_id": "CA-0004",
+      "trigger": {
+        "kind": "workflow",
+        "event": "dispatch_created",
+        "symptoms": []
+      },
+      "action": "site.access_key",
+      "action_text": "in the site cabinet",
+      "avoid": [],
+      "excerpt": "Just a heads up that the key moved, it's in the site cabinet now. No need to go to the farm any more to open the access road barrier.",
+      "said_by": "Veikko Vikkelä",
+      "said_by_role": "field_engineer",
+      "trust": "stated",
+      "status": "open",
+      "entity_type": "site",
+      "candidates": [
+        {
+          "predicate": "site == 'OULU-03'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of OULU-03"
+        }
+      ],
+      "decided": null,
+      "cases": [
+        {
+          "entity": "OULU-03",
+          "at": "2026-11-07T10:15:00+02:00",
+          "outcome": null
+        }
+      ],
+      "sources": [
+        "teams:thread-12b_barrier_update"
+      ],
+      "valid_from": "2026-11-07T10:15:00+02:00",
+      "valid_to": null,
+      "supersedes": "CA-0001",
+      "superseded_by": null,
+      "index": 49
+    },
+    {
+      "kind": "supersede",
+      "at": "2026-11-07T10:17:00+02:00",
+      "assertion_id": "CA-0001",
+      "superseded_by": "CA-0004",
+      "valid_to": "2026-11-07T10:15:00+02:00",
+      "action_text": "at the neighbouring farm, ask for Mäkelä",
+      "new_action_text": "in the site cabinet",
+      "index": 50
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-08T08:00:00+02:00",
+      "entity": "OULU-03",
+      "event": "dispatch_created",
+      "entity_site": "OULU-03",
+      "entity_region": "north",
+      "symptoms": [],
+      "source": "beats 5, 6",
+      "results": [
+        {
+          "assertion_id": "CA-0001",
+          "trigger_matched": true,
+          "validity": "superseded by CA-0004 on 2026-11-07",
+          "candidates": {},
+          "decided": null,
+          "outcome": "declined",
+          "reason": "superseded by CA-0004 on 2026-11-07",
+          "question": null,
+          "action_text": "at the neighbouring farm, ask for Mäkelä",
+          "said_by": "Kalle Niskanen",
+          "trust": "stated",
+          "status": "open"
+        },
+        {
+          "assertion_id": "CA-0004",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "site == 'OULU-03'": "holds"
+          },
+          "decided": null,
+          "outcome": "proposed",
+          "reason": "all hold: site == 'OULU-03'",
+          "question": null,
+          "action_text": "in the site cabinet",
+          "said_by": "Veikko Vikkelä",
+          "trust": "stated",
+          "status": "open"
+        }
+      ],
+      "not_matched": [
+        "CA-0002",
+        "CA-0003"
+      ],
+      "agent_text": "[CA-0004] in the site cabinet. Source: Veikko Vikkelä (teams), 1 case, stated.",
+      "index": 51
+    },
+    {
+      "kind": "notification",
+      "to": "Veikko Vikkelä",
+      "text": "Your tip from 2026-11-07 was proposed for OULU-03 today.",
+      "assertion_id": "CA-0004",
+      "entity_id": "OULU-03",
+      "at": "2026-11-08T08:00:00+02:00",
+      "index": 52
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-08T08:00:00+02:00",
+      "entity": "OULU-07",
+      "event": "dispatch_created",
+      "entity_site": "OULU-07",
+      "entity_region": "north",
+      "symptoms": [],
+      "source": "12_barrier",
+      "results": [
+        {
+          "assertion_id": "CA-0001",
+          "trigger_matched": true,
+          "validity": "superseded by CA-0004 on 2026-11-07",
+          "candidates": {},
+          "decided": null,
+          "outcome": "declined",
+          "reason": "superseded by CA-0004 on 2026-11-07",
+          "question": null,
+          "action_text": "at the neighbouring farm, ask for Mäkelä",
+          "said_by": "Kalle Niskanen",
+          "trust": "stated",
+          "status": "open"
+        },
+        {
+          "assertion_id": "CA-0004",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "site == 'OULU-03'": "fails"
+          },
+          "decided": null,
+          "outcome": "declined",
+          "reason": "site OULU-07 fails site == 'OULU-03'",
+          "question": null,
+          "action_text": "in the site cabinet",
+          "said_by": "Veikko Vikkelä",
+          "trust": "stated",
+          "status": "open"
+        }
+      ],
+      "not_matched": [
+        "CA-0002",
+        "CA-0003"
+      ],
+      "agent_text": null,
+      "index": 53
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-08T14:00:00+02:00",
+      "entity": "TRN-105",
+      "event": "sfp_replaced",
+      "entity_site": "HEL-02",
+      "entity_region": "south",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "alarms_cleared",
+        "counters_zero"
+      ],
+      "source": "beat 7",
+      "results": [
+        {
+          "assertion_id": "CA-0002",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "install_year <= 2019": "holds"
+          },
+          "decided": "install_year <= 2019",
+          "outcome": "proposed",
+          "reason": "all hold: install_year <= 2019",
+          "question": null,
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "said_by": "Erkki Expert",
+          "trust": "verified_by_outcome",
+          "status": "decided"
+        },
+        {
+          "assertion_id": "CA-0003",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "model == 'TX-200'": "holds",
+            "firmware == '4.1'": "holds",
+            "install_year == 2019": "holds",
+            "site == 'OULU-07'": "fails",
+            "region == 'north'": "fails"
+          },
+          "decided": null,
+          "outcome": "ambiguous",
+          "reason": "site HEL-02 fails site == 'OULU-07'; region south fails region == 'north'; but model TX-200 holds model == 'TX-200'; firmware 4.1 holds firmware == '4.1'; install_year 2019 holds install_year == 2019",
+          "question": {
+            "assertion_id": "CA-0003",
+            "key": "firmware == '4.1'=holds | install_year == 2019=holds | model == 'TX-200'=holds | region == 'north'=fails | site == 'OULU-07'=fails",
+            "to": "Jari Korhonen",
+            "thread_id": "thread-08_conflict",
+            "text": "Your TRN-042 tip: does it apply to TRN-105 too? Same model, installed 2019, different site, different region.",
+            "options": [
+              {
+                "label": "All TX-200 units",
+                "sets_decided": "model == 'TX-200'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All on firmware 4.1",
+                "sets_decided": "firmware == '4.1'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All where install_year == 2019",
+                "sets_decided": "install_year == 2019",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only OULU-07",
+                "sets_decided": "site == 'OULU-07'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only north",
+                "sets_decided": "region == 'north'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "No",
+                "sets_decided": "id == 'TRN-042'",
+                "edge": null,
+                "edge_answer": null
+              }
+            ]
+          },
+          "action_text": "swap the SFP again",
+          "said_by": "Jari Korhonen",
+          "trust": "stated",
+          "status": "disputed"
+        }
+      ],
+      "not_matched": [
+        "CA-0001",
+        "CA-0004"
+      ],
+      "agent_text": "[CA-0002] Disable the interface, wait a little, then enable it again. Avoid: sfp.replace, node.reboot. Source: Erkki Expert (teams, email), 1 case, verified_by_outcome.",
+      "index": 54
+    },
+    {
+      "kind": "notification",
+      "to": "Erkki Expert",
+      "text": "Your tip from 2026-11-01 was proposed for TRN-105 today.",
+      "assertion_id": "CA-0002",
+      "entity_id": "TRN-105",
+      "at": "2026-11-08T14:00:00+02:00",
+      "index": 55
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-08T14:00:00+02:00",
+      "id": "teams:thread-13_second_technician:1",
+      "author": "Sami Korhonen",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-13_second_technician",
+      "timestamp": "2026-11-08T14:00:00+02:00",
+      "text": "TRN-105 at HEL-02 not passing traffic after an SFP change. Interface up, optics fine, alarms clear, counters zero. Thinking of swapping the SFP again.",
+      "index": 56
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-08T14:03:00+02:00",
+      "id": "teams:thread-13_second_technician:2",
+      "author": "Sami Korhonen",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-13_second_technician",
+      "timestamp": "2026-11-08T14:03:00+02:00",
+      "text": "That did it, counters moving. Who's Erkki?",
+      "index": 57
+    },
+    {
+      "kind": "no_capture",
+      "at": "2026-11-08T14:03:00+02:00",
+      "thread_id": "thread-13_second_technician",
+      "source": "data/scenarios/13_second_technician/thread.json",
+      "reason": "no rule: The conversation reports a fault and a recovery, but no message states the rule or action that was applied.",
+      "log": [
+        "no rule: The conversation reports a fault and a recovery, but no message states the rule or action that was applied.",
+        "no rule: The conversation reports a fault and a recovery, but no message states the rule or action that was applied.",
+        "<repo>\\data\\scenarios\\13_second_technician\\thread.json: not extracted"
+      ],
+      "index": 58
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-09T07:40:00+02:00",
+      "id": "teams:thread-14_road_closed:1",
+      "author": "Kalle Niskanen",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-14_road_closed",
+      "timestamp": "2026-11-09T07:40:00+02:00",
+      "text": "Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side.",
+      "index": 59
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-09T07:52:00+02:00",
+      "id": "teams:thread-14_road_closed:2",
+      "author": "Timo Laine",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-14_road_closed",
+      "timestamp": "2026-11-09T07:52:00+02:00",
+      "text": "Thanks, good to know. Is the forest track ok for the van?",
+      "index": 60
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-09T07:55:00+02:00",
+      "id": "teams:thread-14_road_closed:3",
+      "author": "Kalle Niskanen",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-14_road_closed",
+      "timestamp": "2026-11-09T07:55:00+02:00",
+      "text": "Yes, it's gravel but fine, I came in that way.",
+      "index": 61
+    },
+    {
+      "kind": "capture",
+      "at": "2026-11-09T07:55:00+02:00",
+      "how": "new",
+      "thread_id": "thread-14_road_closed",
+      "source": "data/scenarios/14_road_closed/thread.json",
+      "this_excerpt": "Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side.",
+      "message_ids": [
+        "teams:thread-14_road_closed:1"
+      ],
+      "status_before": null,
+      "dispute_with": [],
+      "assertion_id": "CA-0005",
+      "trigger": {
+        "kind": "workflow",
+        "event": "dispatch_created",
+        "symptoms": []
+      },
+      "action": "other",
+      "action_text": "use the forest track from the north side",
+      "avoid": [],
+      "excerpt": "Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side.",
+      "said_by": "Kalle Niskanen",
+      "said_by_role": "field_engineer",
+      "trust": "stated",
+      "status": "open",
+      "entity_type": "site",
+      "candidates": [
+        {
+          "predicate": "site == 'OULU-11'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of OULU-11; stated condition 'access road closed for roadworks' did not parse"
+        }
+      ],
+      "decided": null,
+      "cases": [
+        {
+          "entity": "OULU-11",
+          "at": "2026-11-09T07:40:00+02:00",
+          "outcome": null
+        }
+      ],
+      "sources": [
+        "teams:thread-14_road_closed"
+      ],
+      "valid_from": "2026-11-09T07:40:00+02:00",
+      "valid_to": "2026-11-20T23:59:59+02:00",
+      "supersedes": null,
+      "superseded_by": null,
+      "index": 62
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-09T11:02:00+02:00",
+      "id": "teams:thread-16_one_off:1",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-16_one_off",
+      "timestamp": "2026-11-09T11:02:00+02:00",
+      "text": "Timo, reboot TRN-055 now please, I'm on my way, back online in 10",
+      "index": 63
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-09T11:04:00+02:00",
+      "id": "teams:thread-16_one_off:2",
+      "author": "Timo Laine",
+      "role": "field_engineer",
+      "channel": "teams",
+      "thread_id": "thread-16_one_off",
+      "timestamp": "2026-11-09T11:04:00+02:00",
+      "text": "done",
+      "index": 64
+    },
+    {
+      "kind": "no_capture",
+      "at": "2026-11-09T11:04:00+02:00",
+      "thread_id": "thread-16_one_off",
+      "source": "data/scenarios/16_one_off/thread.json",
+      "reason": "no rule: The conversation only contains a one-off instruction to reboot a specific device with no stated condition or fault.",
+      "log": [
+        "no rule: The conversation only contains a one-off instruction to reboot a specific device with no stated condition or fault.",
+        "no rule: The conversation only contains a one-off instruction to reboot a specific device with no stated condition or fault.",
+        "<repo>\\data\\scenarios\\16_one_off\\thread.json: not extracted"
+      ],
+      "index": 65
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-10T16:20:00+02:00",
+      "id": "teams:thread-15_retraction:1",
+      "author": "Erkki Expert",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-15_retraction",
+      "timestamp": "2026-11-10T16:20:00+02:00",
+      "text": "Correction on the SFP swap thing where the link comes up but the counters stay at zero: ignore what I said about the bounce on the older units, that was a different issue, don't rely on it.",
+      "index": 66
+    },
+    {
+      "kind": "message",
+      "at": "2026-11-10T16:24:00+02:00",
+      "id": "teams:thread-15_retraction:2",
+      "author": "Pirjo Virtanen",
+      "role": "expert",
+      "channel": "teams",
+      "thread_id": "thread-15_retraction",
+      "timestamp": "2026-11-10T16:24:00+02:00",
+      "text": "Ok, noted. Let us know when you know more.",
+      "index": 67
+    },
+    {
+      "kind": "retract",
+      "at": "2026-11-10T16:24:00+02:00",
+      "assertion_id": "CA-0002",
+      "thread_id": "thread-15_retraction",
+      "said_by": "Erkki Expert",
+      "excerpt": "Correction on the SFP swap thing where the link comes up but the counters stay at zero: ignore what I said about the bounce on the older units, that was a different issue, don't rely on it.",
+      "message_ids": [
+        "teams:thread-15_retraction:1"
+      ],
+      "status_before": "decided",
+      "status": "review",
+      "sources": [
+        "teams:thread-001",
+        "email:email-001",
+        "teams:thread-15_retraction"
+      ],
+      "index": 68
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-11T10:00:00+02:00",
+      "entity": "TRN-087",
+      "event": "sfp_replaced",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
+      "symptoms": [
+        "link_up",
+        "optics_normal",
+        "alarms_cleared",
+        "counters_zero"
+      ],
+      "source": "beat 9",
+      "results": [
+        {
+          "assertion_id": "CA-0002",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "install_year <= 2019": "holds"
+          },
+          "decided": "install_year <= 2019",
+          "outcome": "declined",
+          "reason": "under review",
+          "question": null,
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "said_by": "Erkki Expert",
+          "trust": "verified_by_outcome",
+          "status": "review"
+        },
+        {
+          "assertion_id": "CA-0003",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "model == 'TX-200'": "holds",
+            "firmware == '4.1'": "holds",
+            "install_year == 2019": "fails",
+            "site == 'OULU-07'": "fails",
+            "region == 'north'": "holds"
+          },
+          "decided": null,
+          "outcome": "ambiguous",
+          "reason": "install_year 2018 fails install_year == 2019; site OULU-11 fails site == 'OULU-07'; but model TX-200 holds model == 'TX-200'; firmware 4.1 holds firmware == '4.1'; region north holds region == 'north'",
+          "question": {
+            "assertion_id": "CA-0003",
+            "key": "firmware == '4.1'=holds | install_year == 2019=fails | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+            "to": "Jari Korhonen",
+            "thread_id": "thread-08_conflict",
+            "text": "Your TRN-042 tip: does it apply to TRN-087 too? Same model, installed 2018, different site.",
+            "options": [
+              {
+                "label": "All TX-200 units",
+                "sets_decided": "model == 'TX-200'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All on firmware 4.1",
+                "sets_decided": "firmware == '4.1'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "All of the north region",
+                "sets_decided": "region == 'north'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only 2019",
+                "sets_decided": "install_year == 2019",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "Only OULU-07",
+                "sets_decided": "site == 'OULU-07'",
+                "edge": null,
+                "edge_answer": null
+              },
+              {
+                "label": "No",
+                "sets_decided": "id == 'TRN-042'",
+                "edge": null,
+                "edge_answer": null
+              }
+            ]
+          },
+          "action_text": "swap the SFP again",
+          "said_by": "Jari Korhonen",
+          "trust": "stated",
+          "status": "disputed"
+        }
+      ],
+      "not_matched": [
+        "CA-0001",
+        "CA-0004",
+        "CA-0005"
+      ],
+      "agent_text": null,
+      "index": 69
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-15T08:00:00+02:00",
+      "entity": "OULU-11",
+      "event": "dispatch_created",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
+      "symptoms": [],
+      "source": "beat 8",
+      "results": [
+        {
+          "assertion_id": "CA-0001",
+          "trigger_matched": true,
+          "validity": "superseded by CA-0004 on 2026-11-07",
+          "candidates": {},
+          "decided": null,
+          "outcome": "declined",
+          "reason": "superseded by CA-0004 on 2026-11-07",
+          "question": null,
+          "action_text": "at the neighbouring farm, ask for Mäkelä",
+          "said_by": "Kalle Niskanen",
+          "trust": "stated",
+          "status": "open"
+        },
+        {
+          "assertion_id": "CA-0004",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "site == 'OULU-03'": "fails"
+          },
+          "decided": null,
+          "outcome": "declined",
+          "reason": "site OULU-11 fails site == 'OULU-03'",
+          "question": null,
+          "action_text": "in the site cabinet",
+          "said_by": "Veikko Vikkelä",
+          "trust": "stated",
+          "status": "open"
+        },
+        {
+          "assertion_id": "CA-0005",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "site == 'OULU-11'": "holds"
+          },
+          "decided": null,
+          "outcome": "proposed",
+          "reason": "all hold: site == 'OULU-11'",
+          "question": null,
+          "action_text": "use the forest track from the north side",
+          "said_by": "Kalle Niskanen",
+          "trust": "stated",
+          "status": "open"
+        }
+      ],
+      "not_matched": [
+        "CA-0002",
+        "CA-0003"
+      ],
+      "agent_text": "[CA-0005] use the forest track from the north side. Source: Kalle Niskanen (teams), 1 case, stated.",
+      "index": 70
+    },
+    {
+      "kind": "notification",
+      "to": "Kalle Niskanen",
+      "text": "Your tip from 2026-11-09 was proposed for OULU-11 today.",
+      "assertion_id": "CA-0005",
+      "entity_id": "OULU-11",
+      "at": "2026-11-15T08:00:00+02:00",
+      "index": 71
+    },
+    {
+      "kind": "incident",
+      "at": "2026-11-21T08:00:00+02:00",
+      "entity": "OULU-11",
+      "event": "dispatch_created",
+      "entity_site": "OULU-11",
+      "entity_region": "north",
+      "symptoms": [],
+      "source": "beat 8",
+      "results": [
+        {
+          "assertion_id": "CA-0001",
+          "trigger_matched": true,
+          "validity": "superseded by CA-0004 on 2026-11-07",
+          "candidates": {},
+          "decided": null,
+          "outcome": "declined",
+          "reason": "superseded by CA-0004 on 2026-11-07",
+          "question": null,
+          "action_text": "at the neighbouring farm, ask for Mäkelä",
+          "said_by": "Kalle Niskanen",
+          "trust": "stated",
+          "status": "open"
+        },
+        {
+          "assertion_id": "CA-0004",
+          "trigger_matched": true,
+          "validity": null,
+          "candidates": {
+            "site == 'OULU-03'": "fails"
+          },
+          "decided": null,
+          "outcome": "declined",
+          "reason": "site OULU-11 fails site == 'OULU-03'",
+          "question": null,
+          "action_text": "in the site cabinet",
+          "said_by": "Veikko Vikkelä",
+          "trust": "stated",
+          "status": "open"
+        },
+        {
+          "assertion_id": "CA-0005",
+          "trigger_matched": true,
+          "validity": "expired 2026-11-20",
+          "candidates": {},
+          "decided": null,
+          "outcome": "declined",
+          "reason": "expired 2026-11-20",
+          "question": null,
+          "action_text": "use the forest track from the north side",
+          "said_by": "Kalle Niskanen",
+          "trust": "stated",
+          "status": "open"
+        }
+      ],
+      "not_matched": [
+        "CA-0002",
+        "CA-0003"
+      ],
+      "agent_text": null,
+      "index": 72
+    },
+    {
+      "kind": "expire",
+      "at": "2026-11-21T08:00:00+02:00",
+      "assertion_id": "CA-0005",
+      "reason": "expired 2026-11-20",
+      "valid_to": "2026-11-20T23:59:59+02:00",
+      "action_text": "use the forest track from the north side",
+      "index": 73
+    }
+  ]
+}

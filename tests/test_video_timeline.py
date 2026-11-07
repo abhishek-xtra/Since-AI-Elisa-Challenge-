@@ -41,3 +41,20 @@ def test_kinds_and_counts_stable(tmp_path):
     sami = next(e for e in inc if e["entity"] == "TRN-105")
     assert [r["outcome"] for r in sami["results"]] == ["proposed"] and not sami["results"][0]["question"]
     assert sami["agent_text"]
+
+
+def test_variants(tmp_path):
+    """The two short-clip variants: 08_conflict gives a dispute; the hedged 12b gives a hunch that supersedes nothing."""
+    for name in ("dispute", "hunch"):
+        out = tmp_path / f"{name}.json"
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "video_timeline.py"), "--variant", name, "--out", str(out)],
+                       cwd=ROOT, env={**os.environ, "LLM_OFFLINE": "1"}, check=True, capture_output=True)
+        assert out.read_text(encoding="utf-8") == (ROOT / "out" / f"video_timeline_{name}.json").read_text(encoding="utf-8")
+        events = json.loads(out.read_text(encoding="utf-8"))["events"]
+        if name == "dispute":
+            assert next(e for e in events if e["kind"] == "dispute")["said_by"] == ["Erkki Expert", "Jari Korhonen"]
+            continue
+        hunch = [e["assertion_id"] for e in events if e["kind"] == "capture" and e["trust"] == "hunch"]
+        assert len(hunch) == 1 and not any(e["kind"] == "supersede" for e in events)
+        assert all(r["outcome"] != "proposed" for e in events if e["kind"] == "incident"
+                   for r in e["results"] if r["assertion_id"] == hunch[0])
