@@ -1,0 +1,28 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Break A4: an expert gives the opposite of Erkki's rule for the same trigger (same four symptoms). Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "11:20",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Changed the SFP on TRN-087. Link is up and alarms cleared, rx power normal, counters zero. Bounce it like Erkki said?"
+    },
+    {
+      "seq": 2,
+      "time": "11:23",
+      "author": "Sanna Senior",
+      "role": "Network Expert",
+      "text": "No, don't bounce these, it makes it worse on the older units. Just reboot the whole node."
+    },
+    {
+      "seq": 3,
+      "time": "11:24",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "ok"
+    }
+  ]
+}

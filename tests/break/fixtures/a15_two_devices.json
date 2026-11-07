@@ -1,0 +1,28 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Break A15: earlier device TRN-042 mentioned more often than the current device TRN-087. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "13:00",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Same as TRN-042 last week? TRN-042 had exactly this. Now it's TRN-087: new SFP, link up, counters zero."
+    },
+    {
+      "seq": 2,
+      "time": "13:02",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "Yes, like TRN-042. On the older units disable the interface and enable it again, don't reboot."
+    },
+    {
+      "seq": 3,
+      "time": "13:06",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Done, traffic back."
+    }
+  ]
+}

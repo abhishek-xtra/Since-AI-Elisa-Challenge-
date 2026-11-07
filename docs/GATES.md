@@ -37,4 +37,4 @@ Spend after gate 0: 0.0109 EUR (4 live calls).
 | 8 demo + api | `gate-8` | `LLM_OFFLINE=1 py -3.14 demo.py` and `tests/test_demo.py tests/test_api.py` | six beats, 10 passed |
 | fix-1 | `fix-1` | `py -3.14 -m pytest -q` (live once), then offline, demo, `eval.runner` | 353 passed, 14/14 scenarios, 90/90 checks |
 
-Whole-suite offline: `="1"; py -3.14 -m pytest -q` -> 353 passed, 7 skipped. Spend after fix-1: 1.03 EUR, 53 live calls.
+Whole-suite offline: `$env:LLM_OFFLINE="1"; py -3.14 -m pytest -q` -> 353 passed, 7 skipped. Spend after fix-1: 1.03 EUR, 53 live calls.

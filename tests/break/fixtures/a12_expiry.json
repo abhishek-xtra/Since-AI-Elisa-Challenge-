@@ -1,0 +1,28 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Break A12: the expert says the rule stops applying after firmware 5.0. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "10:40",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "TRN-087: SFP swapped, link up, alarms cleared, counters zero."
+    },
+    {
+      "seq": 2,
+      "time": "10:42",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "Bounce the interface, don't reboot. FYI this stopped after firmware 5.0, so once your boxes are upgraded you won't see it anymore."
+    },
+    {
+      "seq": 3,
+      "time": "10:45",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Did it, traffic back."
+    }
+  ]
+}

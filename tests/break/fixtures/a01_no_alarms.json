@@ -1,0 +1,35 @@
+{
+  "channel": "teams",
+  "date": "2026-11-05",
+  "note": "Break A1: same rule as thread-001 on TRN-087, nobody mentions alarms. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "10:02",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Erkki, swapped the SFP on TRN-087. Link is up, rx power normal, but counters stay at zero."
+    },
+    {
+      "seq": 2,
+      "time": "10:04",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "Same thing as on the old units before. Disable the interface, wait a bit, enable it again. Don't reboot the node."
+    },
+    {
+      "seq": 3,
+      "time": "10:09",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Done, traffic is flowing again."
+    },
+    {
+      "seq": 4,
+      "time": "10:10",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "👍"
+    }
+  ]
+}

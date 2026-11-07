@@ -1,0 +1,42 @@
+{
+  "channel": "teams",
+  "date": "2026-11-05",
+  "note": "Break A2: diagnostic rule (check counters, stated loudly) and remedy rule (bounce, stated tersely). Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "08:30",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "New SFP in TRN-033, link up but no traffic. What do I look at?"
+    },
+    {
+      "seq": 2,
+      "time": "08:32",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "Rule number one after ANY SFP swap on these boxes: always check the traffic counters first, every single time, before you do anything else. I can't stress this enough."
+    },
+    {
+      "seq": 3,
+      "time": "08:35",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Counters at zero."
+    },
+    {
+      "seq": 4,
+      "time": "08:36",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "Then bounce the interface. No reboot."
+    },
+    {
+      "seq": 5,
+      "time": "08:40",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "ok works now"
+    }
+  ]
+}

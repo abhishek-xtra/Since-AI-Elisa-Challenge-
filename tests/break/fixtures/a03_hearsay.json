@@ -1,0 +1,28 @@
+{
+  "channel": "teams",
+  "date": "2026-11-06",
+  "note": "Break A3: field engineer relays Erkki's advice second hand; Erkki is not in the thread. Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "13:10",
+      "author": "Aino Ahola",
+      "role": "Coordinator",
+      "text": "TRN-063 had no traffic after the SFP change this morning, is it fixed?"
+    },
+    {
+      "seq": 2,
+      "time": "13:14",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Yes. Link was up, counters at zero. Erkki told me last time that on these older boxes you just bounce the port instead of rebooting, so I did that and it worked."
+    },
+    {
+      "seq": 3,
+      "time": "13:15",
+      "author": "Aino Ahola",
+      "role": "Coordinator",
+      "text": "Great, closing the ticket."
+    }
+  ]
+}

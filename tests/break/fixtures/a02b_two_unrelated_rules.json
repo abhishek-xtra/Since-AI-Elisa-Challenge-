@@ -1,0 +1,42 @@
+{
+  "channel": "teams",
+  "date": "2026-11-06",
+  "note": "Break A2b: two unrelated reusable rules (OULU-03 barrier key and the bounce rule on TRN-019). Written by hand for break tests.",
+  "messages": [
+    {
+      "seq": 1,
+      "time": "07:50",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Heading to OULU-03 for TRN-019. Where's the barrier key these days?"
+    },
+    {
+      "seq": 2,
+      "time": "07:52",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "Key for the OULU-03 barrier is at the Mäkelä farm, ask at the house."
+    },
+    {
+      "seq": 3,
+      "time": "09:40",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "On site. Replaced the SFP on TRN-019, link up, alarms cleared, counters at zero."
+    },
+    {
+      "seq": 4,
+      "time": "09:42",
+      "author": "Erkki Expert",
+      "role": "Network Expert",
+      "text": "On the old units: disable the interface and enable it again. Don't reboot."
+    },
+    {
+      "seq": 5,
+      "time": "09:47",
+      "author": "Veikko Vikkelä",
+      "role": "Field Engineer",
+      "text": "Traffic back."
+    }
+  ]
+}

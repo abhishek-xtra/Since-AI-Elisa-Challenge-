@@ -1,0 +1,13 @@
+From: Veikko Vikkelä
+To: Erkki Expert
+Subject: RE: TRN-087 no traffic after SFP swap
+Date: Sat, 07 Nov 2026 16:30:00 +0200
+
+Thanks Erkki, did exactly that on TRN-087, traffic is back.
+
+Veikko
+
+> On Mon, 02 Nov 2026 Erkki Expert wrote:
+> If the interface is UP but the counters stay at zero on the older units,
+> disable the interface, wait a little and enable it again.
+> Don't reboot the unit.
