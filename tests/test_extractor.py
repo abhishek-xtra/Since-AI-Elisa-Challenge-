@@ -48,9 +48,10 @@ def test_chat(chat):
     assert a.status == "open" and a.recorded_at == RECORDED and a.valid_from == msgs[0].timestamp and a.valid_to is None
 
 
-def test_email():
+def test_email(chat):
     a, rule = run(ROOT / "data" / "elisa_examples" / "email.txt")
     assert a.action == "interface.bounce"
+    assert key(a) == key(chat[1][0])  # condition symptoms only, so chat and email are one assertion
     assert {"node.reboot", "sfp.replace"} & set(a.avoid)
     assert rule.outcome == "unknown"
     assert a.trust == "stated"
@@ -242,7 +243,7 @@ def test_said_by_role_comes_from_the_header(monkeypatch):
     r = ExtractedRule(trigger_kind="incident", event="sfp_replaced", symptoms=["link_up"], stated_condition=None,
                       condition_is_relative=False, action="node.reboot", action_text="reboot the node", avoid=[],
                       excerpt=text, said_by="veikko vikkelä", said_by_role="expert", hedged=False, first_hand=False,
-                      outcome="unknown", outcome_excerpt=None)
+                      outcome="unknown", outcome_excerpt=None, about_entity=None)
     monkeypatch.setattr(llm, "structured", lambda *a, **k: ExtractionResult(found=True, rule=r, reason="x"))
     a, rule = extract([m], recorded_at=RECORDED)
     assert rule.said_by_role == a.evidence.said_by_role == "field_engineer" and a.trust == "hunch"

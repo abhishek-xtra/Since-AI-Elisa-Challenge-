@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [],\n    \"stated_condition\": \"older units\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"disable the interface, wait a little, then enable it again\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"On those older units: disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Did that. Traffic is back 👍\",\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"Erkki Expert states a reusable rule for older units after an SFP swap: bounce the interface and avoid rebooting the node unless that fails.\"\n}",
+  "input_tokens": 4209,
+  "output_tokens": 280
+}

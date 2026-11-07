@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"optics_normal\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"disable the interface, wait a bit, and then enable it again\",\n    \"avoid\": [\n      \"node.reboot\",\n      \"sfp.replace\"\n    ],\n    \"excerpt\": \"When the link is up and optics are normal after an SFP change but counters stay at zero, you should just disable the interface, wait a bit, and then enable it again. Don't reboot the unit and don't swap the SFP again.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Now enabled it back. Hey, the traffic counters started incrementing immediately! :)\",\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"An expert states a reusable rule for when traffic counters stay at zero after an SFP replacement despite link up and normal optics: bounce the interface instead of rebooting or swapping the SFP again.\"\n}",
+  "input_tokens": 3324,
+  "output_tokens": 350
+}

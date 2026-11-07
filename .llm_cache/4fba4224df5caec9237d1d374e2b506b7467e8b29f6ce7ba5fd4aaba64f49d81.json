@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"old units\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"Disable the interface, wait a bit, enable it again\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Disable the interface, wait a bit, enable it again. Don't reboot the node.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Done, traffic is flowing again.\",\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"An expert states a reusable fix (bounce interface, do not reboot) for when a link is up with zero counters after an SFP replacement on old units.\"\n}",
+  "input_tokens": 3064,
+  "output_tokens": 288
+}

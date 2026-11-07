@@ -13,9 +13,7 @@
       "event": "sfp_replaced",
       "symptoms": [
         "link_up",
-        "optics_normal",
-        "counters_zero",
-        "alarms_cleared"
+        "counters_zero"
       ]
     },
     "action": "interface.bounce",

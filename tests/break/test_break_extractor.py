@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 import binder
+from binder.resolve import normalise_id
 import pipeline
 from adapters import load_email, load_teams
 from extractor import extract
@@ -54,7 +55,6 @@ def xfail(why):
 
 # A1 ---------------------------------------------------------------------------------------------------------------
 
-@xfail("merge key includes the full reported symptom set; a thread that omits 'alarms cleared' makes a second assertion")
 def test_a01_same_rule_without_alarms_merges_as_second_case(tmp_path):
     store = ingest(tmp_path, CHAT, FIX / "a01_no_alarms.json")
     bounces = [a for a in store.all() if a.action == "interface.bounce"]
@@ -120,7 +120,6 @@ def test_a07_finnish_extracts_verbatim():
     assert {"link_up", "counters_zero"} <= set(a.trigger.symptoms)
 
 
-@xfail("A1 again: Finnish thread reports no rx/optics value, so its symptom set differs from the chat's and it does not merge")
 def test_a07_finnish_merges_with_chat(tmp_path):
     store = ingest(tmp_path, CHAT, FIX / "a07_finnish.json")
     assert len(store.all()) == 1 and len(store.all()[0].evidence.cases) == 2
@@ -197,7 +196,8 @@ def test_a14_same_day_chat_and_email_about_different_devices_are_two_cases(tmp_p
 # A15+ (extra) -----------------------------------------------------------------------------------------------------
 
 def test_a15_origin_is_the_current_device():
-    a, _ = bound("a15_two_devices.json")
+    a, rule = bound("a15_two_devices.json")
+    assert normalise_id(rule.about_entity or "") == "trn87"  # the extractor names the current device; the binder uses it
     assert a.evidence.cases[0].entity == "TRN-087"
 
 
@@ -215,7 +215,6 @@ def test_a17_claimed_authority_does_not_change_role():
     assert rule.said_by_role == "field_engineer" and a.trust == "hunch"
 
 
-@xfail("A1 consequence: the opposite advice with fewer reported symptoms has a different trigger key, so no dispute")
 def test_a18_opposite_advice_fewer_symptoms_is_disputed(tmp_path):
     store = ingest(tmp_path, CHAT, FIX / "a18_opposite_fewer_symptoms.json")
     assert sorted(a.status for a in store.all()) == ["disputed", "disputed"]

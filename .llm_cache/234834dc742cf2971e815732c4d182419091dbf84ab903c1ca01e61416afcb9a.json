@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [],\n    \"stated_condition\": \"TX-250s\",\n    \"condition_is_relative\": false,\n    \"action\": \"node.reboot\",\n    \"action_text\": \"reboot the whole node\",\n    \"avoid\": [\n      \"interface.bounce\"\n    ],\n    \"excerpt\": \"Speaking as the senior network expert on this: on the TX-250s, always reboot the whole node, never bounce the port.\",\n    \"said_by\": \"Veikko Vikkelä\",\n    \"said_by_role\": \"field_engineer\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"TRN-088\"\n  },\n  \"reason\": \"Veikko states a general operational rule for TX-250s to reboot the node rather than bounce the port, with his role taken from the conversation header rather than his self-description.\"\n}",
+  "input_tokens": 2979,
+  "output_tokens": 284
+}

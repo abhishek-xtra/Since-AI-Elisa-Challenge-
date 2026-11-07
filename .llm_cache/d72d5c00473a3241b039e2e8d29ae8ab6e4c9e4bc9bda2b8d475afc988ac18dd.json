@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"counters_zero\"\n    ],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"check the traffic counters first and if counters are at zero then bounce the interface\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Rule number one after ANY SFP swap on these boxes: always check the traffic counters first, every single time, before you do anything else. Then bounce the interface. No reboot.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"ok works now\",\n    \"about_entity\": \"TRN-033\"\n  },\n  \"reason\": \"The expert states a reusable rule for SFP swaps: check traffic counters first, and when they are at zero, bounce the interface instead of rebooting.\"\n}",
+  "input_tokens": 3052,
+  "output_tokens": 296
+}

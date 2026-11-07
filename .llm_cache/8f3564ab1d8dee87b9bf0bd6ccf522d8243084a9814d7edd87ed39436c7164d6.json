@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"older units\",\n    \"condition_is_relative\": true,\n    \"action\": \"node.reboot\",\n    \"action_text\": \"reboot the whole node\",\n    \"avoid\": [\n      \"interface.bounce\"\n    ],\n    \"excerpt\": \"No, don't bounce these, it makes it worse on the older units. Just reboot the whole node.\",\n    \"said_by\": \"Sanna Senior\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"An expert states that when the link is up with zero counters after an SFP replacement on older units, one should reboot the node rather than bounce the interface.\"\n}",
+  "input_tokens": 3024,
+  "output_tokens": 279
+}

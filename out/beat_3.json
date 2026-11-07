@@ -26,10 +26,8 @@
             "kind": "incident",
             "event": "sfp_replaced",
             "symptoms": [
-              "alarms_cleared",
               "counters_zero",
-              "link_up",
-              "optics_normal"
+              "link_up"
             ]
           },
           "applies_to": {
@@ -208,10 +206,8 @@
         "kind": "incident",
         "event": "sfp_replaced",
         "symptoms": [
-          "alarms_cleared",
           "counters_zero",
-          "link_up",
-          "optics_normal"
+          "link_up"
         ]
       },
       "applies_to": {
@@ -300,10 +296,8 @@
             "kind": "incident",
             "event": "sfp_replaced",
             "symptoms": [
-              "alarms_cleared",
               "counters_zero",
-              "link_up",
-              "optics_normal"
+              "link_up"
             ]
           },
           "applies_to": {

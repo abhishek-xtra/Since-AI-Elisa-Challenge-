@@ -22,7 +22,7 @@ def rule(**kw) -> ExtractedRule:
                 stated_condition="older units", condition_is_relative=True, action="interface.bounce",
                 action_text="disable the interface, wait, enable it", avoid=["node.reboot", "sfp.replace"],
                 excerpt=ERKKI_EXCERPT, said_by="Erkki Expert", said_by_role="expert", hedged=False, first_hand=False,
-                outcome="recovered", outcome_excerpt="Did that. Traffic is back 👍")
+                outcome="recovered", outcome_excerpt="Did that. Traffic is back 👍", about_entity=None)
     return ExtractedRule(**{**base, **kw})
 
 
@@ -114,6 +114,12 @@ def test_mentioned_in_passing_loses():
     out = do_bind(rule(), thread)
     assert out.evidence.cases[0].entity == "TRN-087"
     assert resolve_entities([m.text for m in thread], TOPO) == [("TRN-087", 3), ("TRN-063", 1)]  # TRN-055 not in topology
+
+
+def test_about_entity_wins_over_heuristic():
+    thread = msgs("TRN-042 again, like last week. TRN-042 TRN-042.", "And trn 87 now, link up, counters zero.")
+    assert do_bind(rule(about_entity="trn 87"), thread).evidence.cases[0].entity == "TRN-087"
+    assert do_bind(rule(about_entity="TRN-999"), thread).evidence.cases[0].entity == "TRN-042"  # unresolved: heuristic
 
 
 def test_tie_broken_by_first_mention():

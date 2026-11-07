@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"TX-200 units with firmware 4.1\",\n    \"condition_is_relative\": false,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"bounce the interface\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"On TX-200 units with firmware 4.1 bounce the interface, don't reboot.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Did that, works. Closing INC0012345.\",\n    \"about_entity\": \"TRN-033\"\n  },\n  \"reason\": \"An expert states a reusable rule for TX-200 units with firmware 4.1 when link is up and counters are zero after an SFP replacement, recommending bouncing the interface rather than rebooting.\"\n}",
+  "input_tokens": 3011,
+  "output_tokens": 311
+}

@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"optics_normal\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"old units\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"Disable the interface, wait a bit, enable it again\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Same thing as on the old units before. Disable the interface, wait a bit, enable it again. Don't reboot the node.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Done, traffic is flowing again.\",\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"An expert identifies a recurring issue on old units after an SFP swap where the link is up and optics are normal but counters remain at zero, recommending an interface bounce instead of a node reboot.\"\n}",
+  "input_tokens": 3014,
+  "output_tokens": 311
+}

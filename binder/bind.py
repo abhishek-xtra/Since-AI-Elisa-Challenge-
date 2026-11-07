@@ -19,13 +19,16 @@ def _ws(s: str) -> str:
     return " ".join(s.split())
 
 
-def _origin(assertion: Assertion, messages: list[Message], topology: Topology) -> Node | Site | None:
+def _origin(assertion: Assertion, rule: ExtractedRule, messages: list[Message], topology: Topology) -> Node | Site | None:
     if incident := next((m.incident for m in messages if m.incident), None):
         return lookup(topology, incident.entity_id)
     want = Site if assertion.trigger.kind == "workflow" else Node
 
     def named(texts: list[str]) -> list[str]:
         return [eid for eid, _ in resolve_entities(texts, topology) if isinstance(lookup(topology, eid), want)]
+
+    if rule.about_entity and (about := named([rule.about_entity])):
+        return lookup(topology, about[0])
 
     # The opening message reports the current incident: one entity there is the origin; several, the one introduced
     # as current ("Now it's TRN-087"); else the most mentioned in the thread. An earlier device named often loses.
@@ -82,7 +85,7 @@ def _candidates(rule: ExtractedRule, origin: Node | Site, topology: Topology) ->
 def bind(assertion: Assertion, rule: ExtractedRule, messages: list[Message], topology: Topology) -> Assertion:
     """A new Assertion bound to its origin entity; the input is not mutated. No origin -> unbound, status 'review'."""
     data = assertion.model_dump()
-    origin = _origin(assertion, messages, topology)
+    origin = _origin(assertion, rule, messages, topology)
     if origin is None:
         # The Assertion schema has no free-text note field, so the reason goes to the log.
         log.warning("binder: no topology entity resolved for %s (excerpt %r); stored unbound, status review",

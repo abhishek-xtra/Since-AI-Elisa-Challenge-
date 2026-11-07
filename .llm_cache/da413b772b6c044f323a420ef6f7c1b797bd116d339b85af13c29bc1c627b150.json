@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"older units\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"disable the interface, wait a little and enable it again\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"> If the interface is UP but the counters stay at zero on the older units, > disable the interface, wait a little and enable it again. > Don't reboot the unit.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"Thanks Erkki, did exactly that on TRN-087, traffic is back.\",\n    \"about_entity\": \"TRN-087\"\n  },\n  \"reason\": \"The quoted message from Erkki Expert provides a reusable rule for when an interface is up with zero counters after an SFP swap on older units, which Veikko confirms resolved the issue.\"\n}",
+  "input_tokens": 3019,
+  "output_tokens": 323
+}

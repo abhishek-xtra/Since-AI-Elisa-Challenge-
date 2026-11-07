@@ -9,7 +9,7 @@ def rule(role="expert", hedged=False, first_hand=False):
     return ExtractedRule(trigger_kind="incident", event="sfp_replaced", symptoms=[], stated_condition=None,
                          condition_is_relative=False, action="interface.bounce", action_text="x", avoid=[],
                          excerpt="x", said_by="X", said_by_role=role, hedged=hedged, first_hand=first_hand,
-                         outcome="unknown", outcome_excerpt=None)
+                         outcome="unknown", outcome_excerpt=None, about_entity=None)
 
 
 @pytest.mark.parametrize("r,outcome,expected", [

@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"found\":true,\"rule\":{\"trigger_kind\":\"workflow\",\"event\":\"dispatch_created\",\"symptoms\":[],\"stated_condition\":null,\"condition_is_relative\":false,\"action\":\"site.access_key\",\"action_text\":\"the barrier has a keypad now, gate code is 1234, no key needed\",\"avoid\":[],\"excerpt\":\"I was there yesterday: the barrier has a keypad now, gate code is 1234, no key needed.\",\"said_by\":\"Veikko Vikkelä\",\"said_by_role\":\"field_engineer\",\"hedged\":false,\"first_hand\":true,\"outcome\":\"unknown\",\"outcome_excerpt\":null,\"about_entity\":\"OULU-03\"},\"reason\":\"A field engineer states first-hand how to get through the gate on dispatches to the site.\"}",
+  "input_tokens": 3016,
+  "output_tokens": 185
+}

@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"alarms_cleared\",\n      \"optics_normal\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"the old boxes\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"shut / no shut on the port\",\n    \"avoid\": [\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Classic on the old boxes. Do a shut / no shut on the port before you touch anything else, no need to reload the node.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome\": \"recovered\",\n    \"outcome_excerpt\": \"did a shut / no shut on the port, came back\",\n    \"about_entity\": \"TRN-063\"\n  },\n  \"reason\": \"An expert recognizes a known issue after SFP replacement on old boxes and gives a reusable rule to bounce the port instead of reloading the node.\"\n}",
+  "input_tokens": 3077,
+  "output_tokens": 310
+}

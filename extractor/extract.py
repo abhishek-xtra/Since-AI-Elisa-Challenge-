@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 PROMPT_LISTS = ("trigger kinds", "events", "symptoms", "actions", "value-carrying actions", "roles")
 VOCABULARY = "\n".join(f"- {name}: {', '.join(get_args(LISTS[name]))}" for name in PROMPT_LISTS)
 
-EXAMPLE_THREAD = """[2026-03-10 14:02] Pekka Field (field_engineer): PSU fan alarm on rack 3 in the hub room. It cleared by itself but the temperature is still going up.
+EXAMPLE_THREAD = """[2026-03-10 14:02] Pekka Field (field_engineer): PSU fan alarm on rack 3 in the hub room. It cleared by itself but the temperature is still going up. All links are up.
 [2026-03-10 14:05] Maija Senior (expert): Seen it before. If the PSU fan alarm clears but the temperature keeps climbing on the older rack units, swap the fan tray, don't power-cycle.
 [2026-03-10 14:41] Pekka Field (field_engineer): Fan tray swapped, temperature dropping now."""
 
@@ -32,13 +32,14 @@ EXAMPLE_ANSWER = {
         "said_by": "Maija Senior", "said_by_role": "expert",
         "hedged": False, "first_hand": False,
         "outcome": "recovered", "outcome_excerpt": "Fan tray swapped, temperature dropping now.",
+        "about_entity": None,
     },
-    "reason": "An expert states a condition and an action that applies to future fan alarms on older rack units.",
+    "reason": "An expert states a condition and an action that applies to future fan alarms on older rack units. link_up is reported but is not part of the condition, so it is not a symptom; no device ID is named.",
 }
 
 SYSTEM = f"""You are an assistant that spots reusable operational rules in network-operations conversations (Teams chats, emails) between field engineers and experts at a telecom operator.
 
-A reusable rule is a condition plus an action that would apply to a future incident or work step, not a one-off instruction. "Restart it now" about one device with no condition is not a rule. "When X happens on Y, do Z (and not W)" is. A fact a field crew needs every time they go to a site (for example where the key to a locked barrier is) is also a reusable rule: trigger_kind workflow, event dispatch_created, no symptoms, action site.access_key, action_text = where the key is.
+A reusable rule is a condition plus an action that would apply to a future incident or work step, not a one-off instruction. "Restart it now" about one device with no condition is not a rule. "When X happens on Y, do Z (and not W)" is. So is an expert's fix for a reported fault together with what not to do instead ("disable the interface, wait, enable it; don't reboot"): its condition is the reported fault. A fact a field crew needs every time they go to a site (for example where the key to a locked barrier is) is also a reusable rule: trigger_kind workflow, event dispatch_created, no symptoms, action site.access_key, action_text = where the key is.
 
 Map everything into these controlled lists only. Anything that does not fit is "other", with the wording kept in action_text or stated_condition.
 {VOCABULARY}
@@ -50,13 +51,14 @@ Hard rules:
 2. One rule per thread: the one most strongly stated.
 3. excerpt is copied character for character from one or more messages: the sentence(s) in which the speaker states the action. Do not paraphrase, fix typos, or change punctuation or quotes.
 4. said_by and said_by_role are the person who stated the rule, as written in the conversation header lines.
-5. symptoms: every listed symptom that the thread reports for the situation the rule is about (from any speaker), including those confirmed in answer to the expert's questions. Empty for a workflow rule.
+5. symptoms: only the listed symptoms the rule's condition requires: the fault the action is for, as the speaker of the rule names, checks or confirms it ("if the interface is UP but the counters stay at zero" -> link_up, counters_zero). When the speaker answers the reported fault without restating it ("seen this before", "that's it"), take the symptoms that make up the reported fault. Leave out readings reported only as normal or as background ("optics OK", "alarms cleared", "everything can look normal") unless the speaker names them in the condition. Empty for a workflow rule.
 6. avoid: actions the speaker says not to do or to do only as a last resort ("don't reboot", "before replacing the SFP again").
 7. hedged=true when the speaker of the rule hedges: "maybe", "I think", "might", "probably", "someone said".
 8. first_hand=true only when the speaker reports something they did or saw themselves ("I moved it", "it's in the cabinet now", "I'm at the site and the gate is open"), not something they were told.
 9. condition_is_relative=true when the stated condition is a comparative with no number stated by the rule's speaker ("older units", "the big sites"), even if someone else in the thread guessed a number.
 10. outcome="recovered" only if a later message reports the action worked ("traffic is back", "did that, works"); outcome="failed" only if a later message reports the action was tried and did not work ("didn't help", "no change, had to reboot"). In both cases outcome_excerpt is that message's text copied character for character. Otherwise outcome="unknown" and outcome_excerpt=null.
-11. Never output device IDs, dates or trust levels anywhere except where they appear inside copied text.
+11. about_entity: the device or site ID the current case is about, exactly as written in the thread (e.g. "TRN-087"); null if none is named. Not a device mentioned only as a past example.
+12. Never output device IDs, dates or trust levels anywhere except in about_entity and inside copied text.
 
 Worked example (a different domain).
 Conversation:

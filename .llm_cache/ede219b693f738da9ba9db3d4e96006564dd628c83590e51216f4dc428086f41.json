@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": false,\n  \"rule\": null,\n  \"reason\": \"The expert makes a sarcastic joke about rebooting and tells the engineer not to do it, without providing an actual operational action or fix.\"\n}",
+  "input_tokens": 3054,
+  "output_tokens": 66
+}

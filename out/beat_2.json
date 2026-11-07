@@ -4,7 +4,7 @@
   "lines": [
     "Ingested: teams_chat.json (12 messages), email.txt (1 message)",
     "Assertion CA-0001: interface.bounce, \"Disable the interface, wait a little, then enable it again\", avoid sfp.replace, node.reboot",
-    "Trigger: incident sfp_replaced with alarms_cleared, counters_zero, link_up, optics_normal",
+    "Trigger: incident sfp_replaced with counters_zero, link_up",
     "Said by Erkki Expert (expert), sources teams:thread-001, email:email-001",
     "Candidates (5):",
     "  install_year <= 2019  support=1 against=0 edge=open",
@@ -23,10 +23,8 @@
         "kind": "incident",
         "event": "sfp_replaced",
         "symptoms": [
-          "alarms_cleared",
           "counters_zero",
-          "link_up",
-          "optics_normal"
+          "link_up"
         ]
       },
       "applies_to": {

@@ -172,7 +172,7 @@ class ExtractedRule(BaseModel):
     """One reusable operational rule: a condition plus an action that would apply to a future incident, not a one-off instruction."""
     trigger_kind: TriggerKind = Field(description="'incident' if the rule is about diagnosing a fault (event plus symptoms); 'workflow' if it is about a work step such as a dispatch to a site (event only).")
     event: Event = Field(description="The event that starts the situation. Use 'other' if none of the listed events fits.")
-    symptoms: list[Symptom] = Field(description="Observed symptoms the rule's condition requires, from the list only. Empty for a workflow rule.")
+    symptoms: list[Symptom] = Field(description="Only the symptoms the rule's condition requires (the checks the speaker names as the precondition), not every symptom reported in the thread. From the list only. Empty for a workflow rule.")
     stated_condition: str | None = Field(description="The scope condition in the speaker's own words, e.g. 'older units' or 'units installed before 2019'. null if none was stated.")
     condition_is_relative: bool = Field(description="true when the stated condition is a comparative with no number stated by the rule's speaker ('older units', 'the big sites'), even if someone else in the thread guessed a number.")
     action: Action = Field(description="The canonical action the rule recommends. Use 'other' if none fits.")
@@ -185,6 +185,7 @@ class ExtractedRule(BaseModel):
     first_hand: bool = Field(description="true only when the speaker reports something they did or saw themselves ('I moved it', 'it's in the cabinet now', 'I'm at the site and the gate is open'), not something they were told.")
     outcome: ExtractedOutcome = Field(description="'recovered' only if a later message reports the action worked ('traffic is back', 'did that, works'); 'failed' only if a later message reports the action was tried and did not work ('didn't help', 'no change, had to reboot'); otherwise 'unknown'.")
     outcome_excerpt: str | None = Field(description="The confirming or failing message text, copied character for character; null when outcome is 'unknown'.")
+    about_entity: str | None = Field(description="The device or site ID the CURRENT case is about, as written in the thread (e.g. 'TRN-087'); null if none is named. Not a device mentioned as a past example.")
 
 
 class ExtractionResult(BaseModel):

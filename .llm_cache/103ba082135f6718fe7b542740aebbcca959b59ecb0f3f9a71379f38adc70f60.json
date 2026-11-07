@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": \"older transmission units\",\n    \"condition_is_relative\": true,\n    \"action\": \"interface.bounce\",\n    \"action_text\": \"disabling and enabling the interface once\",\n    \"avoid\": [\n      \"sfp.replace\",\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Before replacing the SFP again or rebooting the unit, check the traffic counters.\\n\\nIf the interface is UP but the counters remain at zero, try disabling and enabling the interface once.\",\n    \"said_by\": \"Erkki Expert\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": true,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null,\n    \"about_entity\": \"TRN-042\"\n  },\n  \"reason\": \"An expert states a reusable rule for older transmission units after an SFP replacement when the interface is UP but counters stay at zero: bounce the interface instead of replacing the SFP again or rebooting.\"\n}",
+  "input_tokens": 3033,
+  "output_tokens": 314
+}
