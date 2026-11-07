@@ -19,6 +19,7 @@ What this is: candidate elimination over the topology. No numeric confidence, no
 5. **Python 3.12 or newer (the machine has 3.14 via `py -3.14`), `pytest`, `pydantic` for the contracts, `google-genai`, `neo4j` driver, `pyvis` for the fallback export, `fastapi` and `uvicorn` only for the thin read API in section 8.** No other dependencies without asking. The submission form has a "Generative AI in your project" field and a Gemini prize category: `README.md` must state which Gemini models were used for what.
 6. **Build nothing from the "stretch" or "pending" lists in section 9.** Leave the named hooks, nothing more.
 7. **Honest reporting.** If a gate fails, say which assertion failed and why. Do not weaken a test to pass it.
+8. **Rollback is always possible.** Build on the `backend` branch, never on `main`. One commit per module, after its gate, and a tag `gate-N` on each. `main` only receives the branch by merge when a human says so. Behaviour rules that came in late and might change again (the open edge in 4.4/4.5, the supersede rule in 5.2, first-hand trust in 4.4) each live in one clearly named function with its own test file, so reverting one is deleting one function and one test, not editing the pipeline. No feature flags.
 
 ## 2b. LLM rules: Gemini on Google Cloud Vertex AI
 
@@ -48,6 +49,7 @@ Both IDs are constants at the top of `llm.py` and nowhere else. At step 0 make o
 - Retry 429 and 503 with exponential backoff, five attempts, then raise.
 - **Cache**: key = SHA-256 of (model, system, user, schema JSON). Store under `.llm_cache/<key>.json` with the raw response text. Read before calling. Commit the directory. A `LLM_OFFLINE=1` environment variable makes a cache miss raise instead of calling, so CI and the demo prove they run offline.
 - Log model, token usage from `response.usage_metadata`, and cache hit or miss, one line per call.
+- **Hard spend cap, in our code.** `llm.py` keeps a running estimated cost in `.llm_cache/_spend.json` (EUR, from `usage_metadata` tokens and a conservative price table at the top of `llm.py`: assume 5 EUR per million input tokens and 20 EUR per million output tokens for both models until real prices are pasted in). Before every live call it reads `LLM_BUDGET_EUR` (default `50`) and raises `BudgetExceeded` if the total would pass it. Cache hits cost nothing. The Google Cloud budget alert is only an email; this counter is the stop.
 
 **Schema rules that keep Gemini's structured output stable.** Gemini's `response_schema` accepts a subset of JSON Schema. Follow these or the call fails or drifts:
 
