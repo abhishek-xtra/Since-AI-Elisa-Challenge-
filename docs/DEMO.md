@@ -1,6 +1,6 @@
 # The demo: nine beats, live mode, recording
 
-Everything the judges see comes from `demo.py` output in `out/`. `py -3.14 demo.py` prints the beats below and writes `out/beat_N.json`, `out/graph.json`, `out/graph.html`, `out/assertions.json`, `out/thread_<id>.json`, `out/questions.json`, `out/notifications.json`. `--beat N` runs one beat on the state the previous beats left; `--clean` wipes `out/`. Teams-style copy for the screen: `docs/DEMO_CHAT.md`.
+Everything the judges see comes from `demo.py` output in `out/`. Hosted replay copies: https://cbr-teams.vercel.app and https://cbr-map.vercel.app (deployed from `ui/` and `frontend-ui/` with `npx vercel --prod`; `vercel.json` in each folder routes every path to the app). `py -3.14 demo.py` prints the beats below and writes `out/beat_N.json`, `out/graph.json`, `out/graph.html`, `out/assertions.json`, `out/thread_<id>.json`, `out/questions.json`, `out/notifications.json`. `--beat N` runs one beat on the state the previous beats left; `--clean` wipes `out/`. Teams-style copy for the screen: `docs/DEMO_CHAT.md`.
 
 ## The nine beats
 

@@ -21,6 +21,8 @@ $env:LLM_OFFLINE="1"; py -3.14 -m eval.runner         # every scenario in data/s
 $env:LLM_OFFLINE="1"; py -3.14 demo.py                # the nine demo beats, writes out/
 ```
 
+**Hosted, no install:** the Teams clone at [cbr-teams.vercel.app](https://cbr-teams.vercel.app/?beat=3) (`?beat=1` to `9`, `&channel=experts`, `&reveal=1` to reveal messages one by one) and the context map and tree at [cbr-map.vercel.app](https://cbr-map.vercel.app/tree?from=14&to=28&play=1). Both are the replay mode below, deployed from this repo with the Vercel CLI; live mode needs the API and runs locally.
+
 Then either front-end, each on its own byte-for-byte copy of `out/`:
 
 | Folder | What it shows | Run |
