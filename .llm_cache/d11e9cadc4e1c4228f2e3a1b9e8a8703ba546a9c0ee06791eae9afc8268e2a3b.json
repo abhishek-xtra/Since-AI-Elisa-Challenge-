@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"found\":true,\"rule\":{\"trigger_kind\":\"incident\",\"event\":\"sfp_replaced\",\"symptoms\":[\"link_up\",\"optics_normal\",\"counters_zero\"],\"stated_condition\":\"older units\",\"condition_is_relative\":true,\"action\":\"interface.bounce\",\"action_text\":\"shut / no shut on the port\",\"avoid\":[\"sfp.replace\",\"node.reboot\"],\"excerpt\":\"Seen this on the older units. Don't swap the optic again and don't reboot the node. Just do a shut / no shut on the port.\",\"said_by\":\"Erkki Expert\",\"said_by_role\":\"expert\",\"hedged\":false,\"first_hand\":false,\"outcome_confirmed\":true,\"outcome_excerpt\":\"Yes, it came back! Traffic is flowing now and counters are going up nicely. Thanks! :)\"},\"reason\":\"An expert states that when link is up and optics are normal with zero counters after an SFP swap on older units, one should bounce the port rather than replacing the SFP again or rebooting.\"}",
+  "input_tokens": 2810,
+  "output_tokens": 227
+}

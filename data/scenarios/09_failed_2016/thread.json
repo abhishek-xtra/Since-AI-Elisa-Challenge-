@@ -19,7 +19,7 @@
       "time": "09:15",
       "author": "Timo Laine",
       "role": "Field Engineer",
-      "text": "Moi Erkki! I just replaced the SFP on TRN-019 here at OULU-03. The link is physically up and optics look normal, but all traffic counters are staying at zero."
+      "text": "Moi Erkki! I just replaced the SFP on TRN-019 here at OULU-03. The link is physically up, alarms cleared and optics look normal, but all traffic counters are staying at zero."
     },
     {
       "seq": 2,

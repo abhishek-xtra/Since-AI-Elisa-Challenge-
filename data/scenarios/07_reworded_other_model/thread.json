@@ -19,7 +19,7 @@
       "time": "09:15",
       "author": "Veikko Vikkelä",
       "role": "Field Engineer",
-      "text": "Moi Erkki, I just swapped the SFP on TRN-063 here at OULU-11. The link is up and optics look ok, but all counters are zero and no traffic is passing through."
+      "text": "Moi Erkki, I just swapped the SFP on TRN-063 here at OULU-11. The link is up, alarms cleared and optics look ok, but all counters are zero and no traffic is passing through."
     },
     {
       "seq": 2,

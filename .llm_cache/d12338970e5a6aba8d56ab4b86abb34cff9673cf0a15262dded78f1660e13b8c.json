@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"incident\",\n    \"event\": \"sfp_replaced\",\n    \"symptoms\": [\n      \"link_up\",\n      \"alarms_cleared\",\n      \"optics_normal\",\n      \"counters_zero\"\n    ],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"sfp.replace\",\n    \"action_text\": \"swap the SFP again\",\n    \"avoid\": [\n      \"interface.bounce\",\n      \"node.reboot\"\n    ],\n    \"excerpt\": \"Just swap the SFP again, it's always the optic in these cases. Don't bother with bouncing the interface or rebooting the node, a second SFP always fixes it.\",\n    \"said_by\": \"Jari Korhonen\",\n    \"said_by_role\": \"expert\",\n    \"hedged\": false,\n    \"first_hand\": false,\n    \"outcome_confirmed\": false,\n    \"outcome_excerpt\": null\n  },\n  \"reason\": \"The expert states a reusable rule to swap the SFP again instead of bouncing the interface or rebooting when traffic counters are zero despite link up, normal optics, and cleared alarms after an SFP change.\"\n}",
+  "input_tokens": 2757,
+  "output_tokens": 308
+}

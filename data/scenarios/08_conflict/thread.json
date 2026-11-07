@@ -19,7 +19,7 @@
       "time": "10:15",
       "author": "Veikko Vikkelä",
       "role": "Field Engineer",
-      "text": "Moi Jari, I just changed the SFP on TRN-042 at site OULU-07. The link is showing up and optics levels look totally normal, but there is absolutely no traffic passing through."
+      "text": "Moi Jari, I just changed the SFP on TRN-042 at site OULU-07. The link is showing up, alarms cleared and optics levels look totally normal, but there is absolutely no traffic passing through."
     },
     {
       "seq": 2,

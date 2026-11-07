@@ -13,7 +13,7 @@
         "link_up",
         "optics_normal",
         "counters_zero",
-        "alarms_cleared"
+        "other"
       ]
     },
     "action": "interface.bounce"
