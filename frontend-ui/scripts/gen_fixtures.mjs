@@ -1,4 +1,4 @@
-// Generates the hand-written mock fixtures for ui/src/data/mock. Run once; the JSON is committed.
+// Generates the hand-written mock fixtures for frontend-ui/src/data/mock. Run once; the JSON is committed.
 import fs from "node:fs";
 import path from "node:path";
 
@@ -11,13 +11,14 @@ const w = (rel, obj) => {
 };
 const clone = (o) => JSON.parse(JSON.stringify(o));
 
-// ---------- topology (BACKEND_PROMPT 4.2 seed, synthetic) ----------
+// ---------- topology (BACKEND_PROMPT 4.2 seed, synthetic; regions are Finland's maakunnat) ----------
 const sites = [
-  { id: "OULU-07", name: "Oulu city hut", region: "north", access: "" },
-  { id: "OULU-11", name: "Oulu north mast", region: "north", access: "" },
-  { id: "OULU-03", name: "Forest mast, private road", region: "north", access: "Private road with a locked barrier" },
-  { id: "HKI-02", name: "Helsinki exchange", region: "south", access: "" },
-  { id: "HKI-05", name: "Espoo rooftop", region: "south", access: "" },
+  { id: "OULU-07", name: "Oulu city hut", region: "north_ostrobothnia", access: "" },
+  { id: "OULU-11", name: "Oulu north mast", region: "north_ostrobothnia", access: "" },
+  { id: "OULU-03", name: "Forest mast, private road", region: "north_ostrobothnia", access: "Private road with a locked barrier" },
+  { id: "HKI-02", name: "Helsinki exchange", region: "uusimaa", access: "" },
+  { id: "HKI-05", name: "Espoo rooftop", region: "uusimaa", access: "" },
+  { id: "ROV-01", name: "Rovaniemi hill mast", region: "lapland", access: "" },
 ];
 const N = (id, model, install_year, firmware, site, type = "transmission_node") => ({ id, type, model, install_year, firmware, site });
 const nodes = [
@@ -35,6 +36,8 @@ const nodes = [
   N("TRN-150", "TX-300", 2024, "5.2", "HKI-05"),
   N("TRN-151", "TX-250", 2019, "4.6", "HKI-05"),
   N("TRN-152", "TX-200", 2020, "4.2", "HKI-05"),
+  N("TRN-120", "TX-250", 2021, "4.6", "ROV-01"),
+  N("RTR-030", "RX-10", 2020, "2.3", "ROV-01", "router"),
 ];
 const regionOf = (siteId) => sites.find((s) => s.id === siteId).region;
 
@@ -62,7 +65,7 @@ const CA1_captured = base({
       { predicate: "model == 'TX-200'", support: 1, against: 0, basis: "attribute of TRN-042" },
       { predicate: "firmware == '4.1'", support: 1, against: 0, basis: "attribute of TRN-042" },
       { predicate: "site == 'OULU-07'", support: 1, against: 0, basis: "attribute of TRN-042" },
-      { predicate: "region == 'north'", support: 1, against: 0, basis: "attribute of TRN-042's site" },
+      { predicate: "region == 'north_ostrobothnia'", support: 1, against: 0, basis: "attribute of TRN-042's site" },
     ],
     decided: null,
   },
@@ -147,7 +150,11 @@ const CA4 = base({
   trigger: DISPATCH,
   applies_to: {
     entity_type: "site",
-    candidates: [{ predicate: "region == 'north'", support: 0, against: 0, basis: "expert: 'up north'" }],
+    // "Up north" could mean either region: two candidates, not yet narrowed down.
+    candidates: [
+      { predicate: "region == 'lapland'", support: 0, against: 0, basis: "expert: 'up north'" },
+      { predicate: "region == 'north_ostrobothnia'", support: 0, against: 0, basis: "expert: 'up north'" },
+    ],
     decided: null,
   },
   action: "other",
@@ -366,7 +373,7 @@ const beats = [
     incident: { entity_id: "OULU-03", event: "dispatch_created", symptoms: [], at_time: "2026-11-06T13:00:00Z" },
     results: [
       { assertion: "CA-0002", outcome: "proposed", reason: "bound to OULU-03" },
-      { assertion: "CA-0004", outcome: "proposed", reason: "region == 'north' holds for OULU-03" },
+      { assertion: "CA-0004", outcome: "ambiguous", reason: "region == 'lapland' does not hold for OULU-03; region == 'north_ostrobothnia' does" },
     ],
     agent_text: "Before you drive: locked barrier on the private road to OULU-03. Key: [KEY LOCATION FROM THE EMAIL]. From an email, 2 Oct.",
     assertions: [CA1, CA2_live, CA4],
@@ -380,7 +387,7 @@ const beats = [
     results: [
       { assertion: "CA-0003", outcome: "proposed", reason: "bound to OULU-03" },
       { assertion: "CA-0002", outcome: "declined", reason: "superseded by CA-0003 on 2026-11-07" },
-      { assertion: "CA-0004", outcome: "proposed", reason: "region == 'north' holds for OULU-03" },
+      { assertion: "CA-0004", outcome: "ambiguous", reason: "region == 'lapland' does not hold for OULU-03; region == 'north_ostrobothnia' does" },
     ],
     agent_text: "Before you drive: locked barrier on the private road to OULU-03. Key: in the site cabinet. Updated 7 Nov by Veikko, replacing an email from 2 Oct.",
     assertions: [CA1, CA2, CA3, CA4],

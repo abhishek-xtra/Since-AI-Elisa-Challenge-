@@ -47,7 +47,7 @@
           "basis": "attribute of TRN-042"
         },
         {
-          "predicate": "region == 'north'",
+          "predicate": "region == 'north_ostrobothnia'",
           "support": 2,
           "against": 0,
           "basis": "attribute of TRN-042's site"
@@ -182,7 +182,13 @@
       "entity_type": "site",
       "candidates": [
         {
-          "predicate": "region == 'north'",
+          "predicate": "region == 'lapland'",
+          "support": 0,
+          "against": 0,
+          "basis": "expert: 'up north'"
+        },
+        {
+          "predicate": "region == 'north_ostrobothnia'",
           "support": 0,
           "against": 0,
           "basis": "expert: 'up north'"

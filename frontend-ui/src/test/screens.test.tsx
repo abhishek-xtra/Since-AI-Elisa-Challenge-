@@ -104,6 +104,60 @@ describe("map page and chat", () => {
   });
 });
 
+describe("zoomed out: the Finland map", () => {
+  it("shows regions only; a region opens its diagram", async () => {
+    go("/?zoom=out");
+    render(<App />);
+    const north = await screen.findByRole("button", { name: "North Ostrobothnia Pohjois-Pohjanmaa 3 tips" });
+    expect(document.querySelectorAll(".tip-node, .tip-dot")).toHaveLength(0);
+    await act(async () => fireEvent.click(north));
+    expect(window.location.search).toBe("?focus=region%3Anorth_ostrobothnia");
+    await screen.findByRole("button", { name: "Site access" });
+  });
+});
+
+describe("zoom and drag", () => {
+  const world = () => document.querySelector<HTMLElement>(".map-world")!.style.transform;
+  const scaleOf = () => Number(/scale\(([\d.]+)\)/.exec(world())![1]);
+
+  it("+ and − zoom, Fit goes back to the framed view", async () => {
+    go("/");
+    render(<App />);
+    await screen.findByRole("button", { name: "Bounce, don't reboot" });
+    const fitted = world();
+    fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
+    expect(scaleOf()).toBeGreaterThan(Number(/scale\(([\d.]+)\)/.exec(fitted)![1]));
+    fireEvent.click(screen.getByRole("button", { name: "Fit" }));
+    expect(world()).toBe(fitted);
+  });
+
+  it("dragging pans the map, and a drag that ends on a tip doesn't open it", async () => {
+    go("/");
+    render(<App />);
+    const tip = await screen.findByRole("button", { name: "Bounce, don't reboot" });
+    const canvas = document.querySelector(".map-canvas")!;
+    const before = world();
+    fireEvent.pointerDown(tip, { pointerId: 1, clientX: 100, clientY: 100, button: 0 });
+    fireEvent.pointerMove(canvas, { pointerId: 1, clientX: 160, clientY: 130 });
+    fireEvent.pointerUp(canvas, { pointerId: 1, clientX: 160, clientY: 130 });
+    fireEvent.click(tip);
+    expect(world()).not.toBe(before);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    // A plain click (no drag) still opens it.
+    fireEvent.click(tip);
+    expect(screen.getByRole("dialog", { name: "Bounce, don't reboot" })).toBeTruthy();
+  });
+
+  it("the wheel zooms around the pointer", async () => {
+    go("/");
+    render(<App />);
+    await screen.findByRole("button", { name: "Bounce, don't reboot" });
+    const k = scaleOf();
+    fireEvent.wheel(document.querySelector(".map-canvas")!, { deltaY: -300, clientX: 200, clientY: 200 });
+    expect(scaleOf()).toBeGreaterThan(k);
+  });
+});
+
 describe("title card", () => {
   it.each([
     ["capture", "Capture", 1],

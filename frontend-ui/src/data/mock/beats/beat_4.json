@@ -69,7 +69,7 @@
             "basis": "attribute of TRN-042"
           },
           {
-            "predicate": "region == 'north'",
+            "predicate": "region == 'north_ostrobothnia'",
             "support": 2,
             "against": 0,
             "basis": "attribute of TRN-042's site"

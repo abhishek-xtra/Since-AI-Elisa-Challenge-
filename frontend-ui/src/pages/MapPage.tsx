@@ -5,7 +5,10 @@ import { TipCard } from "../components/TipCard";
 import { getSource, loadAssertions } from "../data";
 import { labelFor } from "../data/derive";
 import type { Assertion, Beat, ChatReply, ContextResult, Graph } from "../data/types";
-import { fit, layout } from "../map/layout";
+import { ZoomControls } from "../components/ZoomControls";
+import { bounds, layout } from "../map/layout";
+import { fitView, usePanZoom, type View } from "../map/usePanZoom";
+import { FinlandMap } from "../map/FinlandMap";
 import { localView, regionView } from "../map/view";
 import type { MapView, ViewNode } from "../map/view";
 import { navigate, useQuery, withQuery } from "../router";
@@ -38,8 +41,7 @@ function beatFocus(beat: Beat): string | undefined {
 }
 
 function useWindowSize() {
-  // Below this size the map keeps its layout and scrolls instead (phones).
-  const read = () => ({ w: Math.max(window.innerWidth, 820), h: Math.max(window.innerHeight, 620) });
+  const read = () => ({ w: Math.max(window.innerWidth, 320), h: Math.max(window.innerHeight, 480) });
   const [size, setSize] = useState(read);
   useEffect(() => {
     const on = () => setSize(read());
@@ -75,8 +77,8 @@ function NodeView({
         }}
       >
         <span className="tip-dot" aria-hidden="true" />
-        <span className="tip-label" aria-hidden="true">
-          {n.label}
+        <span className="node-text" aria-hidden="true">
+          <span className="tip-label">{n.label}</span>
         </span>
       </button>
     );
@@ -113,8 +115,10 @@ function NodeView({
   return (
     <div className={`net-node${hub ? " hub" : ""}${n.focus ? " focus" : ""}${n.quiet ? " quiet" : ""}`} title={n.title}>
       <span className={`net-dot${hub ? " hub" : ""}`} aria-hidden="true" />
-      {!n.quiet && <span className="net-label">{n.label}</span>}
-      {!n.quiet && n.sublabel && <span className="net-sublabel">{n.sublabel}</span>}
+      <span className="node-text">
+        <span className="net-label">{n.label}</span>
+        {n.sublabel && <span className="net-sublabel">{n.sublabel}</span>}
+      </span>
     </div>
   );
 }
@@ -146,6 +150,11 @@ export function MapPage() {
     const first = beat?.results?.find((r) => r.outcome === "proposed");
     setSelected(first ? resultId(first) : null);
   }, [beat]);
+  // Opened from a pin on the Finland map: that tip's card is already open.
+  const tipParam = q.get("tip");
+  useEffect(() => {
+    if (tipParam) setSelected(tipParam);
+  }, [tipParam]);
   useEffect(() => {
     if (!highlighted.length) return;
     const t = setTimeout(() => setHighlighted([]), 600);
@@ -164,9 +173,8 @@ export function MapPage() {
     if (zoomedOut) return regionView(loaded.graph, loaded.assertions, { showHunches: true, at });
     return localView(loaded.graph, loaded.assertions, { focus, showHunches: true, expanded, at });
   }, [loaded, zoomedOut, focus, expanded, at]);
-  const raw = useMemo(() => (layoutView ? layout(layoutView) : new Map()), [layoutView]);
-  const positions = useMemo(() => fit(raw, w, h), [raw, w, h]);
-  const ready = state.status === "ready";
+  // World coordinates: the focus sits at (0, 0); zoom and drag move the whole world.
+  const positions = useMemo(() => (layoutView && !zoomedOut ? layout(layoutView) : new Map<string, { x: number; y: number }>()), [layoutView, zoomedOut]);
 
   // Each new level or focus re-mounts the canvas. It blooms out from the focus,
   // unless it arrived through a zoom transition, which already carries the motion.
@@ -175,12 +183,14 @@ export function MapPage() {
   // Nodes that appear later (an expanded badge) grow out of the badge that was clicked.
   const spawnRef = useRef<{ key: string; x: number; y: number } | null>(null);
   const spawn = spawnRef.current?.key === canvasKey ? spawnRef.current : null;
-  const pageRef = useRef<HTMLElement>(null);
-  useEffect(() => {
-    // On a narrow screen the map scrolls; start with the focus in the middle.
-    const el = pageRef.current;
-    if (ready && el) el.scrollTo?.({ left: (el.scrollWidth - el.clientWidth) / 2, top: (el.scrollHeight - el.clientHeight) / 2 });
-  }, [ready, w, h, focus]);
+
+  // Start framed to fit; a new focus, level or window size frames again. Expanding a badge doesn't.
+  const fitted: View = useMemo(
+    () => (zoomedOut || !positions.size ? { k: 1, x: 0, y: 0 } : fitView(bounds(positions), { width: w, height: h })),
+    [positions, zoomedOut, w, h],
+  );
+  const pz = usePanZoom(fitted, `${canvasKey}|${w}x${h}|${loaded ? "ready" : "loading"}`);
+  const toScreen = (p: { x: number; y: number }) => ({ x: pz.view.x + p.x * pz.view.k, y: pz.view.y + p.y * pz.view.k });
 
   if (state.status === "loading")
     return (
@@ -197,12 +207,13 @@ export function MapPage() {
   if (!view || !loaded) return null;
 
   const selectedTip = view.tips.find((t) => t.id === selected) ?? null;
-  const selPos = selectedTip ? positions.get(selectedTip.id) : undefined;
+  const tipAt = selectedTip ? positions.get(selectedTip.id) : undefined;
+  const selPos = tipAt ? toScreen(tipAt) : undefined;
   const cardStyle: React.CSSProperties | undefined = selPos
     ? {
         top: Math.min(Math.max(selPos.y - 24, 70), h - 170),
         // Away from the centre, so the card never covers the focus device; toward it when there is no room.
-        ...((selPos.x < w / 2 ? selPos.x > 370 : w - selPos.x < 370) ? { right: w - selPos.x + 34 } : { left: selPos.x + 34 }),
+        ...((selPos.x < w / 2 ? selPos.x > 370 : w - selPos.x < 370) ? { right: w - selPos.x + 24 * pz.view.k + 10 } : { left: selPos.x + 24 * pz.view.k + 10 }),
       }
     : undefined;
 
@@ -214,12 +225,15 @@ export function MapPage() {
       spawnRef.current = at ? { key: canvasKey, ...at } : null;
       setExpanded((e) => [...new Set([...e, ...action.sites])]);
     } else if (action.type === "zoom-out") zoomOut();
-    else navigate(withQuery({ zoom: null, focus: action.id, beat: null }), { transition: "zoom-in", origin: positions.get(n.id) });
+    else {
+      const at = positions.get(n.id);
+      navigate(withQuery({ zoom: null, focus: action.id, beat: null, tip: null }), { transition: "zoom-in", origin: at && toScreen(at) });
+    }
   }
 
   function zoomOut() {
     setSelected(null);
-    navigate(withQuery({ zoom: "out", beat: null }), { transition: "zoom-out" });
+    navigate(withQuery({ zoom: "out", beat: null, tip: null }), { transition: "zoom-out" });
   }
 
   function onReply(r: ChatReply) {
@@ -229,10 +243,10 @@ export function MapPage() {
 
   const focusNode = view.nodes.find((n) => n.id === focus);
   const focusName = focusNode ? (focusNode.kind === "site" ? `${focusNode.label} (${focusNode.id})` : focusNode.label) : focus;
-  const chipText = zoomedOut ? "Whole network · pick a region to look closer" : `Around ${focusName}`;
+  const chipText = zoomedOut ? "All of Finland · pick a region to see its tips" : `Around ${focusName}`;
 
   return (
-    <main className="map-page" ref={pageRef} onClick={() => setSelected(null)}>
+    <main className="map-page" onClick={() => setSelected(null)}>
       <header className="map-head">
         <h1>Context map</h1>
         <span className="chip">{chipText}</span>
@@ -260,52 +274,82 @@ export function MapPage() {
         )}
       </div>
 
-      <div key={canvasKey} className={`map-canvas${bloom ? " bloom" : ""}`} style={{ width: w, height: h }}>
-        <svg key={expanded.join(",")} className={`map-edges${expanded.length ? " later" : ""}`} width={w} height={h} aria-hidden="true">
-          {view.edges.map((e, i) => {
-            const a = positions.get(e.from);
-            const b = positions.get(e.to);
-            if (!a || !b) return null;
-            const far = Math.max(Math.hypot(a.x - w / 2, a.y - h / 2), Math.hypot(b.x - w / 2, b.y - h / 2));
-            return (
-              <line
-                key={i}
-                x1={a.x}
-                y1={a.y}
-                x2={b.x}
-                y2={b.y}
-                pathLength={1}
-                className={`edge edge-${e.kind}`}
-                style={{ "--d": `${Math.round(far * 0.9)}ms` } as React.CSSProperties}
-              />
-            );
-          })}
-        </svg>
-        {view.nodes.map((n) => {
-          const p = positions.get(n.id);
-          if (!p) return null;
-          const from = spawn ?? { x: w / 2, y: h / 2 };
-          const motion = {
-            transform: `translate(${p.x}px, ${p.y}px)`,
-            "--fx": `${from.x - p.x}px`,
-            "--fy": `${from.y - p.y}px`,
-            "--d": `${spawn ? 0 : Math.round(Math.hypot(p.x - w / 2, p.y - h / 2) * 0.9)}ms`,
-          } as React.CSSProperties;
-          return (
-            <div key={n.id} className={`map-node kind-${n.kind}`} style={motion}>
-              <NodeEnter animate={bloom || !!spawn}>
-              <NodeView
-                n={n}
-                selected={n.id === selected}
-                highlighted={highlighted.includes(n.id)}
-                onTip={(id) => setSelected((s) => (s === id ? null : id))}
-                onBadge={onBadge}
-              />
-              </NodeEnter>
-            </div>
-          );
-        })}
+      <div
+        ref={pz.ref}
+        className={`map-canvas${bloom && !zoomedOut ? " bloom" : ""}`}
+        style={{ width: w, height: h }}
+        {...pz.handlers}
+      >
+        <div
+          key={canvasKey}
+          className={`map-world${pz.smooth ? " smooth" : ""}`}
+          style={{ transform: `translate(${pz.view.x}px, ${pz.view.y}px) scale(${pz.view.k})` }}
+        >
+          {zoomedOut ? (
+            <FinlandMap
+              graph={loaded.graph}
+              assertions={loaded.assertions}
+              showHunches={showHunches}
+              at={at}
+              width={w}
+              height={h}
+              onOpenRegion={(r, origin) =>
+                navigate(withQuery({ zoom: null, focus: r.id, tip: null, beat: null }), { transition: "zoom-in", origin: toScreen(origin) })
+              }
+            />
+          ) : (
+            <>
+              <svg key={expanded.join(",")} className={`map-edges${expanded.length ? " later" : ""}`} width={1} height={1} aria-hidden="true">
+                {view.edges.map((e, i) => {
+                  const a = positions.get(e.from);
+                  const b = positions.get(e.to);
+                  if (!a || !b) return null;
+                  const far = Math.max(Math.hypot(a.x, a.y), Math.hypot(b.x, b.y));
+                  return (
+                    <line
+                      key={i}
+                      x1={a.x}
+                      y1={a.y}
+                      x2={b.x}
+                      y2={b.y}
+                      pathLength={1}
+                      className={`edge edge-${e.kind}`}
+                      style={{ "--d": `${Math.round(far * 0.7)}ms` } as React.CSSProperties}
+                    />
+                  );
+                })}
+              </svg>
+              {view.nodes.map((n) => {
+                const p = positions.get(n.id);
+                if (!p) return null;
+                // The focus is at (0, 0): the map blooms out from there, or from a clicked badge.
+                const from = spawn ?? { x: 0, y: 0 };
+                const motion = {
+                  transform: `translate(${p.x}px, ${p.y}px)`,
+                  "--fx": `${from.x - p.x}px`,
+                  "--fy": `${from.y - p.y}px`,
+                  "--d": `${spawn ? 0 : Math.round(Math.hypot(p.x, p.y) * 0.7)}ms`,
+                } as React.CSSProperties;
+                return (
+                  <div key={n.id} className={`map-node kind-${n.kind}`} style={motion}>
+                    <NodeEnter animate={bloom || !!spawn}>
+                      <NodeView
+                        n={n}
+                        selected={n.id === selected}
+                        highlighted={highlighted.includes(n.id)}
+                        onTip={(id) => setSelected((s) => (s === id ? null : id))}
+                        onBadge={onBadge}
+                      />
+                    </NodeEnter>
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </div>
       </div>
+
+      <ZoomControls k={pz.view.k} onZoom={pz.zoomBy} onFit={pz.reset} />
 
       <ul className="sr-only" aria-label="Tips in view">
         {view.tips.map((t) => (

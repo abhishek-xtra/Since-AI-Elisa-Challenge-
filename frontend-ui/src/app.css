@@ -959,14 +959,15 @@ button.count-badge:hover {
   animation: draw 700ms var(--ease-out) calc(var(--d, 0ms) + 120ms) forwards;
 }
 
+/* After an expand, lines redraw once the nodes have finished gliding (650ms), so they never point at a moving dot. */
 .map-edges.later .edge-net,
 .map-edges.later .edge-tip {
-  animation-delay: 260ms;
+  animation-delay: 620ms;
 }
 
 .map-canvas.bloom .edge-badge,
 .map-edges.later .edge-badge {
-  animation: fade-in 500ms var(--ease-out) 450ms both;
+  animation: fade-in 500ms var(--ease-out) 620ms both;
 }
 
 /* One radar ping from the device in focus as the map opens. */
@@ -1477,6 +1478,183 @@ button.count-badge:active,
   animation: pop-in 500ms var(--ease-spring) 1900ms both;
 }
 
+/* ---------- Finland map (zoomed out) ---------- */
+
+.finland {
+  position: absolute;
+  inset: 0;
+}
+
+.finland-svg {
+  position: absolute;
+  inset: 0;
+}
+
+.fi-fill {
+  fill: rgba(183, 194, 206, 0.035);
+  animation: fade-in 900ms var(--ease-out) 600ms both;
+}
+
+.fi-grid {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 0.75;
+  opacity: 0.7;
+  animation: fade-in 900ms var(--ease-out) 500ms both;
+}
+
+.fi-outline {
+  fill: none;
+  stroke: var(--net-hub);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 6px rgba(183, 194, 206, 0.25));
+  animation: draw 1500ms var(--ease-in-out) 100ms forwards;
+}
+
+/* Region cells: a faint wire for every region; regions with sites are lit and clickable. */
+.fi-cell {
+  fill: transparent;
+  stroke: var(--line-strong);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+  pointer-events: none;
+  animation: fade-in 500ms var(--ease-out) calc(700ms + var(--i, 0) * 30ms) both;
+  transition:
+    fill var(--dur-fast) var(--ease-out),
+    stroke var(--dur-fast) var(--ease-out);
+}
+
+.fi-cell.active {
+  fill: rgba(183, 194, 206, 0.07);
+  stroke: var(--net);
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.fi-cell.active.has-tips {
+  fill: rgba(255, 61, 127, 0.07);
+}
+
+.fi-cell.active.hover {
+  fill: rgba(255, 61, 127, 0.16);
+  stroke: var(--context-text);
+  stroke-width: 1.2;
+}
+
+.fi-town {
+  animation: fade-in 500ms var(--ease-out) 1000ms both;
+}
+
+.fi-town circle {
+  fill: var(--net);
+}
+
+.fi-town text {
+  fill: var(--text-muted);
+  font-family: var(--font);
+  font-size: 11px;
+}
+
+.fi-region {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--s2) var(--s3);
+  background: none;
+  border: none;
+  border-radius: var(--radius-panel);
+  isolation: isolate;
+  animation: rise-in 500ms var(--ease-out) calc(1150ms + var(--i, 0) * 150ms) both;
+  transition: scale var(--dur-fast) var(--ease-out);
+}
+
+.fi-region:hover {
+  scale: 1.06;
+}
+
+/* A soft pink glow behind the region, a little bigger the more tips it holds. */
+.fi-region-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--glow);
+  height: var(--glow);
+  margin: calc(var(--glow) / -2) 0 0 calc(var(--glow) / -2);
+  border-radius: var(--radius-round);
+  background: radial-gradient(circle, rgba(255, 61, 127, 0.28) 0%, rgba(255, 61, 127, 0.1) 45%, rgba(255, 61, 127, 0) 70%);
+  pointer-events: none;
+  z-index: -1;
+  animation:
+    glow-bloom 900ms var(--ease-out) calc(1300ms + var(--i, 0) * 150ms) both,
+    glow-breathe 4s ease-in-out calc(2300ms + var(--i, 0) * 150ms) infinite;
+}
+
+@keyframes glow-bloom {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+@keyframes glow-breathe {
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+.fi-region:hover .fi-region-glow {
+  background: radial-gradient(circle, rgba(255, 61, 127, 0.38) 0%, rgba(255, 61, 127, 0.14) 45%, rgba(255, 61, 127, 0) 70%);
+}
+
+.fi-region-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  text-shadow: 0 1px 8px var(--bg);
+}
+
+.fi-region-fi {
+  margin-top: -4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-shadow: 0 1px 8px var(--bg);
+}
+
+.fi-region.hover {
+  scale: 1.06;
+}
+
+.fi-unplaced {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  translate: -50% 0;
+  display: flex;
+  gap: var(--s2);
+}
+
+.fi-region-count {
+  padding: 1px var(--s3);
+  border-radius: var(--radius-round);
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 /* ---------- reduced motion: final states, no movement ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1492,4 +1670,136 @@ button.count-badge:active,
   .net-node.focus .net-dot::after {
     display: none;
   }
+}
+
+/* ---------- node anchoring: the dot sits exactly on the layout point ---------- */
+/* Each node's box is just its dot (or the 44px hit area centred on it); labels hang below,
+   outside the box, so the lines meet the dot's centre whatever the label says. */
+
+.map-node .net-node,
+.map-node .tip-node {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 0;
+}
+
+.map-node .tip-node {
+  width: 44px;
+  height: 44px;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+}
+
+.map-node .tip-dot {
+  margin: 0;
+}
+
+.map-node .node-text {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  pointer-events: none;
+}
+
+.map-node .tip-node .node-text {
+  top: calc(50% + 12px);
+}
+
+.map-node .net-sublabel {
+  margin-top: 0;
+}
+
+.map-node .tip-node.ring::after {
+  top: 50%;
+  margin-top: -12px;
+}
+
+/* Background devices: a faint "model · year" label, quieter than the devices that matter. */
+.map-node .net-node.quiet .net-label {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+/* ---------- zoom and drag ---------- */
+
+.map-page {
+  overflow: hidden;
+}
+
+.map-canvas {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.map-canvas:active {
+  cursor: grabbing;
+}
+
+.map-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.map-world.smooth {
+  transition: transform 320ms var(--ease-out);
+}
+
+.map-world .map-edges {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.map-canvas button {
+  cursor: pointer;
+}
+
+.zoom-controls {
+  position: fixed;
+  right: var(--s4);
+  bottom: 76px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: var(--line-strong);
+  animation: fade-in 400ms var(--ease-out) 500ms both;
+}
+
+.zoom-controls button {
+  width: 44px;
+  height: 40px;
+  border: none;
+  background: var(--panel);
+  font-size: 20px;
+  line-height: 1;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.zoom-controls button:hover:not(:disabled) {
+  background: #34363c;
+}
+
+.zoom-controls .zoom-fit {
+  font-size: 12px;
+  font-weight: 600;
 }

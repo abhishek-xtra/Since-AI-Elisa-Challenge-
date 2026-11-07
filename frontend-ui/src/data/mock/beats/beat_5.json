@@ -16,8 +16,8 @@
     },
     {
       "assertion": "CA-0004",
-      "outcome": "proposed",
-      "reason": "region == 'north' holds for OULU-03"
+      "outcome": "ambiguous",
+      "reason": "region == 'lapland' does not hold for OULU-03; region == 'north_ostrobothnia' does"
     }
   ],
   "agent_text": "Before you drive: locked barrier on the private road to OULU-03. Key: [KEY LOCATION FROM THE EMAIL]. From an email, 2 Oct.",
@@ -70,7 +70,7 @@
             "basis": "attribute of TRN-042"
           },
           {
-            "predicate": "region == 'north'",
+            "predicate": "region == 'north_ostrobothnia'",
             "support": 2,
             "against": 0,
             "basis": "attribute of TRN-042's site"
@@ -164,7 +164,13 @@
         "entity_type": "site",
         "candidates": [
           {
-            "predicate": "region == 'north'",
+            "predicate": "region == 'lapland'",
+            "support": 0,
+            "against": 0,
+            "basis": "expert: 'up north'"
+          },
+          {
+            "predicate": "region == 'north_ostrobothnia'",
             "support": 0,
             "against": 0,
             "basis": "expert: 'up north'"

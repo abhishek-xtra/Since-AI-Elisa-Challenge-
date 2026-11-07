@@ -51,7 +51,7 @@ export function createApiSource(baseUrl: string, fetchImpl: FetchLike = (...a) =
         return await call<Beat>(`/beats/${n}`);
       } catch (e) {
         if (!(e instanceof NotAvailable)) throw e;
-        // Fallback: the backend's out/beat_N.json copied into ui/public/out/.
+        // Fallback: the backend's out/beat_N.json copied into frontend-ui/public/out/.
         return call<Beat>(`/out/beat_${n}.json`, undefined, `/out/beat_${n}.json`);
       }
     },

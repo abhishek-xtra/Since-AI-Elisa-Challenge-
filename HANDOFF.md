@@ -812,7 +812,7 @@ Sequential on the spine. Only data writing, the UI pages and the slides run in p
   - `adapters/`, `extractor/`, `predicates/`, `binder/`, `store/`
   - `agent/` (stand-in agent and `get_context`)
   - `eval/` (harness and case table)
-  - `ui/` (mock Teams page, graph page)
+  - `frontend-ui/` (mock Teams page, context map, Finland map; see its README)
   - `docs/`
   - **`HANDOFF.md` (this file)**
 - **Elisa's provided files** are the extractor's fixtures. Their README says the names and IDs are illustrative, with no personal data. Commit them in `data/elisa_examples/` until Elisa answers question 8.

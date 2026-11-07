@@ -1,6 +1,7 @@
 // Chooses what is in view and counts badges (FRONTEND_PROMPT 5.3). Pure, so it is easy to test.
 import { attachments, formatDay, isHunch, isLive, labelFor, regionId, scopeHolds, withNetworkEdges } from "../data/derive";
 import type { Assertion, Graph, GraphNode } from "../data/types";
+import { findRegion } from "./regions";
 
 export type ViewNodeKind = "device" | "site" | "region" | "model" | "tip" | "badge";
 
@@ -103,17 +104,11 @@ export function visibleTips(assertions: Assertion[], showHunches: boolean, at: D
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
-// Plain-language names for the map. Our synthetic regions are areas of Finland.
-const REGION_NAMES: Record<string, string> = {
-  north: "Northern Finland",
-  south: "Southern Finland",
-  east: "Eastern Finland",
-  west: "Western Finland",
-};
-
 export function regionName(node: GraphNode): string {
-  const key = node.id.replace(/^region:/, "").toLowerCase();
-  return REGION_NAMES[key] ?? `${node.label || key} region`;
+  const known = findRegion(node.id) ?? findRegion(node.label || "");
+  if (known) return known.name;
+  const key = node.id.replace(/^region:/, "");
+  return `${(node.label || key).replace(/_/g, " ")} region`;
 }
 
 function displayName(node: GraphNode): string {
@@ -177,7 +172,12 @@ export function localView(graph: Graph, assertions: Assertion[], opts: ViewOptio
   for (const n of nodes) {
     if (n.kind !== "device" || n.focus) continue;
     if (!tipEnds.has(n.id)) {
+      // A background device: a faint short label in plain words, no ID.
       n.quiet = true;
+      const g0 = byId.get(n.id);
+      const model = g0?.attrs.model;
+      const year = g0?.attrs.install_year;
+      n.label = [model, year].filter((x) => x !== undefined && x !== null && x !== "").join(" · ") || n.id;
       continue;
     }
     const used = shown.flatMap((a) => a.evidence.cases.filter((c) => c.entity === n.id)).sort((x, y) => x.at.localeCompare(y.at))[0];
@@ -245,12 +245,11 @@ export function localView(graph: Graph, assertions: Assertion[], opts: ViewOptio
 export function regionView(graph: Graph, assertions: Assertion[], opts: Pick<ViewOptions, "showHunches" | "at">): MapView {
   const g = withNetworkEdges(graph);
   const regions = g.nodes.filter((n) => n.kind === "region").sort((a, b) => a.id.localeCompare(b.id));
+  // A tip counts once in every region it touches, so one bound to two regions shows in both.
   const counts = new Map<string, number>();
   for (const a of visibleTips(assertions, opts.showHunches, opts.at)) {
-    const r = attachments(a, graph)
-      .map((t) => regionOfEntity(g, t))
-      .find(Boolean);
-    if (r) counts.set(r, (counts.get(r) ?? 0) + 1);
+    const touched = new Set(attachments(a, graph).map((t) => regionOfEntity(g, t)).filter((r): r is string => !!r));
+    for (const r of touched) counts.set(r, (counts.get(r) ?? 0) + 1);
   }
   const nodes: ViewNode[] = regions.map((r: GraphNode) => ({
     id: r.id,

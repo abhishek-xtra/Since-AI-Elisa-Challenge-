@@ -101,7 +101,7 @@ describe("derive.ts", () => {
     const all = await loadAssertions(src, g);
     const by = (id: string) => all.find((a) => a.id === id)!;
     expect(attachments(by("CA-0001"), g).sort()).toEqual(["TRN-042", "TRN-087"]);
-    expect(attachments(by("CA-0004"), g)).toEqual(["region:north"]);
+    expect(attachments(by("CA-0004"), g)).toEqual(["region:lapland", "region:north_ostrobothnia"]);
     expect(adviceSentence(by("CA-0003"))).toBe("Key: in the site cabinet.");
   });
 });
