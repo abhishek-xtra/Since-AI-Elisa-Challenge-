@@ -368,8 +368,8 @@
       },
       {
         "name": "assertion",
-        "passed": false,
-        "why": ".status: 'open' != 'review'"
+        "passed": true,
+        "why": "CA-0001 matches"
       },
       {
         "name": "assertion_count",
@@ -383,16 +383,16 @@
       },
       {
         "name": "candidate install_year <=",
-        "passed": false,
-        "why": "install_year <= 2019 support=2 against=0 edge=open (wrong against_min)"
+        "passed": true,
+        "why": "install_year <= 2019 support=1 against=1 edge=open"
       },
       {
         "name": "step 1 TRN-087 sfp_replaced @2026-11-07 -> declined",
-        "passed": false,
-        "why": "CA-0001 proposed: all hold: install_year <= 2019, model == 'TX-200', region == 'north'"
+        "passed": true,
+        "why": "CA-0001 declined: under review"
       }
     ],
-    "passed": false
+    "passed": true
   },
   {
     "scenario": "10_typos",

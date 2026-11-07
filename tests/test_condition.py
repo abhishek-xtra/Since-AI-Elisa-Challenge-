@@ -15,7 +15,7 @@ def rule(cond, relative=False) -> ExtractedRule:
     return ExtractedRule(trigger_kind="incident", event="sfp_replaced", symptoms=["counters_zero"], stated_condition=cond,
                          condition_is_relative=relative, action="interface.bounce", action_text="bounce it", avoid=[],
                          excerpt="x", said_by="Erkki Expert", said_by_role="expert", hedged=False, first_hand=False,
-                         outcome_confirmed=False, outcome_excerpt=None)
+                         outcome="unknown", outcome_excerpt=None)
 
 
 def test_older_units_open():

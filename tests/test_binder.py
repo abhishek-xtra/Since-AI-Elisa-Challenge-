@@ -22,7 +22,7 @@ def rule(**kw) -> ExtractedRule:
                 stated_condition="older units", condition_is_relative=True, action="interface.bounce",
                 action_text="disable the interface, wait, enable it", avoid=["node.reboot", "sfp.replace"],
                 excerpt=ERKKI_EXCERPT, said_by="Erkki Expert", said_by_role="expert", hedged=False, first_hand=False,
-                outcome_confirmed=True, outcome_excerpt="Did that. Traffic is back 👍")
+                outcome="recovered", outcome_excerpt="Did that. Traffic is back 👍")
     return ExtractedRule(**{**base, **kw})
 
 
@@ -34,7 +34,7 @@ def unbound(r: ExtractedRule, valid_from=T0) -> Assertion:
         applies_to=AppliesTo(entity_type="site" if r.trigger_kind == "workflow" else "transmission_node", candidates=[], decided=None),
         action=r.action, action_text=r.action_text, avoid=r.avoid,
         evidence=Evidence(cases=[], sources=["teams:thread-001"], excerpt=r.excerpt, said_by_role=r.said_by_role, said_by=r.said_by),
-        trust="verified_by_outcome" if r.outcome_confirmed else "stated", status="open", questions_asked=[],
+        trust="verified_by_outcome" if r.outcome == "recovered" else "stated", status="open", questions_asked=[],
         supersedes=None, superseded_by=None, recorded_at=T0, valid_from=valid_from, valid_to=None, valid_while=None)
 
 
@@ -73,8 +73,13 @@ def test_erkki_chat():
 
 
 def test_outcome_not_confirmed():
-    out = do_bind(rule(outcome_confirmed=False, outcome_excerpt=None), load_teams(EX / "teams_chat.json"))
+    out = do_bind(rule(outcome="unknown", outcome_excerpt=None), load_teams(EX / "teams_chat.json"))
     assert out.evidence.cases[0].outcome is None
+
+
+def test_outcome_failed():
+    out = do_bind(rule(outcome="failed", outcome_excerpt="x"), load_teams(EX / "teams_chat.json"))
+    assert out.evidence.cases[0].outcome == "failed"
 
 
 def test_email_subject_resolves():
@@ -132,7 +137,7 @@ def test_workflow_binds_site():
     excerpt = "the key for the barrier on the private road at OULU-03 is at the neighbouring farm, ask for Mäkelä"
     r = rule(trigger_kind="workflow", event="dispatch_created", symptoms=[], stated_condition=None, condition_is_relative=False,
              action="site.access_key", action_text="at the neighbouring farm, ask for Mäkelä", avoid=[], excerpt=excerpt,
-             said_by="Veikko Vikkelä", said_by_role="field_engineer", first_hand=True, outcome_confirmed=False, outcome_excerpt=None)
+             said_by="Veikko Vikkelä", said_by_role="field_engineer", first_hand=True, outcome="unknown", outcome_excerpt=None)
     out = do_bind(r, msgs("Heads up for TRN-033 dispatches: " + excerpt))
     assert out.applies_to.entity_type == "site"
     assert out.evidence.cases[0].entity == "OULU-03"

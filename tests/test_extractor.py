@@ -37,7 +37,7 @@ def test_chat(chat):
     assert a.evidence.said_by == "Erkki Expert" and a.evidence.said_by_role == "expert"
     assert rule.condition_is_relative is True and rule.hedged is False
     assert a.evidence.excerpt in msgs[7].text or a.evidence.excerpt in "\n".join(m.text for m in msgs)
-    assert rule.outcome_confirmed is True
+    assert rule.outcome == "recovered"
     assert a.trust == "verified_by_outcome"
     assert a.trigger.kind == "incident" and a.trigger.event == "sfp_replaced"
     assert {"link_up", "counters_zero"} <= set(a.trigger.symptoms)
@@ -52,7 +52,7 @@ def test_email():
     a, rule = run(ROOT / "data" / "elisa_examples" / "email.txt")
     assert a.action == "interface.bounce"
     assert {"node.reboot", "sfp.replace"} & set(a.avoid)
-    assert rule.outcome_confirmed is False
+    assert rule.outcome == "unknown"
     assert a.trust == "stated"
     assert a.evidence.sources == ["email:email-001"]
 
@@ -160,6 +160,13 @@ def test_failed_outcome_sets_review():
     for held in ("install_year <= 2019", "model == 'TX-200'", "firmware == '4.1'", "region == 'north'"):
         assert c[held].against == 1 and c[held].support == 1
     assert c["site == 'OULU-07'"].against == 0  # failed for TRN-087, so a failed outcome says nothing about it
+
+
+def test_failed_outcome_same_day_duplicate_sets_review():
+    s = merge(merge([], bounce(outcome=None, trust="stated"), TOPO),
+              bounce(at="2026-11-01T10:00:00+02:00", outcome="failed", source="email:email-001", trust="stated"), TOPO)
+    a = s[0]
+    assert a.evidence.cases[0].outcome == "failed" and a.status == "review"
 
 
 def test_same_trigger_different_action_disputed():

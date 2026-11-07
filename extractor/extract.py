@@ -31,7 +31,7 @@ EXAMPLE_ANSWER = {
         "excerpt": "If the PSU fan alarm clears but the temperature keeps climbing on the older rack units, swap the fan tray, don't power-cycle.",
         "said_by": "Maija Senior", "said_by_role": "expert",
         "hedged": False, "first_hand": False,
-        "outcome_confirmed": True, "outcome_excerpt": "Fan tray swapped, temperature dropping now.",
+        "outcome": "recovered", "outcome_excerpt": "Fan tray swapped, temperature dropping now.",
     },
     "reason": "An expert states a condition and an action that applies to future fan alarms on older rack units.",
 }
@@ -55,7 +55,7 @@ Hard rules:
 7. hedged=true when the speaker of the rule hedges: "maybe", "I think", "might", "probably", "someone said".
 8. first_hand=true only when the speaker reports something they did or saw themselves ("I moved it", "it's in the cabinet now", "I'm at the site and the gate is open"), not something they were told.
 9. condition_is_relative=true when the stated condition is a comparative with no number stated by the rule's speaker ("older units", "the big sites"), even if someone else in the thread guessed a number.
-10. outcome_confirmed=true only if a later message reports the action worked ("traffic is back", "did that, works"); then outcome_excerpt is that message's text copied character for character. Otherwise outcome_confirmed=false and outcome_excerpt=null.
+10. outcome="recovered" only if a later message reports the action worked ("traffic is back", "did that, works"); outcome="failed" only if a later message reports the action was tried and did not work ("didn't help", "no change, had to reboot"). In both cases outcome_excerpt is that message's text copied character for character. Otherwise outcome="unknown" and outcome_excerpt=null.
 11. Never output device IDs, dates or trust levels anywhere except where they appear inside copied text.
 
 Worked example (a different domain).
@@ -88,8 +88,8 @@ def thread_prompt(messages: list[Message]) -> str:
 def extract(messages: list[Message], recorded_at: datetime | None = None) -> tuple[Assertion, ExtractedRule] | None:
     """Zero or one UNBOUND assertion for the thread, plus the parsed rule for the binder.
 
-    The returned rule's outcome_confirmed is False unless its outcome_excerpt passed the evidence check, so the binder
-    can set the case outcome to 'recovered' exactly when rule.outcome_confirmed is True.
+    The returned rule's outcome is 'unknown' unless its outcome_excerpt passed the evidence check, so the binder
+    can map rule.outcome straight to the case outcome.
     """
     if not messages:
         return None
@@ -105,10 +105,9 @@ def extract(messages: list[Message], recorded_at: datetime | None = None) -> tup
     if not _content_words(rule.action_text) & _content_words(rule.excerpt):
         log.warning("dropped: action_text %r shares no content word with the excerpt", rule.action_text)
         return None
-    confirmed = rule.outcome_confirmed and bool(rule.outcome_excerpt) and norm(rule.outcome_excerpt) in thread
-    if rule.outcome_confirmed and not confirmed:
+    if rule.outcome != "unknown" and not (rule.outcome_excerpt and norm(rule.outcome_excerpt) in thread):
         log.warning("outcome ignored: outcome_excerpt is not verbatim in the thread: %r", rule.outcome_excerpt)
-    rule = rule.model_copy(update={"outcome_confirmed": confirmed})
+        rule = rule.model_copy(update={"outcome": "unknown"})
     workflow = rule.trigger_kind == "workflow"
     assertion = Assertion(
         id="CA-0000",
@@ -119,7 +118,7 @@ def extract(messages: list[Message], recorded_at: datetime | None = None) -> tup
         avoid=list(dict.fromkeys(rule.avoid)),
         evidence=Evidence(cases=[], sources=list(dict.fromkeys(f"{m.channel}:{m.thread_id}" for m in messages)),
                           excerpt=rule.excerpt, said_by_role=rule.said_by_role, said_by=rule.said_by),
-        trust=derive_trust(rule, "recovered" if confirmed else None),
+        trust=derive_trust(rule, None if rule.outcome == "unknown" else rule.outcome),
         status="open",
         questions_asked=[],
         supersedes=None,

@@ -6,10 +6,11 @@ tests/test_contracts.py fails if a committed schema drifts from the models.
 import json
 from datetime import datetime
 from pathlib import Path
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from contracts.vocabulary import (Action, CaseOutcome, Channel, Edge, EdgeAnswer, EntityType, Event, NodeType,
+from contracts.vocabulary import (Action, CaseOutcome, Channel, Edge, EdgeAnswer, EntityType, Event, ExtractedOutcome, NodeType,
                                   Outcome, Role, Status, Symptom, TriggerKind, Trust)
 
 
@@ -176,8 +177,8 @@ class ExtractedRule(BaseModel):
     said_by_role: Role = Field(description="That person's role.")
     hedged: bool = Field(description="true when the speaker hedges: 'maybe', 'I think', 'might', 'someone said'.")
     first_hand: bool = Field(description="true only when the speaker reports something they did or saw themselves ('I moved it', 'it's in the cabinet now', 'I'm at the site and the gate is open'), not something they were told.")
-    outcome_confirmed: bool = Field(description="true only if a later message reports the action worked ('traffic is back', 'did that, works').")
-    outcome_excerpt: str | None = Field(description="The confirming message text, copied character for character; null if outcome_confirmed is false.")
+    outcome: ExtractedOutcome = Field(description="'recovered' only if a later message reports the action worked ('traffic is back', 'did that, works'); 'failed' only if a later message reports the action was tried and did not work ('didn't help', 'no change, had to reboot'); otherwise 'unknown'.")
+    outcome_excerpt: str | None = Field(description="The confirming or failing message text, copied character for character; null when outcome is 'unknown'.")
 
 
 class ExtractionResult(BaseModel):

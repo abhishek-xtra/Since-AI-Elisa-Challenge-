@@ -81,5 +81,5 @@ def bind(assertion: Assertion, rule: ExtractedRule, messages: list[Message], top
         data["applies_to"]["entity_type"] = origin.type
     data["applies_to"]["candidates"] = [c.model_dump() for c in _candidates(rule, origin, topology)]
     data["evidence"]["cases"] = [{"entity": origin.id, "at": holder.timestamp,
-                                  "outcome": "recovered" if rule.outcome_confirmed else None}]
+                                  "outcome": None if rule.outcome == "unknown" else rule.outcome}]
     return Assertion.model_validate(data)

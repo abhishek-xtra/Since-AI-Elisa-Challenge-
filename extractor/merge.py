@@ -38,6 +38,8 @@ def _absorb(old: Assertion, new: Assertion, topology: Topology) -> None:
             vote(old, nc.entity, nc.outcome, topology)
         elif dup.outcome is None and nc.outcome:
             dup.outcome = nc.outcome  # same incident; the other source reported how it ended
+            if nc.outcome == "failed":
+                old.status = "review"  # as record_outcome: no second vote
     old.trust = merged_trust(old.evidence.cases, old.trust, new.trust)
 
 

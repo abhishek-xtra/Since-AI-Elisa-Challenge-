@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\n  \"found\": true,\n  \"rule\": {\n    \"trigger_kind\": \"workflow\",\n    \"event\": \"dispatch_created\",\n    \"symptoms\": [],\n    \"stated_condition\": null,\n    \"condition_is_relative\": false,\n    \"action\": \"site.access_key\",\n    \"action_text\": \"in the site cabinet\",\n    \"avoid\": [],\n    \"excerpt\": \"The key isn't at the Mäkelä farm anymore. the key moved, it's in the site cabinet now\",\n    \"said_by\": \"Veikko Vikkelä\",\n    \"said_by_role\": \"field_engineer\",\n    \"hedged\": false,\n    \"first_hand\": true,\n    \"outcome\": \"unknown\",\n    \"outcome_excerpt\": null\n  },\n  \"reason\": \"A field engineer reports first-hand the new location of the access key for a site barrier, which is needed for future dispatches.\"\n}",
+  "input_tokens": 2723,
+  "output_tokens": 238
+}

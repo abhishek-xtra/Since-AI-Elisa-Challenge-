@@ -21,6 +21,8 @@ Each list is one bullet: `- <name>: ` followed by backticked values. Notes go on
   - What `evaluate` returns (contracts/predicates.md).
 - case outcomes: `recovered`, `failed`
   - `null` when no outcome was reported for the case.
+- extracted outcomes: `recovered`, `failed`, `unknown`
+  - What the extractor reports for the thread; `unknown` becomes `null` on the case.
 - roles: `field_engineer`, `expert`, `agent`, `other`
 - channels: `teams`, `email`, `agent_thread`
 - node types: `transmission_node`, `router`, `other`

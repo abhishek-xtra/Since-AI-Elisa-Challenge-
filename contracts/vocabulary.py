@@ -12,6 +12,7 @@ TriggerKind = Literal["incident", "workflow"]
 Edge = Literal["open", "closed"]
 PredicateResult = Literal["holds", "fails", "unknown", "missing"]
 CaseOutcome = Literal["recovered", "failed"]
+ExtractedOutcome = Literal["recovered", "failed", "unknown"]
 Role = Literal["field_engineer", "expert", "agent", "other"]
 Channel = Literal["teams", "email", "agent_thread"]
 NodeType = Literal["transmission_node", "router", "other"]
@@ -22,7 +23,7 @@ EdgeAnswer = Literal["raise", "close"]
 LISTS = {
     "events": Event, "symptoms": Symptom, "actions": Action, "value-carrying actions": ValueCarryingAction,
     "trust": Trust, "assertion status": Status, "per-entity outcome": Outcome, "trigger kinds": TriggerKind,
-    "candidate edges": Edge, "predicate results": PredicateResult, "case outcomes": CaseOutcome,
+    "candidate edges": Edge, "predicate results": PredicateResult, "case outcomes": CaseOutcome, "extracted outcomes": ExtractedOutcome,
     "roles": Role, "channels": Channel, "node types": NodeType, "entity types": EntityType, "edge answers": EdgeAnswer,
 }
 VALUE_CARRYING_ACTIONS = frozenset(get_args(ValueCarryingAction))
