@@ -15,10 +15,10 @@ describe("video timeline fold", () => {
     const v = fold(events, events.length - 1);
     const tip = (id: string) => v.tips.find((t) => t.assertion_id === id)!;
     expect(v.tips).toHaveLength(events.filter((e) => e.kind === "capture" && e.how === "new").length);
-    expect(tip("CA-0007").expired).toMatch(/^expired /);
-    expect(tip("CA-0001").superseded_by).toBe("CA-0006");
+    expect(tip("CA-0004").expired).toMatch(/^expired /);
+    expect(tip("CA-0001").superseded_by).toBe("CA-0003");
     expect(tip("CA-0002").status).toBe("review");
-    expect(tip("CA-0003").dispute_with).toContain("CA-0002");
+    expect(tip("CA-0002").decided?.predicate).toBe("install_year <= 2019");
     expect(v.messages).toHaveLength(events.filter((e) => e.kind === "message").length);
   });
 
@@ -28,6 +28,13 @@ describe("video timeline fold", () => {
     expect(new Set(tips.map((n) => n.y)).size).toBe(tips.length);
     const byId = new Map(nodes.map((n) => [n.id, n]));
     for (const n of nodes) if (n.parent) expect(byId.get(n.parent)!.x).toBeLessThan(n.x);
+  });
+
+  it("drops undecided candidates once a tap decided the scope", () => {
+    const answered = events.findIndex((e) => e.kind === "answer");
+    const cands = (t: number) => layout(fold(events, t).tips).nodes.filter((n) => n.kind === "cand" && n.tipId === "CA-0002");
+    expect(cands(answered - 1)).toHaveLength(5);
+    expect(cands(answered).map((n) => n.label)).toEqual(["install_year <= 2019"]);
   });
 
   it("is empty before the first event", () => {

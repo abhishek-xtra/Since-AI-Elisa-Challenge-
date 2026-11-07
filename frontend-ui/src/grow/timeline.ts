@@ -150,9 +150,11 @@ export function layout(tips: Tip[]): { nodes: LaidNode[]; height: number } {
     groups.set(id, g);
   };
   for (const t of sorted) {
-    const rows = Math.max(t.candidates.length, 4);
+    // once decided, get_context evaluates only the decided predicate: the other candidates leave the picture
+    const cands = t.decided ? t.candidates.filter((c) => c.predicate === t.decided!.predicate) : t.candidates;
+    const rows = Math.max(cands.length, 4);
     const top = y;
-    t.candidates.forEach((c, i) =>
+    cands.forEach((c, i) =>
       nodes.push({ id: `c:${t.assertion_id}:${i}`, kind: "cand", x: COL.cand, y: top + i * ROW + ROW / 2, label: c.predicate, parent: `t:${t.assertion_id}`, tipId: t.assertion_id, cand: c, bornAt: t.bornAt }),
     );
     const ty = top + (rows * ROW) / 2;

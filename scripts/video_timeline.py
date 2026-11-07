@@ -1,8 +1,13 @@
 """Event log for the video's "context tree" page (frontend-ui /grow). Visualisation data only: the system has no tree.
 
-py -3.14 scripts/video_timeline.py [--out out/video_timeline.json]
+py -3.14 scripts/video_timeline.py [--out out/video_timeline.json] [--all] [--skip FOLDER ...]
 
-One JsonStore, every captured conversation in the repo ingested in date order with pipeline.ingest (as demo.py does),
+Default: the demo story. Elisa's chat and email, 12_barrier, 12b_barrier_update, 13 Sami, 14 road closed, 15 retraction,
+plus 04 chit-chat and 16 one-off as noise that captures nothing. --all: every synthetic thread (05 to 10 and the hedged
+12b too), which changes the outcome (docs/DECISIONS.md, "Video timeline"). --skip leaves further scenario folders (or
+"<folder>/<file>") out of either set.
+
+One JsonStore, the chosen captured conversations ingested in date order with pipeline.ingest (as demo.py does),
 and the incidents of every scenario's expected.json plus the demo beats' incidents and answers run with get_context at
 their own timestamps, interleaved by date. Every field is copied from the store, the extractor's result or a
 ContextResult; nothing is written by hand. questions.json and notifications.json go to a temp OUT_DIR, so out/beat_*.json
@@ -201,10 +206,15 @@ def do_answer(step: dict, last: list, s: JsonStore, ev: list, at) -> None:
                "status": a.status, "candidates": [{"predicate": c.predicate, "edge": c.edge} for c in a.applies_to.candidates]})
 
 
-def build(skip=()) -> list[dict]:
-    """skip: scenario folder names left out (inputs and incidents), e.g. to try a story without 09_failed_2016."""
+# Synthetic threads written to test one rule each on a fresh store; together they change the demo's outcome.
+NOT_DEMO = {"05_mentioned_in_passing", "06_hunch", "07_reworded_other_model", "08_conflict", "09_failed_2016", "10_typos",
+            "12c_barrier_hedged", "12b_barrier_update/thread_hedged.json"}
+
+
+def build(skip=frozenset(NOT_DEMO)) -> list[dict]:
+    """skip: scenario folders, or "<folder>/<file>", left out (inputs and incidents). Default: the demo story."""
     schedule = []  # (time, rank, seq, kind, payload): captures, then demo beats, then scenarios at the same instant
-    for i, p in enumerate(p for p in captures() if p.parent.name not in skip):
+    for i, p in enumerate(p for p in captures() if p.parent.name not in skip and f"{p.parent.name}/{p.name}" not in skip):
         schedule.append((max(m.timestamp for m in ADAPTERS[p.suffix](p)), 0, i, "capture", p))
     scen = [g for g in scenario_groups() if g[0]["source"] not in skip]
     for rank, groups in ((1, beat_groups()), (2, scen)):
@@ -243,9 +253,10 @@ def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", default=str(ROOT / "out" / "video_timeline.json"))
-    ap.add_argument("--skip", nargs="*", default=[], help="scenario folders to leave out (default: none)")
+    ap.add_argument("--all", action="store_true", help="every synthetic thread too (changes the outcome)")
+    ap.add_argument("--skip", nargs="*", default=[], help="further scenario folders to leave out")
     args = ap.parse_args()
-    events = build(set(args.skip))
+    events = build((set() if args.all else NOT_DEMO) | set(args.skip))
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps({"note": "Visualisation for the video. The tree is drawn from the stored "
                                           "assertions; the system itself has no tree.", "events": events},

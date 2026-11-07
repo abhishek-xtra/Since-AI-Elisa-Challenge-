@@ -1,0 +1,7 @@
+{
+  "model": "gemini-4-argon",
+  "model_version": "gemini-4-argon",
+  "text": "{\"action\": \"site.access_key\", \"action_text\": \"Locate the site access key in the site cabinet.\", \"avoid\": [], \"cites\": [\"CA-0003\"]}",
+  "input_tokens": 753,
+  "output_tokens": 58
+}
