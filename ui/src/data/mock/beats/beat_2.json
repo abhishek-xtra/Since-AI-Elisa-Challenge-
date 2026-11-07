@@ -1,0 +1,218 @@
+{
+  "beat": 2,
+  "title": "Capture and link",
+  "at_time": "2026-11-07T10:00:00Z",
+  "results": [],
+  "agent_text": "12 messages and 1 email read. 1 tip saved: one case, two sources. Nobody was asked anything.",
+  "assertions": [
+    {
+      "question_asked": false,
+      "valid_while": null,
+      "valid_to": null,
+      "supersedes": null,
+      "superseded_by": null,
+      "avoid": [
+        "node.reboot",
+        "sfp.replace"
+      ],
+      "id": "CA-0001",
+      "trigger": {
+        "kind": "incident",
+        "event": "sfp_replaced",
+        "symptoms": [
+          "link_up",
+          "optics_normal",
+          "counters_zero"
+        ]
+      },
+      "applies_to": {
+        "entity_type": "transmission_node",
+        "candidates": [
+          {
+            "predicate": "install_year <= 2019",
+            "support": 1,
+            "against": 0,
+            "basis": "expert: 'older units, around 2019'"
+          },
+          {
+            "predicate": "model == 'TX-200'",
+            "support": 1,
+            "against": 0,
+            "basis": "attribute of TRN-042"
+          },
+          {
+            "predicate": "firmware == '4.1'",
+            "support": 1,
+            "against": 0,
+            "basis": "attribute of TRN-042"
+          },
+          {
+            "predicate": "site == 'OULU-07'",
+            "support": 1,
+            "against": 0,
+            "basis": "attribute of TRN-042"
+          },
+          {
+            "predicate": "region == 'north'",
+            "support": 1,
+            "against": 0,
+            "basis": "attribute of TRN-042's site"
+          }
+        ],
+        "decided": null
+      },
+      "action": "interface.bounce",
+      "action_text": "disable the interface, wait a little, then enable it again",
+      "evidence": {
+        "cases": [
+          {
+            "entity": "TRN-042",
+            "at": "2026-11-01T09:25:00Z",
+            "outcome": "recovered"
+          }
+        ],
+        "sources": [
+          "teams:thread-001",
+          "email:001"
+        ],
+        "excerpt": "Disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
+        "said_by_role": "expert",
+        "said_by": "Erkki"
+      },
+      "trust": "verified_by_outcome",
+      "status": "open",
+      "recorded_at": "2026-11-01T09:30:00Z",
+      "valid_from": "2026-11-01T00:00:00Z"
+    }
+  ],
+  "thread_id": "thread-001",
+  "thread": {
+    "thread_id": "thread-001",
+    "participants": [
+      "Veikko Vikkelä",
+      "Erkki Expert"
+    ],
+    "items": [
+      {
+        "type": "message",
+        "id": "thread-001-m01",
+        "author": "Veikko Vikkelä",
+        "role": "field_engineer",
+        "timestamp": "2026-11-01T09:14:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "Hi Erkki, I'm at the site now. Changed the SFP on transmission node TRN-042.\nLink is up and alarms cleared, but traffic is still not coming back. Have you seen this before?"
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m02",
+        "author": "Erkki Expert",
+        "role": "expert",
+        "timestamp": "2026-11-01T09:16:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "Yes. Is this one of the older units?"
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m03",
+        "author": "Veikko Vikkelä",
+        "role": "field_engineer",
+        "timestamp": "2026-11-01T09:16:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "Yes, installed around 2019 I think."
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m04",
+        "author": "Erkki Expert",
+        "role": "expert",
+        "timestamp": "2026-11-01T09:18:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "Ok. Don't trust the green link status on those.\nSometimes after changing the SFP the interface comes up normally, but the forwarding state doesn't recover correctly."
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m05",
+        "author": "Veikko Vikkelä",
+        "role": "field_engineer",
+        "timestamp": "2026-11-01T09:18:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "So another SFP?"
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m06",
+        "author": "Erkki Expert",
+        "role": "expert",
+        "timestamp": "2026-11-01T09:19:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "No. Usually the SFP is fine.\nCheck whether the traffic counters are actually increasing. If they stay at zero even though the interface is UP, it's probably the issue I've seen before."
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m07",
+        "author": "Veikko Vikkelä",
+        "role": "field_engineer",
+        "timestamp": "2026-11-01T09:21:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "Yes. Link UP. RX power looks normal. Counters basically zero."
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m08",
+        "author": "Erkki Expert",
+        "role": "expert",
+        "timestamp": "2026-11-01T09:22:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "That's it.\nDisable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails."
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m09",
+        "author": "Veikko Vikkelä",
+        "role": "field_engineer",
+        "timestamp": "2026-11-01T09:25:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "Did that. Traffic is back 👍"
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m10",
+        "author": "Erkki Expert",
+        "role": "expert",
+        "timestamp": "2026-11-01T09:25:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "Good. These old units sometimes behave like this after an optical module replacement."
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m11",
+        "author": "Veikko Vikkelä",
+        "role": "field_engineer",
+        "timestamp": "2026-11-01T09:26:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "Is this documented somewhere?"
+      },
+      {
+        "type": "message",
+        "id": "thread-001-m12",
+        "author": "Erkki Expert",
+        "role": "expert",
+        "timestamp": "2026-11-01T09:27:00Z",
+        "channel": "teams",
+        "thread_id": "thread-001",
+        "text": "Not that I know of 😄\nWe've just learned it over the years."
+      }
+    ]
+  }
+}
