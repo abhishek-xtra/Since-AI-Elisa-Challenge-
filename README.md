@@ -50,6 +50,17 @@ $env:VITE_DATA_SOURCE="api"; $env:VITE_API_URL="http://localhost:8000"; npm run 
 
 Without the two `VITE_` variables each front-end runs on its own byte-for-byte copy of `out/` (see `ui/src/data/mock/README.md` and `frontend-ui/src/data/mock/real-out/README.md`), which looks identical. Live mode (reporting a new fault, answering a question) needs the API.
 
+**Live mode for a judge (clicking "Report fault" or a question button).** Live calls rewrite the files under `out/`, which are committed and are what the replay reads, so serve a copy instead. Also, after beat 9 Erkki's tip is under review, so an old unit is declined "under review"; for a live proposal serve the state after beat 7:
+
+```powershell
+$env:LLM_OFFLINE="1"; $env:OUT_DIR="C:\dev\elisa\out-live"
+1..7 | ForEach-Object { py -3.14 demo.py --beat $_ }          # beats 1-7 into out-live (beat 1 wipes it)
+py -3.14 -m uvicorn api.app:app --port 8001                   # a second API on :8001 serving out-live
+# ui/: $env:VITE_DATA_SOURCE="api"; $env:VITE_API_URL="http://localhost:8001"; npm run dev
+```
+
+The form has a time field: validity, expiry and supersession are evaluated at that time, so a dispatch to OULU-11 dated 15 Nov proposes the forest track and one dated 21 Nov is declined "expired". Unseen incidents get the proposal text built in code (`LLM_OFFLINE=1`), identical wording to the model's. To reset the live state, run the seven beats again.
+
 Branches: `backend` (backend work), `ui` (Teams clone), `frontend-api` (map on real data, from Abhishek's `ui-frontend`), all merged into `main`.
 
 ## Contracts

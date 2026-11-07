@@ -15,11 +15,13 @@ export function ReportFault({ topology, onSubmit, onClose }: {
   const [entity, setEntity] = useState(topology.nodes[0]?.id ?? '');
   const [event, setEvent] = useState(EVENTS[0]);
   const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [when, setWhen] = useState(nowWithOffset().slice(0, 16)); // local wall clock, minute precision, for the picker
   const [busy, setBusy] = useState(false);
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    try { await onSubmit({ entity_id: entity, event, symptoms, at_time: nowWithOffset() }); } finally { setBusy(false); }
+    // the time matters: validity, expiry and supersession are evaluated at it (a dispatch before valid_from is declined)
+    try { await onSubmit({ entity_id: entity, event, symptoms, at_time: nowWithOffset(new Date(when)) }); } finally { setBusy(false); }
   };
   return (
     <form className="report-form" onSubmit={submit} aria-label="Report fault">
@@ -38,6 +40,9 @@ export function ReportFault({ topology, onSubmit, onClose }: {
         <select value={event} onChange={(e) => setEvent(e.target.value)}>
           {EVENTS.map((v) => <option key={v} value={v}>{v}</option>)}
         </select>
+      </label>
+      <label>When
+        <input type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} required />
       </label>
       <fieldset>
         <legend>Symptoms</legend>
