@@ -1,0 +1,37 @@
+[
+  {
+    "to": "Erkki Expert",
+    "text": "Your tip from 2026-11-01 was proposed for TRN-087 today.",
+    "assertion_id": "CA-0001",
+    "entity_id": "TRN-087",
+    "at": "2026-11-07T10:00:00+02:00"
+  },
+  {
+    "to": "Kalle Niskanen",
+    "text": "Your tip from 2026-10-02 was proposed for OULU-03 today.",
+    "assertion_id": "CA-0002",
+    "entity_id": "OULU-03",
+    "at": "2026-11-08T08:00:00+02:00"
+  },
+  {
+    "to": "Veikko Vikkelä",
+    "text": "Your tip from 2026-11-07 was proposed for OULU-03 today.",
+    "assertion_id": "CA-0003",
+    "entity_id": "OULU-03",
+    "at": "2026-11-08T08:00:00+02:00"
+  },
+  {
+    "to": "Erkki Expert",
+    "text": "Your tip from 2026-11-01 was proposed for TRN-105 today.",
+    "assertion_id": "CA-0001",
+    "entity_id": "TRN-105",
+    "at": "2026-11-08T14:00:00+02:00"
+  },
+  {
+    "to": "Kalle Niskanen",
+    "text": "Your tip from 2026-11-09 was proposed for OULU-11 today.",
+    "assertion_id": "CA-0004",
+    "entity_id": "OULU-11",
+    "at": "2026-11-15T08:00:00+02:00"
+  }
+]

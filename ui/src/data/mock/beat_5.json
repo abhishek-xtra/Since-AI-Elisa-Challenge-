@@ -1,0 +1,86 @@
+{
+  "beat": 5,
+  "title": "Barrier",
+  "lines": [
+    "Ingested email.txt (2026-10-02)",
+    "dispatch_created for OULU-03 at 2026-11-08T08:00:00+02:00",
+    "CA-0002 proposed: all hold: site == 'OULU-03'",
+    "Key location before the drive: at the neighbouring farm, ask for Mäkelä",
+    "Notifications:",
+    "  to Erkki Expert: Your tip from 2026-11-01 was proposed for TRN-087 today.",
+    "  to Kalle Niskanen: Your tip from 2026-10-02 was proposed for OULU-03 today."
+  ],
+  "data": {
+    "results": [
+      {
+        "assertion": {
+          "id": "CA-0002",
+          "trigger": {
+            "kind": "workflow",
+            "event": "dispatch_created",
+            "symptoms": []
+          },
+          "applies_to": {
+            "entity_type": "site",
+            "candidates": [
+              {
+                "predicate": "site == 'OULU-03'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of OULU-03"
+              }
+            ],
+            "decided": null
+          },
+          "action": "site.access_key",
+          "action_text": "at the neighbouring farm, ask for Mäkelä",
+          "avoid": [],
+          "evidence": {
+            "cases": [
+              {
+                "entity": "OULU-03",
+                "at": "2026-10-02T10:00:00+02:00",
+                "outcome": null
+              }
+            ],
+            "sources": [
+              "email:email-12_barrier"
+            ],
+            "excerpt": "If you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä.",
+            "said_by_role": "other",
+            "said_by": "Kalle Niskanen"
+          },
+          "trust": "stated",
+          "status": "open",
+          "questions_asked": [],
+          "supersedes": null,
+          "superseded_by": null,
+          "recorded_at": "2026-11-06T00:00:00Z",
+          "valid_from": "2026-10-02T10:00:00+02:00",
+          "valid_to": null,
+          "valid_while": null
+        },
+        "outcome": "proposed",
+        "reason": "all hold: site == 'OULU-03'",
+        "question": null
+      }
+    ],
+    "notifications": [
+      {
+        "to": "Erkki Expert",
+        "text": "Your tip from 2026-11-01 was proposed for TRN-087 today.",
+        "assertion_id": "CA-0001",
+        "entity_id": "TRN-087",
+        "at": "2026-11-07T10:00:00+02:00"
+      },
+      {
+        "to": "Kalle Niskanen",
+        "text": "Your tip from 2026-10-02 was proposed for OULU-03 today.",
+        "assertion_id": "CA-0002",
+        "entity_id": "OULU-03",
+        "at": "2026-11-08T08:00:00+02:00"
+      }
+    ]
+  }
+}

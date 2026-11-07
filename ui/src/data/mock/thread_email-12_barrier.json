@@ -1,0 +1,32 @@
+{
+  "thread_id": "email-12_barrier",
+  "channel": "email",
+  "messages": [
+    {
+      "id": "email:12_barrier",
+      "author": "Kalle Niskanen",
+      "role": "other",
+      "timestamp": "2026-10-02T10:00:00+02:00",
+      "channel": "email",
+      "thread_id": "email-12_barrier",
+      "text": "Subject: Access road barrier at OULU-03\n\nHi team,\n\nI was visiting site OULU-03 yesterday and noticed that the private access road now has a locked barrier.\n\nIf you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä. I picked it up from him myself yesterday. Call ahead or just knock, it saves a wasted drive.\n\nBest regards,\nKalle",
+      "incident": null
+    }
+  ],
+  "questions": [],
+  "notifications": [
+    {
+      "to": "Kalle Niskanen",
+      "text": "Your tip from 2026-10-02 was proposed for OULU-03 today.",
+      "assertion_id": "CA-0002",
+      "entity_id": "OULU-03",
+      "at": "2026-11-08T08:00:00+02:00"
+    }
+  ],
+  "captured": [
+    {
+      "message_id": "email:12_barrier",
+      "assertion_id": "CA-0002"
+    }
+  ]
+}

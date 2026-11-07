@@ -1,0 +1,16 @@
+{
+  "channel": "teams",
+  "note": "Hand-written for the UI (docs/DEMO_CHAT.md scene 2). Synthetic; no backend fixture exists for this report. Shown only, never ingested.",
+  "entity_id": "TRN-087",
+  "date": "2026-11-07",
+  "placeholder": false,
+  "participants": [
+    {"name": "Veikko Vikkelä", "role": "Field Engineer"}
+  ],
+  "messages": [
+    {"seq": 1, "time": "10:00", "author": "Veikko Vikkelä", "role": "Field Engineer",
+     "text": "Same thing on TRN-087 at OULU-11. SFP swapped, link up, alarms cleared, counters at zero."},
+    {"seq": 2, "time": "10:04", "author": "Veikko Vikkelä", "role": "Field Engineer",
+     "text": "Counters moving. Thanks."}
+  ]
+}

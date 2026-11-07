@@ -1,0 +1,201 @@
+{
+  "beat": 9,
+  "title": "Retracted",
+  "lines": [
+    "Erkki Expert (thread-15_retraction): Correction on the SFP swap thing where the link comes up but the counters stay at zero: ignore what I said about the bounce on the older units, that was a different issue, don't rely on it.",
+    "Pirjo Virtanen (thread-15_retraction): Ok, noted. Let us know when you know more.",
+    "CA-0001: status review, sources teams:thread-001, email:email-001, teams:thread-15_retraction, 4 assertions kept",
+    "Incident: sfp_replaced on TRN-087 at 2026-11-11T10:00:00+02:00",
+    "CA-0001 declined: under review",
+    "Erkki took it back; the tip is under review, not deleted."
+  ],
+  "data": {
+    "assertion": {
+      "id": "CA-0001",
+      "trigger": {
+        "kind": "incident",
+        "event": "sfp_replaced",
+        "symptoms": [
+          "counters_zero",
+          "link_up"
+        ]
+      },
+      "applies_to": {
+        "entity_type": "transmission_node",
+        "candidates": [
+          {
+            "predicate": "install_year <= 2019",
+            "edge": "closed",
+            "support": 1,
+            "against": 0,
+            "basis": "Erkki Expert: 'older units'; 2019 is TRN-042's install_year, not a stated boundary"
+          },
+          {
+            "predicate": "model == 'TX-200'",
+            "edge": "closed",
+            "support": 1,
+            "against": 0,
+            "basis": "attribute of TRN-042"
+          },
+          {
+            "predicate": "firmware == '4.1'",
+            "edge": "closed",
+            "support": 1,
+            "against": 0,
+            "basis": "attribute of TRN-042"
+          },
+          {
+            "predicate": "site == 'OULU-07'",
+            "edge": "closed",
+            "support": 1,
+            "against": 0,
+            "basis": "attribute of TRN-042"
+          },
+          {
+            "predicate": "region == 'north'",
+            "edge": "closed",
+            "support": 1,
+            "against": 0,
+            "basis": "attribute of TRN-042's site"
+          }
+        ],
+        "decided": {
+          "predicate": "install_year <= 2019",
+          "edge": "closed"
+        }
+      },
+      "action": "interface.bounce",
+      "action_text": "Disable the interface, wait a little, then enable it again",
+      "avoid": [
+        "sfp.replace",
+        "node.reboot"
+      ],
+      "evidence": {
+        "cases": [
+          {
+            "entity": "TRN-042",
+            "at": "2026-11-01T09:22:00+02:00",
+            "outcome": "recovered"
+          }
+        ],
+        "sources": [
+          "teams:thread-001",
+          "email:email-001",
+          "teams:thread-15_retraction"
+        ],
+        "excerpt": "Disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
+        "said_by_role": "expert",
+        "said_by": "Erkki Expert"
+      },
+      "trust": "verified_by_outcome",
+      "status": "review",
+      "questions_asked": [
+        "firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+        "install_year <= 2019=unknown"
+      ],
+      "supersedes": null,
+      "superseded_by": null,
+      "recorded_at": "2026-11-06T00:00:00Z",
+      "valid_from": "2026-11-01T09:14:00+02:00",
+      "valid_to": null,
+      "valid_while": null
+    },
+    "results": [
+      {
+        "assertion": {
+          "id": "CA-0001",
+          "trigger": {
+            "kind": "incident",
+            "event": "sfp_replaced",
+            "symptoms": [
+              "counters_zero",
+              "link_up"
+            ]
+          },
+          "applies_to": {
+            "entity_type": "transmission_node",
+            "candidates": [
+              {
+                "predicate": "install_year <= 2019",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "Erkki Expert: 'older units'; 2019 is TRN-042's install_year, not a stated boundary"
+              },
+              {
+                "predicate": "model == 'TX-200'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of TRN-042"
+              },
+              {
+                "predicate": "firmware == '4.1'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of TRN-042"
+              },
+              {
+                "predicate": "site == 'OULU-07'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of TRN-042"
+              },
+              {
+                "predicate": "region == 'north'",
+                "edge": "closed",
+                "support": 1,
+                "against": 0,
+                "basis": "attribute of TRN-042's site"
+              }
+            ],
+            "decided": {
+              "predicate": "install_year <= 2019",
+              "edge": "closed"
+            }
+          },
+          "action": "interface.bounce",
+          "action_text": "Disable the interface, wait a little, then enable it again",
+          "avoid": [
+            "sfp.replace",
+            "node.reboot"
+          ],
+          "evidence": {
+            "cases": [
+              {
+                "entity": "TRN-042",
+                "at": "2026-11-01T09:22:00+02:00",
+                "outcome": "recovered"
+              }
+            ],
+            "sources": [
+              "teams:thread-001",
+              "email:email-001",
+              "teams:thread-15_retraction"
+            ],
+            "excerpt": "Disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
+            "said_by_role": "expert",
+            "said_by": "Erkki Expert"
+          },
+          "trust": "verified_by_outcome",
+          "status": "review",
+          "questions_asked": [
+            "firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+            "install_year <= 2019=unknown"
+          ],
+          "supersedes": null,
+          "superseded_by": null,
+          "recorded_at": "2026-11-06T00:00:00Z",
+          "valid_from": "2026-11-01T09:14:00+02:00",
+          "valid_to": null,
+          "valid_while": null
+        },
+        "outcome": "declined",
+        "reason": "under review",
+        "question": null
+      }
+    ]
+  }
+}

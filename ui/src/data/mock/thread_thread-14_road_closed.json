@@ -1,0 +1,52 @@
+{
+  "thread_id": "thread-14_road_closed",
+  "channel": "teams",
+  "messages": [
+    {
+      "id": "teams:thread-14_road_closed:1",
+      "author": "Kalle Niskanen",
+      "role": "field_engineer",
+      "timestamp": "2026-11-09T07:40:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-14_road_closed",
+      "text": "Heads up for anyone dispatched to OULU-11: I drove there this morning, the access road to OULU-11 is closed for roadworks until 20 Nov, use the forest track from the north side.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-14_road_closed:2",
+      "author": "Timo Laine",
+      "role": "field_engineer",
+      "timestamp": "2026-11-09T07:52:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-14_road_closed",
+      "text": "Thanks, good to know. Is the forest track ok for the van?",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-14_road_closed:3",
+      "author": "Kalle Niskanen",
+      "role": "field_engineer",
+      "timestamp": "2026-11-09T07:55:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-14_road_closed",
+      "text": "Yes, it's gravel but fine, I came in that way.",
+      "incident": null
+    }
+  ],
+  "questions": [],
+  "notifications": [
+    {
+      "to": "Kalle Niskanen",
+      "text": "Your tip from 2026-11-09 was proposed for OULU-11 today.",
+      "assertion_id": "CA-0004",
+      "entity_id": "OULU-11",
+      "at": "2026-11-15T08:00:00+02:00"
+    }
+  ],
+  "captured": [
+    {
+      "message_id": "teams:thread-14_road_closed:1",
+      "assertion_id": "CA-0004"
+    }
+  ]
+}

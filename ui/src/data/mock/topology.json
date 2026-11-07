@@ -1,0 +1,30 @@
+{
+  "sites": [
+    {"id": "OULU-07", "name": "Oulu 07", "region": "north", "access": ""},
+    {"id": "OULU-11", "name": "Oulu 11", "region": "north", "access": ""},
+    {"id": "OULU-03", "name": "Oulu 03", "region": "north", "access": "Locked barrier on the access road."},
+    {"id": "HEL-02", "name": "Helsinki 02", "region": "south", "access": ""}
+  ],
+  "nodes": [
+    {"id": "TRN-042", "type": "transmission_node", "model": "TX-200", "install_year": 2019, "firmware": "4.1", "site": "OULU-07"},
+    {"id": "TRN-045", "type": "transmission_node", "model": "TX-200", "install_year": 2019, "firmware": "4.0", "site": "OULU-07"},
+    {"id": "TRN-120", "type": "transmission_node", "model": "TX-200", "install_year": 2020, "firmware": "4.1", "site": "OULU-07"},
+    {"id": "TRN-044", "type": "transmission_node", "model": "TX-300", "install_year": 2022, "firmware": "5.2", "site": "OULU-07"},
+    {"id": "RTR-007", "type": "router", "model": "RX-10", "install_year": 2021, "firmware": "7.2", "site": "OULU-07"},
+    {"id": "TRN-087", "type": "transmission_node", "model": "TX-200", "install_year": 2018, "firmware": "4.1", "site": "OULU-11"},
+    {"id": "TRN-063", "type": "transmission_node", "model": "TX-250", "install_year": 2018, "firmware": "4.1", "site": "OULU-11"},
+    {"id": "TRN-088", "type": "transmission_node", "model": "TX-250", "install_year": 2021, "firmware": "4.3", "site": "OULU-11"},
+    {"id": "RTR-011", "type": "router", "model": "RX-10", "install_year": 2019, "firmware": "7.0", "site": "OULU-11"},
+    {"id": "TRN-019", "type": "transmission_node", "model": "TX-200", "install_year": 2016, "firmware": "3.8", "site": "OULU-03"},
+    {"id": "TRN-033", "type": "transmission_node", "model": "TX-200", "install_year": 2017, "firmware": "4.1", "site": "OULU-03"},
+    {"id": "TRN-034", "type": "transmission_node", "model": "TX-250", "install_year": 2019, "firmware": "4.2", "site": "OULU-03"},
+    {"id": "RTR-003", "type": "router", "model": "RX-10", "install_year": 2017, "firmware": "6.9", "site": "OULU-03"},
+    {"id": "TRN-101", "type": "transmission_node", "model": "TX-300", "install_year": 2023, "firmware": "5.2", "site": "HEL-02"},
+    {"id": "TRN-102", "type": "transmission_node", "model": "TX-300", "install_year": 2024, "firmware": "5.10", "site": "HEL-02"},
+    {"id": "TRN-105", "type": "transmission_node", "model": "TX-200", "install_year": 2019, "firmware": "4.1", "site": "HEL-02"},
+    {"id": "TRN-106", "type": "transmission_node", "model": "TX-250", "install_year": 2020, "firmware": "4.3", "site": "HEL-02"},
+    {"id": "TRN-110", "type": "transmission_node", "model": "TX-300", "install_year": 2022, "firmware": "5.2", "site": "HEL-02"},
+    {"id": "RTR-021", "type": "router", "model": "RX-20", "install_year": 2023, "firmware": "8.1", "site": "HEL-02"},
+    {"id": "RTR-022", "type": "router", "model": "RX-20", "install_year": 2024, "firmware": "8.1", "site": "HEL-02"}
+  ]
+}
