@@ -38,7 +38,7 @@ Both front-ends have hidden controls for screen recording; nothing on screen sho
 | Teams clone, messages arriving one by one | `http://localhost:5173/?beat=3&reveal=1` (any beat, add `&channel=experts\|faults\|site-access`) | Space or Right arrow reveals the next item (typing row, slide-in, the agent's card expanding, a cursor tapping the answer, the notice dropping in); Left hides the last; clicking the invisible 40 px strip at the right edge of the posts also advances. `&reveal=auto&every=1400` plays hands-free. Timings in `ui/src/reveal.ts`. |
 | Context tree, growing in real time | `http://localhost:5183/tree?from=14&to=28&play=1&clean=1` (`&gap=` ms between events; `?t=N` alone is a still) | Space or Right steps forward, Left back, the right-edge strip advances. The camera moves once per event (420 ms) and holds; a new tip holds at least 2.5 s. `?src=dispute\|hunch\|all` loads the other timelines. Timings in `frontend-ui/src/tree/motion.ts`. |
 
-Record with a real screen recorder at 1920x1080 (for example `ffmpeg -f gdigrab -framerate 30 -i desktop -t 20 out.mp4`), never with a frame-seeking renderer: the pages animate on a real clock. The video script is `docs/VIDEO.md`.
+Record with a real screen recorder at 1920x1080 (for example `ffmpeg -f gdigrab -framerate 30 -i desktop -t 20 out.mp4`), never with a frame-seeking renderer: the pages animate on a real clock. The video script is `docs/VIDEO.md`; the video itself was made in HyperFrames from rebuilt scenes, not from recordings.
 
 ## Live mode for a judge
 
