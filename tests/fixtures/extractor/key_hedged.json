@@ -1,0 +1,10 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Extractor test fixture: hedged second-hand variant of the OULU-03 barrier key update. Written by hand.",
+  "messages": [
+    {"seq": 1, "time": "15:10", "author": "Aino Ahola", "role": "Coordinator", "text": "Heads up, tomorrow's dispatch goes to OULU-03 again, the one with the locked barrier on the private road."},
+    {"seq": 2, "time": "15:14", "author": "Veikko Vikkelä", "role": "Field Engineer", "text": "Not sure, I haven't been there. someone said the key might be in the cabinet now"},
+    {"seq": 3, "time": "15:15", "author": "Aino Ahola", "role": "Coordinator", "text": "Ok, I'll tell the crew to check."}
+  ]
+}

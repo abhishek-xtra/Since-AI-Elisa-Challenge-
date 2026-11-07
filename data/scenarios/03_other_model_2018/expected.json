@@ -13,7 +13,8 @@
       "symptoms": [
         "link_up",
         "optics_normal",
-        "counters_zero"
+        "counters_zero",
+        "alarms_cleared"
       ],
       "at": "2026-11-07T10:00:00+02:00",
       "expect": "ambiguous",

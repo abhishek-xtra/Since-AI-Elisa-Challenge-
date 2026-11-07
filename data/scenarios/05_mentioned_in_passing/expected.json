@@ -12,7 +12,8 @@
       "symptoms": [
         "link_up",
         "optics_normal",
-        "counters_zero"
+        "counters_zero",
+        "alarms_cleared"
       ]
     },
     "action": "interface.bounce",

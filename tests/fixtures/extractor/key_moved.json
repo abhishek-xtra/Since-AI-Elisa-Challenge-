@@ -1,0 +1,10 @@
+{
+  "channel": "teams",
+  "date": "2026-11-07",
+  "note": "Extractor test fixture: Veikko reports first hand that the OULU-03 barrier key moved. Written by hand.",
+  "messages": [
+    {"seq": 1, "time": "15:10", "author": "Aino Ahola", "role": "Coordinator", "text": "Heads up, tomorrow's dispatch goes to OULU-03 again, the one with the locked barrier on the private road."},
+    {"seq": 2, "time": "15:14", "author": "Veikko Vikkelä", "role": "Field Engineer", "text": "I was there this morning. The key isn't at the Mäkelä farm anymore. the key moved, it's in the site cabinet now"},
+    {"seq": 3, "time": "15:15", "author": "Aino Ahola", "role": "Coordinator", "text": "Thanks, I'll tell the crew."}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "channel": "teams",
+  "date": "2026-11-03",
+  "note": "Extractor test fixture: no reusable rule. Written by hand.",
+  "messages": [
+    {"seq": 1, "time": "11:02", "author": "Veikko Vikkelä", "role": "Field Engineer", "text": "Lunch today? The Thai place opened again."},
+    {"seq": 2, "time": "11:04", "author": "Erkki Expert", "role": "Network Expert", "text": "Sure, 11:30 works for me."},
+    {"seq": 3, "time": "11:05", "author": "Aino Ahola", "role": "Coordinator", "text": "Count me in. Are we still doing the weekly sync at 14?"},
+    {"seq": 4, "time": "11:07", "author": "Erkki Expert", "role": "Network Expert", "text": "Yes, but let's move it to 14:30, I have a dentist appointment at 13."},
+    {"seq": 5, "time": "11:08", "author": "Veikko Vikkelä", "role": "Field Engineer", "text": "Fine by me. I'll book the small meeting room 😊"},
+    {"seq": 6, "time": "11:10", "author": "Aino Ahola", "role": "Coordinator", "text": "Thanks! See you at lunch."}
+  ]
+}
