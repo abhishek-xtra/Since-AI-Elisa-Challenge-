@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { source as defaultSource, type DataSource, type IncidentBody, type Thread, type Topology } from './data';
 import { buildChannels, itemsOf, type Item, type LiveIncident, type ModelInput } from './model';
-import { PostCard } from './Thread';
+import { longDate, PostCard } from './Thread';
 import { ReportFault } from './ReportFault';
 import * as I from './icons';
 
 const THREAD_IDS = ['thread-001', 'email-001', 'email-12_barrier', 'thread-12b_barrier_update', 'thread-13_second_technician'];
+const VIEWER = 'Erkki Expert'; // the demo is watched from Erkki's seat
 const DEFAULT_CHANNEL: Record<number, string> = { 1: 'faults', 2: 'experts', 3: 'faults', 4: 'faults', 5: 'site-access', 6: 'site-access', 7: 'faults' };
 
 export function beatFromUrl(search = window.location.search): number | null {
@@ -28,6 +29,7 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
   const [selected, setSelected] = useState(new URLSearchParams(window.location.search).get('channel') ?? (beat ? DEFAULT_CHANNEL[beat] : 'faults'));
   const postsRef = useRef<HTMLDivElement>(null);
   const [seen, setSeen] = useState<Set<string> | null>(null);
+  const [opened, setOpened] = useState<Set<string>>(new Set()); // items on screen this session (clears the Activity badge)
   const [reporting, setReporting] = useState(false);
 
   useEffect(() => {
@@ -49,12 +51,19 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
 
   useEffect(() => {
     if (!current) return;
-    setSeen((s) => (s ? new Set([...s, ...itemsOf(current).map((i) => i.id)]) : s));
+    const ids = itemsOf(current).map((i) => i.id);
+    setSeen((s) => (s ? new Set([...s, ...ids]) : s));
+    setOpened((s) => new Set([...s, ...ids]));
     if (postsRef.current) postsRef.current.scrollTop = postsRef.current.scrollHeight; // Teams opens at the newest post
   }, [current]);
 
   const unread = (items: Item[]) => !!seen && items.some((i) => !seen.has(i.id));
-  const unreadNotices = seen ? channels.flatMap(itemsOf).filter((i) => i.kind === 'agent' && i.agent === 'notice' && !seen.has(i.id)).length : 0;
+  // Activity: notices to the viewer (Erkki) on screen at this beat that he has not opened yet
+  const unreadNotices = channels.flatMap(itemsOf)
+    .filter((i) => i.kind === 'agent' && i.agent === 'notice' && i.to === VIEWER && !opened.has(i.id)).length;
+  const siteOf = (entity?: string) =>
+    entity && (topology?.nodes.find((n) => n.id === entity)?.site ?? topology?.sites.find((s) => s.id === entity)?.id);
+  const newestSite = siteOf(current?.posts.at(-1)?.entity);
 
   const refresh = async (live: LiveIncident[], answers: Record<string, number>) => {
     const threads = await fetchThreads(source);
@@ -92,8 +101,14 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
     <div className="app">
       <header className="titlebar">
         <span className="app-title">Microsoft Teams</span>
-        <div className="search"><I.SearchIcon /><input aria-label="Search" placeholder="Search (Ctrl+E)" readOnly /></div>
-        <span className="avatar me" aria-label="Your profile">Y</span>
+        <div className="title-center">
+          <span className="nav-arrows">
+            <button type="button" className="nav-btn" aria-label="Back"><I.ChevronLeft /></button>
+            <button type="button" className="nav-btn" aria-label="Forward"><I.ChevronRight /></button>
+          </span>
+          <div className="search"><I.SearchIcon /><input aria-label="Search" placeholder="Search (Ctrl+E)" readOnly /></div>
+        </div>
+        <span className="avatar me" aria-label={`Your profile: ${VIEWER}, available`}>EE<span className="presence" aria-hidden="true" /></span>
       </header>
       <div className="workspace">
         <nav className="appbar" aria-label="App bar">
@@ -104,6 +119,7 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
               <span className="appbar-label">{label}</span>
             </button>
           ))}
+          <button type="button" className="appbar-item appbar-help"><span className="appbar-icon"><I.HelpIcon /></span><span className="appbar-label">Help</span></button>
         </nav>
         <nav className="rail" aria-label="Teams and channels">
           <div className="rail-head">
@@ -119,17 +135,18 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
                 <li key={c.id}>
                   <button type="button" className={`channel-row${c.id === selected ? ' selected' : ''}${isUnread ? ' unread' : ''}`}
                     aria-current={c.id === selected ? 'page' : undefined} onClick={() => setSelected(c.id)}>
-                    <span>{c.name}</span>{isUnread && <span className="dot" aria-label="unread" />}
+                    <span className="channel-name"><I.HashIcon />{c.name}</span>{isUnread && <span className="dot" aria-label="unread" />}
                   </button>
                 </li>
               );
             })}
           </ul>
+          <button type="button" className="rail-foot"><I.PeopleAddIcon /> Join or create a team</button>
         </nav>
         <main className="channel">
           <div className="channel-head">
             <div>
-              <h2># {current?.name ?? ''}</h2>
+              <h2><I.HashIcon size={22} />{current?.name ?? ''}</h2>
               <select className="channel-picker" aria-label="Channel" value={selected} onChange={(e) => setSelected(e.target.value)}>
                 {channels.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
@@ -141,7 +158,7 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
             </div>
             <div className="head-actions">
               {live && topology && <button type="button" className="btn-secondary" onClick={() => setReporting(true)}>Report fault</button>}
-              <button type="button" className="meet"><I.VideoIcon /> Meet</button>
+              <button type="button" className="meet"><I.VideoIcon /> Meet <span className="meet-split"><I.ChevronDown size={14} /></span></button>
               <button type="button" className="icon-btn" aria-label="More options"><I.MoreIcon size={20} /></button>
             </div>
           </div>
@@ -149,7 +166,15 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
           <div className="posts" ref={postsRef}>
             {reporting && topology && <ReportFault topology={topology} onSubmit={onReport} onClose={() => setReporting(false)} />}
             {current?.posts.length === 0 && <p className="empty">No posts yet.</p>}
-            {current?.posts.map((p) => <PostCard key={p.id} post={p} onAnswer={onAnswer} />)}
+            {current?.posts.map((p, i, all) => (
+              <Fragment key={p.id}>
+                {p.root.ts.slice(0, 10) !== all[i - 1]?.root.ts.slice(0, 10) && (
+                  <p className="day-divider" role="separator"><span>{longDate(p.root.ts)}</span></p>)}
+                <PostCard post={p} onAnswer={onAnswer} />
+              </Fragment>
+            ))}
+            {!!current?.posts.length && (
+              <p className="up-to-date"><I.CheckIcon /> You're up to date{newestSite && <> · {newestSite}</>}</p>)}
           </div>
           <div className="compose" aria-disabled={!live}>
             <div className="compose-box">
@@ -157,6 +182,7 @@ export default function App({ source = defaultSource, beat = beatFromUrl() }: { 
               <div className="compose-tools">
                 <span className="tools">
                   {[I.FormatIcon, I.AttachIcon, I.EmojiIcon, I.GifIcon, I.StickerIcon].map((T, i) => <span key={i} className="tool"><T /></span>)}
+                  <span className="tool"><I.MoreIcon size={20} /></span>
                 </span>
                 <button type="button" className="icon-btn" aria-label="Send" disabled><I.SendIcon /></button>
               </div>

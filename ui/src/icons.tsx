@@ -20,7 +20,14 @@ export const MoreIcon = ({ size = 24 }: { size?: number }) => (
 export const SearchIcon = () => <Svg size={16}><circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l5 5" /></Svg>;
 export const FilterIcon = () => <Svg><path d="M4 6h16M7 12h10M10 18h4" /></Svg>;
 export const PlusIcon = () => <Svg><path d="M12 5v14M5 12h14" /></Svg>;
-export const ChevronDown = () => <Svg size={16}><path d="M6 9l6 6 6-6" /></Svg>;
+export const ChevronDown = ({ size = 16 }: { size?: number }) => <Svg size={size}><path d="M6 9l6 6 6-6" /></Svg>;
+export const ChevronLeft = () => <Svg size={16}><path d="M15 6l-6 6 6 6" /></Svg>;
+export const ChevronRight = () => <Svg size={16}><path d="M9 6l6 6-6 6" /></Svg>;
+export const HashIcon = ({ size = 16 }: { size?: number }) => <Svg size={size}><path d="M10 4L8 20M16 4l-2 16M4.5 9h15M4 15h15" /></Svg>;
+export const HelpIcon = () => <Svg size={24}><circle cx="12" cy="12" r="8.5" /><path d="M12 11v5M12 8h.01" /></Svg>;
+export const PeopleAddIcon = () => (
+  <Svg><circle cx="9" cy="8" r="3" /><path d="M3.5 19c0-3 2.5-5 5.5-5 1.4 0 2.6.4 3.6 1.1" /><path d="M17 14v6M14 17h6" /></Svg>
+);
 export const VideoIcon = () => <Svg size={16}><rect x="3" y="7" width="12" height="10" rx="2" /><path d="M15 11l6-3v8l-6-3" /></Svg>;
 export const SendIcon = () => <Svg><path d="M4 12l16-8-5 16-3-7z" /><path d="M12 13l8-9" /></Svg>;
 export const FormatIcon = () => <Svg><path d="M6 19l5-14h2l5 14M8.5 13h7" /></Svg>;

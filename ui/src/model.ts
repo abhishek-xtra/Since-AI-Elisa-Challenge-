@@ -39,10 +39,11 @@ export type AgentKind = 'proposal' | 'question' | 'notice';
 export type Item =
   | { kind: 'message'; id: string; ts: string; author: string; text: string; captured: boolean; email: boolean }
   | { kind: 'agent'; agent: AgentKind; id: string; ts: string; text: string; to?: string; question?: Question; answeredLabel?: string | null }
-  | { kind: 'status'; id: string; ts: string; text: string; struck?: { text: string; until: string | null } }
+  | { kind: 'status'; id: string; ts: string; text: string; outcome: ContextResult['outcome']; lead: string; reason: string;
+      struck?: { text: string; until: string | null } }
   | { kind: 'event'; id: string; ts: string; text: string };
 
-export interface Post { id: string; root: Item; replies: Item[] }
+export interface Post { id: string; root: Item; replies: Item[]; entity?: string }
 export interface Channel { id: string; name: string; posts: Post[] }
 
 export interface LiveIncident {
@@ -75,16 +76,23 @@ const CHANNEL_OF: Record<string, string> = {
 const firstName = (s: string) => s.split(' ')[0];
 const byTime = (a: Item, b: Item) => (a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0); // ISO strings, same offset
 
-/** The fixed STATUS templates; `reason` is the backend's string, verbatim. Proposed results get no STATUS. */
-export function statusText(r: ContextResult, question?: Question | null): string | null {
+/** The fixed STATUS template, split for the card: a lead line, then the backend `reason` verbatim.
+ *  Proposed results get no STATUS (DEMO_CHAT scenes 2 and 3 show only the proposal). */
+export function statusParts(r: ContextResult, question?: Question | null): { lead: string; text: string } | null {
   const who = `${firstName(r.assertion.evidence.said_by)}'s tip`;
-  if (r.outcome === 'declined') return `${who} does not apply: ${r.reason}.`;
-  if (r.outcome === 'ambiguous') {
-    const q = r.question ?? question;
-    return q ? `${who} may apply: ${r.reason}. Question sent to ${q.to}.` : `${who} may apply: ${r.reason}.`;
-  }
-  return null;
+  const q = r.question ?? question;
+  const lead = r.outcome === 'declined' ? `${who} does not apply`
+    : r.outcome === 'ambiguous' ? `${who} may apply${q ? ` · question sent to ${q.to}` : ''}` : null;
+  return lead ? { lead, text: `${lead}: ${r.reason}.` } : null;
 }
+export const statusText = (r: ContextResult, question?: Question | null) => statusParts(r, question)?.text ?? null;
+
+const statusItem = (id: string, ts: string, r: ContextResult, question?: Question): Item | null => {
+  const parts = statusParts(r, question);
+  if (!parts) return null;
+  const struck = r.assertion.superseded_by ? { text: r.assertion.action_text, until: r.assertion.valid_to } : undefined;
+  return { kind: 'status', id, ts, outcome: r.outcome, reason: r.reason, struck, ...parts };
+};
 
 const messageItem = (m: Message, captured: boolean): Item => ({
   kind: 'message', id: m.id, ts: m.timestamp, author: m.author, text: m.text, captured, email: m.channel === 'email',
@@ -109,21 +117,19 @@ function incidentPost(run: IncidentRun): Post {
   for (const m of run.report) if (m.timestamp <= at || proposed.length) items.push(messageItem(m, false));
   if (!run.report.length) items.push({ kind: 'event', id: `${run.id}:event`, ts: at, text: `${run.event} · ${run.entity}` });
   run.resultsBefore.forEach((r, i) => {
-    const text = statusText(r, run.question);
-    if (text && r.outcome === 'ambiguous') items.push({ kind: 'status', id: `${run.id}:before:${i}`, ts: at, text });
+    const s = r.outcome === 'ambiguous' && statusItem(`${run.id}:before:${i}`, at, r, run.question);
+    if (s) items.push(s);
   });
   run.results.forEach((r, i) => {
-    const text = statusText(r, run.question);
-    if (!text) return;
-    const old = r.assertion.superseded_by ? { text: r.assertion.action_text, until: r.assertion.valid_to } : undefined;
-    items.push({ kind: 'status', id: `${run.id}:status:${i}`, ts: at, text, struck: old });
+    const s = statusItem(`${run.id}:status:${i}`, at, r, run.question);
+    if (s) items.push(s);
   });
   if (!waiting) {
     // shortcut: beats 5 and 6 carry no agent_text, so the proposal is the assertion's own action_text; ask the backend.
     const texts = run.agentText ? [run.agentText] : proposed.map((r) => r.assertion.action_text);
     texts.forEach((text, i) => items.push({ kind: 'agent', agent: 'proposal', id: `${run.id}:proposal:${i}`, ts: at, text }));
   }
-  return toPost(items);
+  return { ...toPost(items), entity: run.entity };
 }
 
 export function buildChannels(input: ModelInput, beat: number | null): Channel[] {

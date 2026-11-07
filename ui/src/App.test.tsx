@@ -41,4 +41,11 @@ describe('replay', () => {
     expect(screen.getByLabelText('1 unread')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Report fault' })).toBeNull();
   });
+
+  it('?beat=7 counts both of Erkki\'s notices on the Activity badge until he opens Experts', async () => {
+    render(<App source={createMockSource()} beat={7} />);
+    expect(await screen.findByLabelText('2 unread')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /^Experts/ }));
+    expect(screen.queryByLabelText('2 unread')).toBeNull();
+  });
 });

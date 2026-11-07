@@ -8,6 +8,12 @@ export const initials = (name: string) => name.split(' ').map((w) => w[0]).slice
 
 /** Dates exactly as the data gives them: the wall-clock part of the ISO string, no timezone conversion. */
 export const fmt = (ts: string) => (ts.length >= 16 ? `${ts.slice(0, 10)} ${ts.slice(11, 16)}` : ts);
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+/** "7 November 2026" for the day divider. */
+export const longDate = (ts: string) => `${Number(ts.slice(8, 10))} ${MONTHS[Number(ts.slice(5, 7)) - 1]} ${ts.slice(0, 4)}`;
+/** Time only on the post's own day (the divider names it); a reply on a later day also gets "7 Nov". */
+const stamp = (ts: string, day: string) =>
+  ts.slice(0, 10) === day ? ts.slice(11, 16) : `${Number(ts.slice(8, 10))} ${MONTHS[Number(ts.slice(5, 7)) - 1].slice(0, 3)} ${ts.slice(11, 16)}`;
 
 const Avatar = ({ name }: { name: string }) => (
   <span className="avatar" style={{ background: colorFor(name) }} aria-hidden="true">{initials(name)}</span>
@@ -38,15 +44,16 @@ export function QuestionCard({ item, onAnswer }: { item: Extract<Item, { kind: '
   );
 }
 
-function ItemView({ item, onAnswer, isRoot }: { item: Item; onAnswer?: Answer; isRoot: boolean }) {
+function ItemView({ item, onAnswer, isRoot, day }: { item: Item; onAnswer?: Answer; isRoot: boolean; day: string }) {
   if (item.kind === 'status') {
     return (
-      <div className="status-line" data-kind="status">
-        <InfoIcon />
-        <span>
-          {item.struck && <><del>{item.struck.text}</del>{item.struck.until && <> (valid to {fmt(item.struck.until)})</>}<br /></>}
-          {item.text}
-        </span>
+      <div className={`status-card status-${item.outcome}`} data-kind="status" title={item.text}>
+        <p className="status-head">
+          <span className="chip">{item.outcome === 'proposed' ? <CheckIcon /> : <InfoIcon />}{item.outcome}</span>
+          <span className="status-lead">{item.lead}</span>
+        </p>
+        {item.struck && <p className="status-reason"><del>{item.struck.text}</del>{item.struck.until && <> (valid to {fmt(item.struck.until)})</>}</p>}
+        <p className="status-reason">{item.reason}</p>
       </div>
     );
   }
@@ -54,7 +61,7 @@ function ItemView({ item, onAnswer, isRoot }: { item: Item; onAnswer?: Answer; i
     return (
       <div className="msg" data-kind="event">
         <span className="avatar app-avatar event-avatar" aria-hidden="true"><EventIcon /></span>
-        <div className="msg-body"><div className="msg-head"><time>{fmt(item.ts)}</time></div><p className="msg-text">{item.text}</p></div>
+        <div className="msg-body"><div className="msg-head"><time>{stamp(item.ts, day)}</time></div><p className="msg-text">{item.text}</p></div>
       </div>
     );
   }
@@ -63,7 +70,7 @@ function ItemView({ item, onAnswer, isRoot }: { item: Item; onAnswer?: Answer; i
       <div className={`msg agent agent-${item.agent}`} data-kind={item.agent}>
         <AppAvatar />
         <div className="msg-body">
-          <div className="msg-head"><strong>{AGENT_NAME}</strong><span className="app-tag">APP</span><time>{fmt(item.ts)}</time></div>
+          <div className="msg-head"><strong>{AGENT_NAME}</strong><span className="app-tag">APP</span><time>{stamp(item.ts, day)}</time></div>
           {item.agent === 'proposal' && <p className="msg-text">{item.text}</p>}
           {item.agent === 'question' && <QuestionCard item={item} onAnswer={onAnswer} />}
           {item.agent === 'notice' && (
@@ -78,7 +85,7 @@ function ItemView({ item, onAnswer, isRoot }: { item: Item; onAnswer?: Answer; i
     <div className="msg" data-kind="message">
       <Avatar name={item.author} />
       <div className="msg-body">
-        <div className="msg-head"><strong>{item.author}</strong><time>{fmt(item.ts)}</time>{item.email && <span className="via"><MailIcon /> Email</span>}</div>
+        <div className="msg-head"><strong>{item.author}</strong><time>{stamp(item.ts, day)}</time>{item.email && <span className="via"><MailIcon /> Email</span>}</div>
         {item.email ? (
           <><p className="msg-subject">{subject.replace(/^Subject:\s*/, '')}</p><p className="msg-text">{body.join('\n').trim()}</p></>
         ) : <p className="msg-text">{item.text}</p>}
@@ -90,12 +97,13 @@ function ItemView({ item, onAnswer, isRoot }: { item: Item; onAnswer?: Answer; i
 }
 
 export function PostCard({ post, onAnswer }: { post: Post; onAnswer?: Answer }) {
+  const day = post.root.ts.slice(0, 10);
   return (
     <article className="post" aria-label={`Post at ${fmt(post.root.ts)}`}>
-      <ItemView item={post.root} onAnswer={onAnswer} isRoot />
+      <ItemView item={post.root} onAnswer={onAnswer} isRoot day={day} />
       {post.replies.length > 0 && (
         <div className="replies">
-          {post.replies.map((r) => <ItemView key={r.id} item={r} onAnswer={onAnswer} isRoot={false} />)}
+          {post.replies.map((r) => <ItemView key={r.id} item={r} onAnswer={onAnswer} isRoot={false} day={day} />)}
         </div>
       )}
       <button type="button" className="reply-link" disabled>Reply</button>
