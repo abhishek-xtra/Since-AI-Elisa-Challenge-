@@ -1,0 +1,2 @@
+# Keep the backend copies byte for byte (they are CRLF).
+*.json -text
