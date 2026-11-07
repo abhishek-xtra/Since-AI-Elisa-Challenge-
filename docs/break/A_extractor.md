@@ -84,3 +84,9 @@ Verdicts: **OK** (matches the spec), **WRONG** (contradicts the spec or does har
 3. **A12: the stated-condition parser can produce a candidate that fails on the origin** ("stopped after firmware 5.0" → `firmware == '5.0'`), and then the system asks the expert nonsense. A 3-line guard (drop a stated candidate that fails on its own origin) plus fixing the operator-before-"firmware" regex.
 
 Runners-up: A15 (the binder picks the most-mentioned device, not the current one) and A17/A10 (`said_by_role`, and so trust, is the model's word; a 3-line override from the header closes it).
+
+## Orchestrator note, 06:00: the prompt wording is close to the test data
+
+The final rule 5 and the rule definition quote phrasings that resemble Erkki's thread ("disable the interface, wait, enable it; don't reboot"; "if the interface is UP but the counters stay at zero"; "optics OK", "alarms cleared"). I replaced all three with different-domain examples (fan tray / power-cycle; link_down + optics_low; "power OK", "fans normal") and re-ran everything live: chat and email diverged again and 23 tests failed (eval 01, 02, 03, 06, 07, 08, 09, 10; test_email; test_reworded_same_key). Reverted to the verified wording. Cost of the experiment: about 0.85 EUR.
+
+What this means: the extractor's stability on this data depends on examples that are near the data. The 19 independent break fixtures (A1 to A18, Finnish, 40-message thread, injection, hearsay) still extract correctly under the verified wording, which is the evidence that it generalises at least that far. Mikael decides whether to (a) keep it and say so in the README, (b) spend time on a prompt that works with neutral examples, or (c) move the symptom normalisation out of the model entirely (a deterministic rule: trigger symptoms = the subset the speaker's condition sentence mentions, with a fixed mapping from phrases to vocabulary). I recommend (a) for the submission and (c) as the stated next step.
