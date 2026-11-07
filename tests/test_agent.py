@@ -82,7 +82,7 @@ def test_core_question_answer_and_proposal(make_store, out_dir):
     assert r.outcome == "proposed" and r.question is None
 
     notes = json.loads((out_dir / "notifications.json").read_text(encoding="utf-8"))
-    assert notes == [{"to": "Erkki Expert", "text": "Your tip from 2026-11-01 was used on TRN-087 today.",
+    assert notes == [{"to": "Erkki Expert", "text": "Your tip from 2026-11-01 was proposed for TRN-087 today.",
                       "assertion_id": r.assertion.id, "entity_id": "TRN-087", "at": AT.isoformat()}]
     ctx(s, "TRN-087")  # same run again: no duplicate notification
     assert len(json.loads((out_dir / "notifications.json").read_text(encoding="utf-8"))) == 1

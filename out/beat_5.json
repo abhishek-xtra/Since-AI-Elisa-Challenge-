@@ -7,8 +7,8 @@
     "CA-0002 proposed: all hold: site == 'OULU-03'",
     "Key location before the drive: at the neighbouring farm, ask for Mäkelä",
     "Notifications:",
-    "  to Erkki Expert: Your tip from 2026-11-01 was used on TRN-087 today.",
-    "  to Kalle Niskanen: Your tip from 2026-10-02 was used on OULU-03 today."
+    "  to Erkki Expert: Your tip from 2026-11-01 was proposed for TRN-087 today.",
+    "  to Kalle Niskanen: Your tip from 2026-10-02 was proposed for OULU-03 today."
   ],
   "data": {
     "results": [
@@ -69,14 +69,14 @@
     "notifications": [
       {
         "to": "Erkki Expert",
-        "text": "Your tip from 2026-11-01 was used on TRN-087 today.",
+        "text": "Your tip from 2026-11-01 was proposed for TRN-087 today.",
         "assertion_id": "CA-0001",
         "entity_id": "TRN-087",
         "at": "2026-11-07T10:00:00+02:00"
       },
       {
         "to": "Kalle Niskanen",
-        "text": "Your tip from 2026-10-02 was used on OULU-03 today.",
+        "text": "Your tip from 2026-10-02 was proposed for OULU-03 today.",
         "assertion_id": "CA-0002",
         "entity_id": "OULU-03",
         "at": "2026-11-08T08:00:00+02:00"

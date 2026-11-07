@@ -12,5 +12,5 @@ def notify(results: list[ContextResult], entity_id: str, at: datetime) -> None:
         a = r.assertion
         append_json("notifications.json", {
             "to": a.evidence.said_by,
-            "text": f"Your tip from {a.valid_from.date().isoformat()} was used on {entity_id} today.",
+            "text": f"Your tip from {a.valid_from.date().isoformat()} was proposed for {entity_id} today.",
             "assertion_id": a.id, "entity_id": entity_id, "at": at.isoformat()})

@@ -242,7 +242,7 @@ For two or more `disputed` assertions matching the same incident, order by: trus
 
 ### 5.7 Expert notification
 
-When an assertion is `proposed`, append `{"to": said_by, "text": "Your tip from <date> was used on <entity> today."}` to `out/notifications.json`. Nothing else.
+When an assertion is `proposed`, append `{"to": said_by, "text": "Your tip from <date> was proposed for <entity> today."}` to `out/notifications.json`. Nothing else.
 
 ## 6. Build order, tests and gates
 

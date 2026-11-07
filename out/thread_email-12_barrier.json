@@ -17,7 +17,7 @@
   "notifications": [
     {
       "to": "Kalle Niskanen",
-      "text": "Your tip from 2026-10-02 was used on OULU-03 today.",
+      "text": "Your tip from 2026-10-02 was proposed for OULU-03 today.",
       "assertion_id": "CA-0002",
       "entity_id": "OULU-03",
       "at": "2026-11-08T08:00:00+02:00"
