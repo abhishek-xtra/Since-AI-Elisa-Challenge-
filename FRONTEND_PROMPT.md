@@ -45,7 +45,7 @@ If a piece of information is not needed to act on this fault, it is not on scree
 
 ## 3. Tech
 
-- **Stack.** Vite + React 18 + TypeScript, in `ui/` (the repo layout in `HANDOFF.md` section 15). Node 20.
+- **Stack.** Vite + React 18 + TypeScript, in `frontend-ui/` (the repo layout in `HANDOFF.md` section 15). Node 20.
 - **Dependencies.** `d3-force` for the map layout, and `vitest` + `@testing-library/react` for tests. No other dependencies without asking: no UI kits, no CSS frameworks, no state libraries. Plain CSS with custom properties in one `tokens.css`.
 - **Scripts.** `npm run dev` runs it. `npm run build` makes a static build. `npm test` runs the tests.
 - **The data switch.** One setting: `VITE_DATA_SOURCE=mock|api` (default `mock`) and `VITE_API_URL` (default `http://localhost:8000`). Nothing else in the code knows which source is active.
@@ -54,11 +54,11 @@ If a piece of information is not needed to act on this fault, it is not on scree
 
 ## 4. The data layer: what makes it mergeable
 
-All data goes through one module, `ui/src/data/`. Components never fetch or import JSON directly.
+All data goes through one module, `frontend-ui/src/data/`. Components never fetch or import JSON directly.
 
 ### 4.1 Types mirror the backend contracts
 
-`ui/src/data/types.ts` mirrors the backend's contracts exactly, using the same field names and the same vocabulary strings:
+`frontend-ui/src/data/types.ts` mirrors the backend's contracts exactly, using the same field names and the same vocabulary strings:
 - `Assertion` (`BACKEND_PROMPT.md` 4.4, plus `supersedes` and `superseded_by` from addendum A1)
 - `Message` (4.1)
 - `Node` and `Site` (4.2)
@@ -84,7 +84,7 @@ interface DataSource {
 }
 ```
 
-- **`mockSource.ts`** reads fixtures from `ui/src/data/mock/`, keeps state in memory (answers, chat additions), and simulates a small delay (150 ms) so loading states are visible.
+- **`mockSource.ts`** reads fixtures from `frontend-ui/src/data/mock/`, keeps state in memory (answers, chat additions), and simulates a small delay (150 ms) so loading states are visible.
 - **`apiSource.ts`** calls the backend endpoints:
   - `GET /graph`
   - `GET /threads/{id}`
@@ -97,7 +97,7 @@ interface DataSource {
 
 The backend extras B1–B4 in `BACKEND_PROMPT_ADDENDUM.md` are optional. The UI must work without them.
 
-- **No network edges in the graph (B1 missing).** If the graph has no `IN_SITE`, `IN_REGION` or `OF_MODEL` edges, read `site`, `model` and `region` from node `attrs` and build those edges in the frontend (`ui/src/data/derive.ts`). If the attributes are missing too, draw the tips attached only to their case entities.
+- **No network edges in the graph (B1 missing).** If the graph has no `IN_SITE`, `IN_REGION` or `OF_MODEL` edges, read `site`, `model` and `region` from node `attrs` and build those edges in the frontend (`frontend-ui/src/data/derive.ts`). If the attributes are missing too, draw the tips attached only to their case entities.
 - **No `label` (B2 missing).** Make one with the same template table as the addendum:
   - `interface.bounce` with avoid containing `node.reboot` → "Bounce, don't reboot"
   - `site.access_key` → "Site access"
@@ -107,7 +107,7 @@ The backend extras B1–B4 in `BACKEND_PROMPT_ADDENDUM.md` are optional. The UI 
 
 ### 4.4 Mock fixtures
 
-The fixtures live in `ui/src/data/mock/` and match the backend's `out/` shapes exactly. Write them from Elisa's provided material plus the synthetic data already named in the plan. **Use no ticket numbers anywhere.**
+The fixtures live in `frontend-ui/src/data/mock/` and match the backend's `out/` shapes exactly. Write them from Elisa's provided material plus the synthetic data already named in the plan. **Use no ticket numbers anywhere.**
 
 **Topology.** Matches `BACKEND_PROMPT.md` 4.2 seed:
 - 3 sites in 2 regions (north, south)
@@ -135,7 +135,7 @@ The fixtures live in `ui/src/data/mock/` and match the backend's `out/` shapes e
 
 ## 5. Screens
 
-### 5.1 Visual tokens (`ui/src/tokens.css`)
+### 5.1 Visual tokens (`frontend-ui/src/tokens.css`)
 
 One dark theme for all screens.
 
@@ -273,7 +273,7 @@ Sequential. Each step ends with a command Abhishek runs and something he looks a
 
 | # | Step | Test | Abhishek's gate |
 |---|---|---|---|
-| 0 | Vite + TS app in `ui/`, `tokens.css`, `types.ts`, mock fixtures | fixtures type-check; a test loads each fixture through `mockSource` | `npm run dev` opens a blank dark page; skim the fixtures |
+| 0 | Vite + TS app in `frontend-ui/`, `tokens.css`, `types.ts`, mock fixtures | fixtures type-check; a test loads each fixture through `mockSource` | `npm run dev` opens a blank dark page; skim the fixtures |
 | 1 | Data layer: `DataSource`, `mockSource`, `apiSource`, `derive.ts` | `derive.ts` builds network edges from `attrs`; label templates; live/superseded/hunch filters; `apiSource` against a stubbed fetch | `npm test` green |
 | 2 | **Thread page** (must-have) | renders 12 messages + question; tapping option 0 calls `answer` and shows "Answered"; the notification shows | Click through `/thread/thread-001` |
 | 3 | Context map, local view | the focus is pinned; superseded CA-0002 is not drawn; CA-0005 only with the toggle; the badge counts match the fixtures; the same data gives the same positions | Look at `/`; toggle hunches; open a site badge |
@@ -316,4 +316,4 @@ Sequential. Each step ends with a command Abhishek runs and something he looks a
 - `npm test` green.
 - `npm run dev` with mock data shows: the thread page with the question and notification; the map around TRN-087 with badges, the hunch toggle, tip cards and zoom out; the chat with both exchanges; all four title cards; and beats 1–6.
 - Switching to `VITE_DATA_SOURCE=api` needs no code change, and works once the backend's `api/app.py` runs.
-- `ui/README.md`: how to run it, how to switch to the backend, which screens exist, and that the mock data is hand-written and not shown in the final video.
+- `frontend-ui/README.md`: how to run it, how to switch to the backend, which screens exist, and that the mock data is hand-written and not shown in the final video.

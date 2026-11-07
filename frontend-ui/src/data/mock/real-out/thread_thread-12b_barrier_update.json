@@ -1,0 +1,42 @@
+{
+  "thread_id": "thread-12b_barrier_update",
+  "channel": "teams",
+  "messages": [
+    {
+      "id": "teams:thread-12b_barrier_update:1",
+      "author": "Veikko Vikkelä",
+      "role": "field_engineer",
+      "timestamp": "2026-11-07T10:15:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-12b_barrier_update",
+      "text": "Moi Timo, I am at OULU-03 right now. Just a heads up that the key moved, it's in the site cabinet now. No need to go to the farm any more to open the access road barrier.",
+      "incident": null
+    },
+    {
+      "id": "teams:thread-12b_barrier_update:2",
+      "author": "Timo Laine",
+      "role": "field_engineer",
+      "timestamp": "2026-11-07T10:17:00+02:00",
+      "channel": "teams",
+      "thread_id": "thread-12b_barrier_update",
+      "text": "Ah nice, thanks, good to know. That saves some driving next time 👍",
+      "incident": null
+    }
+  ],
+  "questions": [],
+  "notifications": [
+    {
+      "to": "Veikko Vikkelä",
+      "text": "Your tip from 2026-11-07 was proposed for OULU-03 today.",
+      "assertion_id": "CA-0003",
+      "entity_id": "OULU-03",
+      "at": "2026-11-08T08:00:00+02:00"
+    }
+  ],
+  "captured": [
+    {
+      "message_id": "teams:thread-12b_barrier_update:1",
+      "assertion_id": "CA-0003"
+    }
+  ]
+}

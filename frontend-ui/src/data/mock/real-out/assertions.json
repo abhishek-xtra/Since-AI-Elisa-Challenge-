@@ -1,0 +1,187 @@
+[
+  {
+    "id": "CA-0001",
+    "trigger": {
+      "kind": "incident",
+      "event": "sfp_replaced",
+      "symptoms": [
+        "counters_zero",
+        "link_up"
+      ]
+    },
+    "applies_to": {
+      "entity_type": "transmission_node",
+      "candidates": [
+        {
+          "predicate": "install_year <= 2019",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "Erkki Expert: 'older units'; 2019 is TRN-042's install_year, not a stated boundary"
+        },
+        {
+          "predicate": "model == 'TX-200'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "firmware == '4.1'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "site == 'OULU-07'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042"
+        },
+        {
+          "predicate": "region == 'north'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of TRN-042's site"
+        }
+      ],
+      "decided": {
+        "predicate": "install_year <= 2019",
+        "edge": "closed"
+      }
+    },
+    "action": "interface.bounce",
+    "action_text": "Disable the interface, wait a little, then enable it again",
+    "avoid": [
+      "sfp.replace",
+      "node.reboot"
+    ],
+    "evidence": {
+      "cases": [
+        {
+          "entity": "TRN-042",
+          "at": "2026-11-01T09:22:00+02:00",
+          "outcome": "recovered"
+        }
+      ],
+      "sources": [
+        "teams:thread-001",
+        "email:email-001"
+      ],
+      "excerpt": "Disable the interface, wait a little, then enable it again. Don't reboot the whole unit unless that fails.",
+      "said_by_role": "expert",
+      "said_by": "Erkki Expert"
+    },
+    "trust": "verified_by_outcome",
+    "status": "decided",
+    "questions_asked": [
+      "firmware == '4.1'=holds | install_year <= 2019=holds | model == 'TX-200'=holds | region == 'north'=holds | site == 'OULU-07'=fails",
+      "install_year <= 2019=unknown"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "recorded_at": "2026-11-06T00:00:00Z",
+    "valid_from": "2026-11-01T09:14:00+02:00",
+    "valid_to": null,
+    "valid_while": null
+  },
+  {
+    "id": "CA-0002",
+    "trigger": {
+      "kind": "workflow",
+      "event": "dispatch_created",
+      "symptoms": []
+    },
+    "applies_to": {
+      "entity_type": "site",
+      "candidates": [
+        {
+          "predicate": "site == 'OULU-03'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of OULU-03"
+        }
+      ],
+      "decided": null
+    },
+    "action": "site.access_key",
+    "action_text": "at the neighbouring farm, ask for Mäkelä",
+    "avoid": [],
+    "evidence": {
+      "cases": [
+        {
+          "entity": "OULU-03",
+          "at": "2026-10-02T10:00:00+02:00",
+          "outcome": null
+        }
+      ],
+      "sources": [
+        "email:email-12_barrier"
+      ],
+      "excerpt": "If you get dispatched to OULU-03, the key for the barrier on the private road is at the neighbouring farm, ask for Mäkelä.",
+      "said_by_role": "other",
+      "said_by": "Kalle Niskanen"
+    },
+    "trust": "stated",
+    "status": "open",
+    "questions_asked": [],
+    "supersedes": null,
+    "superseded_by": "CA-0003",
+    "recorded_at": "2026-11-06T00:00:00Z",
+    "valid_from": "2026-10-02T10:00:00+02:00",
+    "valid_to": "2026-11-07T10:15:00+02:00",
+    "valid_while": null
+  },
+  {
+    "id": "CA-0003",
+    "trigger": {
+      "kind": "workflow",
+      "event": "dispatch_created",
+      "symptoms": []
+    },
+    "applies_to": {
+      "entity_type": "site",
+      "candidates": [
+        {
+          "predicate": "site == 'OULU-03'",
+          "edge": "closed",
+          "support": 1,
+          "against": 0,
+          "basis": "attribute of OULU-03"
+        }
+      ],
+      "decided": null
+    },
+    "action": "site.access_key",
+    "action_text": "in the site cabinet",
+    "avoid": [],
+    "evidence": {
+      "cases": [
+        {
+          "entity": "OULU-03",
+          "at": "2026-11-07T10:15:00+02:00",
+          "outcome": null
+        }
+      ],
+      "sources": [
+        "teams:thread-12b_barrier_update"
+      ],
+      "excerpt": "Just a heads up that the key moved, it's in the site cabinet now. No need to go to the farm any more to open the access road barrier.",
+      "said_by_role": "field_engineer",
+      "said_by": "Veikko Vikkelä"
+    },
+    "trust": "stated",
+    "status": "open",
+    "questions_asked": [],
+    "supersedes": "CA-0002",
+    "superseded_by": null,
+    "recorded_at": "2026-11-06T00:00:00Z",
+    "valid_from": "2026-11-07T10:15:00+02:00",
+    "valid_to": null,
+    "valid_while": null
+  }
+]

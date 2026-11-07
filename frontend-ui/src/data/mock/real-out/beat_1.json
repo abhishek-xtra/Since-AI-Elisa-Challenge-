@@ -1,0 +1,20 @@
+{
+  "beat": 1,
+  "title": "No context",
+  "lines": [
+    "Incident: sfp_replaced on TRN-087 at 2026-11-07T10:00:00+02:00, symptoms link_up, optics_normal, alarms_cleared, counters_zero",
+    "Store: 0 assertions",
+    "get_context -> []: no context",
+    "Agent: No captured context applies to this incident; nothing to add."
+  ],
+  "data": {
+    "results": [],
+    "proposal": {
+      "action": "other",
+      "action_text": "No captured context applies to this incident.",
+      "avoid": [],
+      "cites": []
+    },
+    "agent_text": "No captured context applies to this incident; nothing to add."
+  }
+}
