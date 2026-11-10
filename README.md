@@ -8,9 +8,9 @@ Team: Mikael Salomaa and Abhishek Singh, Since AI 2026.
 
 ## The demo video
 
-[![Watch the demo video, 2:03](video/poster.jpg)](https://www.youtube.com/watch?v=JbLK_Vu-E80)
+[![Watch the demo video, 2:03](video/poster.jpg)](https://www.youtube.com/watch?v=ILvzSVYHmYc)
 
-**[Watch on YouTube (2:03)](https://www.youtube.com/watch?v=JbLK_Vu-E80)**, or open `video/elisa_demo.mp4` from a clone. The script, what each scene draws on, and the numbers screen checked against the repo are in `docs/VIDEO.md`; the HyperFrames project that renders it is in `video/`. The Teams and tree scenes are animated rebuilds of the two front-ends below, with every line taken from `out/`. The video shows the solution working; this file and the code carry the technical decisions.
+**[Watch on YouTube (2:03)](https://www.youtube.com/watch?v=ILvzSVYHmYc)**, or open `video/elisa_demo.mp4` from a clone. The script, what each scene draws on, and the numbers screen checked against the repo are in `docs/VIDEO.md`; the HyperFrames project that renders it is in `video/`. The Teams and tree scenes are animated rebuilds of the two front-ends below, with every line taken from `out/`. The video shows the solution working; this file and the code carry the technical decisions.
 
 ## See it in five minutes
 

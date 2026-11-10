@@ -1,6 +1,6 @@
 # The demo video
 
-`elisa_demo.mp4` is the final cut: 2:03, 1920x1080, 30 fps, H.264 and AAC, 27 MB. Also on YouTube: https://www.youtube.com/watch?v=JbLK_Vu-E80 Script, what each scene draws on, and the numbers screen checked against the repo: `docs/VIDEO.md`.
+`elisa_demo.mp4` is the final cut: 2:03, 1920x1080, 30 fps, H.264 and AAC, 27 MB. Also on YouTube: https://www.youtube.com/watch?v=ILvzSVYHmYc Script, what each scene draws on, and the numbers screen checked against the repo: `docs/VIDEO.md`.
 
 The rest of this folder is the HyperFrames project that renders it, made in the HyperFrames Desktop app (HyperFrames 0.9.19). The Teams scenes (`compositions/hook.html`, `capture.html`, `ask.html`, `recall.html`) draw the Teams window from the repo's `ui/` with its reveal timings; the tree scenes (`merge.html`, `scopes.html`, `honed.html`, `stay-true.html`) use the geometry, words and motion of `frontend-ui/src/tree/`. Every chat line, agent sentence, scope label and reason is copied from `out/` and Elisa's example data. Scene order and timing are in `index.html` and `compositions/film.json`.
 
